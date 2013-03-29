@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# $Id: PKGBUILD 178545 2013-02-25 16:33:27Z tpowa $
-# Maintainer: Thomas Bächler <thomas@archlinux.org>
-# Maintainer: Tobias Powalowski <tpowa@archlinux.org>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+
+# Original Maintainer: Thomas Bächler <thomas@archlinux.org>
+# Original Maintainer: Tobias Powalowski <tpowa@archlinux.org>
 
 pkgname=syslinux
 pkgver=5.01
