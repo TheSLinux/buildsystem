@@ -1,6 +1,7 @@
-# $Id: PKGBUILD 173977 2012-12-31 06:04:56Z allan $
-# Maintainer:
-# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+#!/bin/bash
+
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Contributor: Tom Newsom <Jeepster@gmx.co.uk>
 
 pkgname=gawk
 pkgver=4.0.2
@@ -20,7 +21,7 @@ md5sums=('4d505dc2c9f1eb3e9f8d6cac87d4bd1a'
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
   ./configure --prefix=/usr --libexecdir=/usr/lib
-  make 
+  make
 }
 
 check() {
@@ -32,7 +33,7 @@ package() {
   cd ${srcdir}/${pkgname}-${pkgver}
   make DESTDIR=${pkgdir} install
 
-  install -dm755 ${pkgdir}/bin 
+  install -dm755 ${pkgdir}/bin
   ln -sf /usr/bin/gawk ${pkgdir}/bin/
   ln -sf gawk ${pkgdir}/bin/awk
 }
