@@ -1,8 +1,7 @@
-NAME="Arch Linux"
-ID=arch
-PRETTY_NAME="Arch Linux"
+NAME="TheSLinux"
+ID=theslinux
+PRETTY_NAME="TheSLinux"
 ANSI_COLOR="0;36"
-HOME_URL="https://www.archlinux.org/"
-SUPPORT_URL="https://bbs.archlinux.org/"
-BUG_REPORT_URL="https://bugs.archlinux.org/"
-
+HOME_URL="http://theslinux.org/"
+SUPPORT_URL="http://theslinux.org/lists/"
+BUG_REPORT_URL="http://theslinux.org/bugs/"
