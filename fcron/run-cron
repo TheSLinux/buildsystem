@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Purpose: Execute every script under a directory,
+#          for example, /etc/cron.daily/*
+#
 
 if [ -z $1 ]; then
    echo "Usage: $0 crondir"
