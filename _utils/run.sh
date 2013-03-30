@@ -91,6 +91,13 @@ _import_package() {
   }
 }
 
+import() {
+  while (( $# )); do
+    _import_package $1
+    shift
+  done
+}
+
 (( $# )) || _die "Missing arguments"
 
 $*
