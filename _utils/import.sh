@@ -36,6 +36,8 @@ _import_package() {
   local _rev=                         # package revision (SVN)
   local _f_readme="$_dd/README.md"    # the reade file
 
+  _msg ">> Trying to import package $_pkg <<"
+
   [[ -d "$_ds/" ]] \
   || { _err "Directory not found  $_ds"; return 1; }
 
