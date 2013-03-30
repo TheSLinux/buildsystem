@@ -59,7 +59,10 @@ _import_package() {
       && {
         # Test if svn return any error
         svn info >/dev/null 2>&1 \
-          || { _err "svn info failed to run in $_ds"; return 1; }
+          || {
+            _err "svn info failed to run in $_ds"
+            popd; return 1
+          }
 
         # Get the revision information
         _rev="$(svn info | grep ^Revision: | head -1 | awk '{print $NF}')"
