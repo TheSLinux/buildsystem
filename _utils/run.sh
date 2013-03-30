@@ -91,9 +91,6 @@ _import_package() {
   }
 }
 
-(( $# )) || _die "Missing package name(s)"
+(( $# )) || _die "Missing arguments"
 
-while (( $# )); do
-  _import_package "$1"
-  shift
-done
+$*
