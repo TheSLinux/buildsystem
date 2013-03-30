@@ -80,6 +80,7 @@ _import_package() {
     # Genereate git commit
     git add "$_dd" \
       && git commit "$_pkg/" -m"$_pkg: Import from ABS @ $_rev" \
+      && git push origin "$_pkg" \
       && git branch --set-upstream-to="origin/$_pkg" \
       && git co master \
       || { _err "Something wrong with git repository"; return 1; }
