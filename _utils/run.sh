@@ -14,7 +14,7 @@
 #   ./   : where to import new package
 #
 
-_D_ABS="$PWD/a/"    # where to store ABS system
+_D_ABS="${ABS:-$PWD/a/}"    # where to store ABS system
 
 _msg() {
   echo ":: $*"
