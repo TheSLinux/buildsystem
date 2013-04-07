@@ -34,5 +34,5 @@ create a pull request.
 
 ## Stay hungry, stay up-to-date
 
-In any case, please make sure that you are up-to-date with the origin
-repository.
+In any case, please make sure that you are up-to-date with the original
+repository (aka upstream).
