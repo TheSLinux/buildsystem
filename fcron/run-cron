@@ -1,17 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 # Purpose: Execute every script under a directory,
 #          for example, /etc/cron.daily/*
 #
 
-if [ -z $1 ]; then
-   echo "Usage: $0 crondir"
-   exit 1
+if [[ -z "$1" || ! -d "$1/" ]]; then
+  echo >&2 "Usage: $0 <cron directory>"
+  exit 1
 fi
 
-for cron in $1/* ; do
-  if [ -x $cron ]; then
-     $cron
-  fi
-done
-unset cron
+find "$1/" -mindepth 1 -maxdepth 1 -type f \
+| while read _script; do
+    [[ ! -x "$_script" ]] || $_script
+  done
+
+unset _script
