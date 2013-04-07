@@ -1,11 +1,13 @@
-# $Id: PKGBUILD 180857 2013-03-27 11:11:40Z allan $
-# Maintainer: Allan McRae <allan@archlinux.org>
+#!/bin/bash
+
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Allan McRae <allan@archlinux.org>
 
 # toolchain build order: linux-api-headers->glibc->binutils->gcc->binutils->glibc
 
 pkgname=linux-api-headers
-pkgver=3.8.4
-_basever=3.8
+pkgver=3.2.42
+_basever=3.2
 pkgrel=1
 pkgdesc="Kernel headers sanitized for use in userspace"
 arch=('i686' 'x86_64')
@@ -21,7 +23,7 @@ md5sums=('1c738edfc54e7c65faeb90c436104e2f'
 
 build() {
   cd ${srcdir}/linux-${_basever}
-  [[ $pkgver != $_basever ]] && patch -p1 -i ${srcdir}/patch-${pkgver}
+  [[ $pkgver == $_basever ]] || patch -p1 -i ${srcdir}/patch-${pkgver}
 
   make mrproper
   make headers_check
@@ -33,7 +35,7 @@ package() {
 
   # use headers from libdrm
   rm -r ${pkgdir}/usr/include/drm
-  
+
   # clean-up unnecessary files generated during install
   find ${pkgdir} \( -name .install -o -name ..install.cmd \) -delete
 }
