@@ -273,6 +273,17 @@ convert() {
   git co master
 }
 
+# This is used to update this script by invoking `git pull --rebase`.
+# It's a quite dangerous way :)
+selfupdate() {
+  pushd .
+  cd "$(dirname $0)" \
+  && {
+    git pull --rebase
+  }
+  popd .
+}
+
 (( $# )) || _die "Missing arguments"
 
 $*
