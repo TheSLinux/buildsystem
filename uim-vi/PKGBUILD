@@ -1,6 +1,8 @@
-# $Id: PKGBUILD 181131 2013-03-31 23:18:58Z bisson $
-# Maintainer: Gaetan Bisson <bisson@archlinux.org>
-# Contributor: damir <damir@archlinux.org>
+#!/bin/bash
+
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Original Contributor: damir <damir@archlinux.org>
 
 pkgname=uim
 pkgver=1.8.5
@@ -9,15 +11,18 @@ pkgdesc='Multilingual input method library'
 url='http://code.google.com/p/uim/'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
-depends=('libxft' 'libedit' 'anthy' 'm17n-lib')
-makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3' 'gnome-panel')
+depends=('libxft' 'libedit' 'm17n-lib')
+makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3')
 optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
-            'gtk3: immodules and helper applications'
-            'gnome-panel: gnome applet indicator')
+            'gtk3: immodules and helper applications')
 options=('!libtool')
 source=("http://uim.googlecode.com/files/${pkgname}-${pkgver}.tar.gz")
 sha1sums=('13178e0ad9e9196e3fdb0bb9806e4add8fe3a8e5')
+
+provides=('uim')
+conflicts=('uim')
+replaces=('uim')
 
 install=install
 
@@ -27,9 +32,10 @@ build() {
 	./configure \
 		--prefix=/usr \
 		--libexecdir=/usr/lib/uim \
-		--with-anthy-utf8 \
+		--without-anthy \
 		--with-qt4-immodule \
 		--with-qt4 \
+		--disable-gnome-applet
 
 	make
 }
