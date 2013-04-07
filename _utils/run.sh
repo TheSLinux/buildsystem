@@ -50,7 +50,7 @@ _import_package() {
 
   # We nee to be on the master before creating new branch
   git co master \
-  && git co -b "$_pkg" \
+  && git co -b "$_pkg" "TheBigBang" \
   && {
     cp -r "$_ds/" "$_dd/"
 
