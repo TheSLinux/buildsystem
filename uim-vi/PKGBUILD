@@ -7,7 +7,7 @@
 pkgname=uim
 pkgver=1.8.5
 pkgrel=1
-pkgdesc='Multilingual input method library'
+pkgdesc='Vietnamese input method library'
 url='http://code.google.com/p/uim/'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
