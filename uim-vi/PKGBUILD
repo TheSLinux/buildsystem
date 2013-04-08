@@ -4,7 +4,7 @@
 # Original Maintainer: Gaetan Bisson <bisson@archlinux.org>
 # Original Contributor: damir <damir@archlinux.org>
 
-pkgname=uim
+pkgname=uim-vi
 pkgver=1.8.5
 pkgrel=1
 pkgdesc='Vietnamese input method library'
@@ -17,8 +17,9 @@ optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
             'gtk3: immodules and helper applications')
 options=('!libtool')
-source=("http://uim.googlecode.com/files/${pkgname}-${pkgver}.tar.gz")
-sha1sums=('13178e0ad9e9196e3fdb0bb9806e4add8fe3a8e5')
+source=("uim-vi.patch"
+        "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
+sha1sums=()
 
 provides=('uim')
 conflicts=('uim')
@@ -27,22 +28,32 @@ replaces=('uim')
 install=install
 
 build() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
-
+	cd "${srcdir}/uim-${pkgver}"
+	patch -Np4 < "${srcdir}/uim-vi.patch"
+	./autogen.sh
 	./configure \
 		--prefix=/usr \
 		--libexecdir=/usr/lib/uim \
 		--without-anthy \
 		--with-qt4-immodule \
 		--with-qt4 \
-		--disable-gnome-applet
+		--disable-gnome-applet \
+		--disable-dict \
+		--without-skk \
+		--without-mana \
+		--without-prime \
+		--without-sj3 \
+		--without-scim \
+		--without-eb \
+		--without-osx-dcs \
+		--without-sqlite3
 
 	make
 }
 
 package() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
+	cd "${srcdir}/uim-${pkgver}"
 	make DESTDIR="${pkgdir}" install
 	rm "${pkgdir}"/usr/lib/libgcroots.a
-	install -D -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+	install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
 }
