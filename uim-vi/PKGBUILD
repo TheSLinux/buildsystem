@@ -56,4 +56,5 @@ package() {
 	make DESTDIR="${pkgdir}" install
 	rm "${pkgdir}"/usr/lib/libgcroots.a
 	install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
+	ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
 }
