@@ -12,12 +12,20 @@ url='http://code.google.com/p/uim/'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
 depends=('libxft' 'libedit' 'm17n-lib')
+# FIXME: We need ruby to run some script. However, if we are using `rvm
+# FIXME: we have no way to tell the system to skip the dependency check
+# FIXME: We may add a new check in `makepkg to just ensure that some
+# FIXME: binary files do exist that makes sense
 makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3')
 optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
             'gtk3: immodules and helper applications')
 options=('!libtool')
 source=("uim-vi.patch"
+        "https://raw.github.com/icy/myquartz-scim2uim/master/bin/scim2uim.rb"
+        "https://raw.github.com/icy/myquartz-scim2uim/master/src/Telex.txt.in"
+        "https://raw.github.com/icy/myquartz-scim2uim/master/icons/telex.png"
+        "https://raw.github.com/icy/myquartz-scim2uim/master/icons/telex.svg"
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
 sha1sums=()
 
@@ -29,6 +37,11 @@ install=install
 
 build() {
 	cd "${srcdir}/uim-${pkgver}"
+	ruby "${srcdir}/scim2uim.rb" --telex \
+		< "${srcdir}/Telex.txt.in" \
+		> "./scm/xtelex.scm"
+	ln -s "${srcdir}/telex.png" ./pixmaps/xtelex.png
+	ln -s "${srcdir}/telex.svg" ./pixmaps/xtelex.svg
 	patch -Np4 < "${srcdir}/uim-vi.patch"
 	./autogen.sh
 	./configure \
