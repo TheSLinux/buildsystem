@@ -24,8 +24,11 @@ options=('!libtool')
 source=("uim-vi.patch"
         "https://raw.github.com/icy/myquartz-scim2uim/master/bin/scim2uim.rb"
         "https://raw.github.com/icy/myquartz-scim2uim/master/src/Telex.txt.in"
+        "https://raw.github.com/icy/myquartz-scim2uim/master/src/VNI.txt.in"
         "https://raw.github.com/icy/myquartz-scim2uim/master/icons/telex.png"
         "https://raw.github.com/icy/myquartz-scim2uim/master/icons/telex.svg"
+        "https://raw.github.com/icy/myquartz-scim2uim/master/icons/vni.png"
+        "https://raw.github.com/icy/myquartz-scim2uim/master/icons/vni.svg"
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
 sha1sums=()
 
@@ -37,11 +40,19 @@ install=install
 
 build() {
 	cd "${srcdir}/uim-${pkgver}"
+
 	ruby "${srcdir}/scim2uim.rb" --telex \
 		< "${srcdir}/Telex.txt.in" \
 		> "./scm/xtelex.scm"
+	ruby "${srcdir}/scim2uim.rb" --vni \
+		< "${srcdir}/VNI.txt.in" \
+		> "./scm/xvni.scm"
+
 	ln -s "${srcdir}/telex.png" ./pixmaps/xtelex.png
 	ln -s "${srcdir}/telex.svg" ./pixmaps/xtelex.svg
+	ln -s "${srcdir}/vni.png" ./pixmaps/xvni.png
+	ln -s "${srcdir}/vni.svg" ./pixmaps/xvni.svg
+
 	patch -Np4 < "${srcdir}/uim-vi.patch"
 	./autogen.sh
 	./configure \
