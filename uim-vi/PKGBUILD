@@ -21,6 +21,10 @@ optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
             'gtk3: immodules and helper applications')
 options=('!libtool')
+
+# FIXME: The files from `scim2uim` should be downloaded every time
+# FIXME: we compile the package. This is to get the latest update
+# FIXME: from the upstream repository.
 source=("uim-vi.patch"
         "https://raw.github.com/icy/myquartz-scim2uim/master/bin/scim2uim.rb"
         "https://raw.github.com/icy/myquartz-scim2uim/master/src/Telex.txt.in"
@@ -48,10 +52,10 @@ build() {
 		< "${srcdir}/VNI.txt.in" \
 		> "./scm/xvni.scm"
 
-	ln -s "${srcdir}/telex.png" ./pixmaps/xtelex.png
-	ln -s "${srcdir}/telex.svg" ./pixmaps/xtelex.svg
-	ln -s "${srcdir}/vni.png" ./pixmaps/xvni.png
-	ln -s "${srcdir}/vni.svg" ./pixmaps/xvni.svg
+	for _file in telex.png telex.svg vni.png vni.svg; do
+		[[ -f "./pixmaps/${_file}" ]] \
+		|| ln -s "${srcdir}/${_file}" "./pixmaps/${_file}"
+	done
 
 	patch -Np4 < "${srcdir}/uim-vi.patch"
 	./autogen.sh
