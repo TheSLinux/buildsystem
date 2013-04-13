@@ -54,7 +54,7 @@ build() {
 
 	for _file in telex.png telex.svg vni.png vni.svg; do
 		[[ -f "./pixmaps/${_file}" ]] \
-		|| ln -s "${srcdir}/${_file}" "./pixmaps/${_file}"
+		|| ln -s "${srcdir}/${_file}" "./pixmaps/x${_file}"
 	done
 
 	patch -Np4 < "${srcdir}/uim-vi.patch"
