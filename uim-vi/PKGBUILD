@@ -25,6 +25,12 @@ options=('!libtool')
 # FIXME: The files from `scim2uim` should be downloaded every time
 # FIXME: we compile the package. This is to get the latest update
 # FIXME: from the upstream repository.
+#
+# FIXME: We also needs a way to track the change's number from the
+# FIXME: external source. If a package requires multiple source,
+# FIXME: how can we provide package version number? In factr, Arch is
+# FIXME: using `pkgrel` to support this. That forces us not to use
+# FIXME: the `master` works from `mysquartz-scim2uim` like this.
 source=("uim-vi.patch"
         "https://raw.github.com/icy/myquartz-scim2uim/master/bin/scim2uim.rb"
         "https://raw.github.com/icy/myquartz-scim2uim/master/src/Telex.txt.in"
