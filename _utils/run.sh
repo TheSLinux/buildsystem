@@ -35,7 +35,7 @@ _D_ABS="${ABS:-$PWD/a/ $PWD/b/}"    # where to store ABS system
 
 _import_package() {
   local _pkg="$1"                     # package name
-  local _ds="$_D_ABS/$_pkg/trunk"     # path to package/trunk
+  local _ds=""                        # path to package/trunk
   local _dd="$PWD/$_pkg/"             # path to desntination
   local _rev=                         # package revision (SVN)
   local _f_readme="$_dd/README.md"    # the reade file
@@ -71,6 +71,8 @@ _import_package() {
   for _ds in $_D_ABS; do
     [[ ! -f "$_ds/$_pkg/trunk/" ]] || break
   done
+
+  _ds="$_ds/$_pkg/trunk/"
 
   # If we don't find it at all, return with error
   [[ -d "$_ds/" ]] \
