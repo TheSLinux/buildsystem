@@ -47,7 +47,7 @@ _import_package() {
 
   # Find the first ABS source that contains `$_pkg`
   for _ds in $_D_ABS; do
-    [[ ! -f "$_ds/$_pkg/trunk/" ]] || break
+    [[ ! -d "$_ds/$_pkg/trunk/" ]] || break
   done
 
   # If we don't find any $_pkg in current list of sources
@@ -69,7 +69,7 @@ _import_package() {
 
   # We scan all ABS sources again to see if there is `$_pkg`
   for _ds in $_D_ABS; do
-    [[ ! -f "$_ds/$_pkg/trunk/" ]] || break
+    [[ ! -d "$_ds/$_pkg/trunk/" ]] || break
   done
 
   _ds="$_ds/$_pkg/trunk/"
