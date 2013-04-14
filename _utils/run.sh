@@ -170,6 +170,8 @@ convert() {
                       # Using a branch name is better here.
   local _f_tmp=       # a temporary patch file. This won't hurt!
 
+  _die "The migration was complete. This function now stops."
+
   pushd "$_cwd"
 
   cd "$1" \
