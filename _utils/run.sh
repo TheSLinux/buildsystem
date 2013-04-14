@@ -31,7 +31,7 @@ _die() {
 #   ./   : where to import new package
 #
 
-_D_ABS="${ABS:-$PWD/a/}"    # where to store ABS system
+_D_ABS="${ABS:-$PWD/a/ $PWD/b/}"    # where to store ABS system
 
 _import_package() {
   local _pkg="$1"                     # package name
@@ -42,11 +42,39 @@ _import_package() {
 
   _msg ">> Trying to import package $_pkg <<"
 
-  [[ -d "$_ds/" ]] \
-  || { _err "Directory not found  $_ds"; return 1; }
-
   [[ ! -d "$_dd/" ]] \
   || { _err "Directory does exist $_dd"; return 1; }
+
+  # Find the first ABS source that contains `$_pkg`
+  for _ds in $_D_ABS; do
+    [[ ! -f "$_ds/$_pkg/trunk/" ]] || break
+  done
+
+  # If we don't find any $_pkg in current list of sources
+  # we will try to invoke `svn update` in every source. Please note that
+  # the command `svn update non-existent-package` will return 0 even if
+  # the package doesn't exist in the ArchLinux's ABS system. There is
+  # two ways to check if there is a package: `svn ls` and `svn update`.
+  if [[ ! -d "$_ds/$_pkg/trunk/" ]]; then
+    for _ds in $_D_ABS; do
+      pushd "$_ds/"
+      _msg "Invoking svn update in $_ds/"
+      svn update "$_pkg"
+      # After invoking `svn update` we need to check if the directory
+      # for our package `$_pkg` does exist.
+      [[ ! -d "$_ds/$_pkg/trunk" ]] || { popd; break; }
+      popd
+    done
+  fi
+
+  # We scan all ABS sources again to see if there is `$_pkg`
+  for _ds in $_D_ABS; do
+    [[ ! -f "$_ds/$_pkg/trunk/" ]] || break
+  done
+
+  # If we don't find it at all, return with error
+  [[ -d "$_ds/" ]] \
+  || { _err "Directory not found  $_ds"; return 1; }
 
   # We nee to be on the master before creating new branch
   git co master \
@@ -65,6 +93,12 @@ _import_package() {
         svn info >/dev/null 2>&1 \
         || {
           _err "svn info failed to run in $_ds"
+          popd; return 1
+        }
+
+        svn update >/dev/null 2>&1 \
+        || {
+          _err "svn update failed to run in $_ds"
           popd; return 1
         }
 
