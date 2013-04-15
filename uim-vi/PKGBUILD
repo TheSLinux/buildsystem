@@ -11,12 +11,12 @@ pkgdesc='Vietnamese input method library'
 url='http://code.google.com/p/uim/'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
-depends=('libxft' 'libedit' 'm17n-lib')
+depends=('libxft' 'libedit' 'm17n-lib' 'm17n-db-vi')
 # FIXME: We need ruby to run some script. However, if we are using `rvm
 # FIXME: we have no way to tell the system to skip the dependency check
 # FIXME: We may add a new check in `makepkg to just ensure that some
 # FIXME: binary files do exist that makes sense
-makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3')
+makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3' 'm17n-db-vi')
 optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
             'gtk3: immodules and helper applications')
