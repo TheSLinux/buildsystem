@@ -32,13 +32,13 @@ options=('!libtool')
 # FIXME: using `pkgrel` to support this. That forces us not to use
 # FIXME: the `master` works from `mysquartz-scim2uim` like this.
 source=("uim-vi.patch"
-        "https://raw.github.com/icy/myquartz-scim2uim/master/bin/scim2uim.rb"
-        "https://raw.github.com/icy/myquartz-scim2uim/master/src/Telex.txt.in"
-        "https://raw.github.com/icy/myquartz-scim2uim/master/src/VNI.txt.in"
-        "https://raw.github.com/icy/myquartz-scim2uim/master/icons/telex.png"
-        "https://raw.github.com/icy/myquartz-scim2uim/master/icons/telex.svg"
-        "https://raw.github.com/icy/myquartz-scim2uim/master/icons/vni.png"
-        "https://raw.github.com/icy/myquartz-scim2uim/master/icons/vni.svg"
+        "https://raw.github.com/TheSLinux-fork/myquartz-scim2uim/master/bin/scim2uim.rb"
+        "https://raw.github.com/TheSLinux-fork/myquartz-scim2uim/master/src/Telex.txt.in"
+        "https://raw.github.com/TheSLinux-fork/myquartz-scim2uim/master/src/VNI.txt.in"
+        "https://raw.github.com/TheSLinux-fork/myquartz-scim2uim/master/icons/telex.png"
+        "https://raw.github.com/TheSLinux-fork/myquartz-scim2uim/master/icons/telex.svg"
+        "https://raw.github.com/TheSLinux-fork/myquartz-scim2uim/master/icons/vni.png"
+        "https://raw.github.com/TheSLinux-fork/myquartz-scim2uim/master/icons/vni.svg"
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
 sha1sums=()
 
