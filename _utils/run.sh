@@ -13,9 +13,21 @@ _err() {
   echo >&2 ":: Error: $*"
 }
 
+_warn() {
+  echo >&2 ":: Warning: $*"
+}
+
 _die() {
   _err "$*"
   exit 1
+}
+
+# Don't use `wc -l`, bc that `git` will not return `newline` at EOF.
+# See also https://twitter.com/kyanh/status/325193878753923072
+# and https://twitter.com/kyanh/status/325196732952637441
+#
+_linecount() {
+  awk 'BEGIN{l=0}{l++}END{print l}'
 }
 
 # Date   : 2013 March 30th
@@ -309,6 +321,245 @@ convert() {
 
   popd
   git co master
+}
+
+# Get the current git branch in the working directory.
+# Input
+#   => Working directory is a git directory
+#
+_get_git_branch() {
+  local _br=
+  _br="$(git rev-parse --abbrev-ref HEAD)"
+  if [[ -z "$_br" ]]; then
+    _error "Failed to run 'git branch' in $PWD"
+    return 1
+  else
+    echo "$_br"
+  fi
+}
+
+# Get the package name if the branch name and working directory is the same.
+# The common rules (TheBigBang) says that the package branch would be
+# the package name, and it's the same as the working directory. If
+# there is any difference (for example when we are working on patch branch)
+# the branch name would be got from the environment `PACKAGE_NAME`.
+# We don't have any way to check if `PACKAGE_NAME` matches the current
+# working directory.
+#
+# When a valid package name is found, this will set the environment
+# `PACKAGE_NAME` to use the result.
+#
+# FIXME: + more description and illustration
+#
+# Input
+#   => Working directory is a package directory
+#   => PACKAGE_NAME (env. var.) is set
+#
+_get_package_name() {
+  local _wd="$(basename $PWD)"
+  local _br=
+
+  if _br="$(_get_git_branch)"; then
+    if [[ "$_br" == "$_wd" ]]; then
+      export PACKAGE_NAME="$_br"
+      echo "$_br"
+    elif [[ "$_wd" == "${PACKAGE_NAME:-}" ]]; then
+      _warn "Getting branch name from the environment PACKAGE_NAME"
+      echo "$_br"
+    else
+      _err "Working directory \"$_wd\" and working branch \"$_br\" are not matched"
+    fi
+  else
+    return 1
+  fi
+}
+
+# Get the point on `TheBigBang` where a branch starts. See also
+# http://stackoverflow.com/questions/1527234/finding-a-branch-point-with-git
+#
+# The branch name is got from the first argument. If no argument is
+# provided, the `HEAD` is used instead. Please note that our package
+# branch always starts from `TheBigBang`.
+#
+# The output would be some commint on the branch `TheBigBang`, and it
+# should not be always the starting point the `TheBigBang`.
+#
+#  ---*---o--------*----*----*----- thebigbang
+#         \--*---*----*----*----*-- package branch
+#                \--*----*----*---- patch branch
+#
+# The brach point for both branches `package` and `patch` is `o`.
+#
+# Input
+#   $1 => Any branch name
+#
+_get_git_branch_point() {
+  local _point=
+
+  _point="$( \
+    diff -u \
+      <(git rev-list --first-parent "${1:-HEAD}" --) \
+      <(git rev-list --first-parent "TheBigBang" --) \
+    | sed -ne 's/^ //p' \
+    | head -1)"
+
+  if [[ -z "$_point" ]]; then
+    _err "Failed to get the branch point for ${1:-HEAD}'"
+    return 1
+  else
+    echo "$_point"
+  fi
+}
+
+# Return the number of commits between two points. This will actually
+# return number of commits that are on the `dest` and not on the `source`.
+#
+#  ---*---o--------*----*----*----- thebigbang
+#         \--*---*----*----*----*-- package branch
+#                \--*----*----*---- patch branch
+#
+#   thebigbang .. package branch  => 5
+#   thebigbang .. patch branch    => 3
+#   package branch .. thebigbang  => 3
+#
+# The branch point `o` is excluded from the output.
+#
+# Input
+#   $1 => The starting point (a branch name)
+#   $2 => The end point (a branch name)
+#
+_get_git_commits_between_two_points() {
+  local _from="$1"
+  local _to="${2:-HEAD}"
+
+  git log --pretty="format:%H" "$_from".."$_to" -- \
+  | grep '^* ' \
+  | sed -e 's/^* //g'
+}
+
+# See also (_get_git_commits_between_two_points)
+# Input
+#   $1 => The starting point (a branch name)
+#   $2 => The end point (a branch name)
+#
+_get_number_of_git_commits_between_two_points() {
+  local _from="$1"
+  local _to="${2:-HEAD}"
+  local _num=
+
+  _num="$(_get_git_commits_between_two_points | _linecount)"
+  # FIXME: `_num` will never be empty. We need another way
+  # FIXME: to check error. This is a bad deal in Bash.
+  if [[ -z "$_num" ]]; then
+    echo 0
+    return 1
+  else
+    echo "$_num"
+  fi
+}
+
+# Get the number of changes from a branch/HEAD to its branch point
+# (the point where it is started.) If there is something wrong with
+# `git` we will return error code 1 and print to STDOUT the number 0.
+# The `branc point` will be excluded.
+#
+# Please note that 1 is the mininum result that is acceptable by `makepkg`
+#
+#  ---o----*-----*----*-----*--- master
+#      \-*----*----------*------ thebigbang
+#
+# On `master`:      4 commits since the branch point
+# On `thebigbang:`  3 commits since the branch point
+#
+# Input
+#   $1 => the branch name
+#
+_get_number_of_git_commits_from_branch_point() {
+  local _point=
+  local _num=
+
+  if _point="$(_get_git_branch_point ${1:-HEAD})"; then
+    _get_number_of_git_commits_between_two_points "$_point" "${1:-HEAD}"
+  else
+    echo 0
+    return 1
+  fi
+}
+
+# Return all tags on the package branch.
+#
+# Note, on the branch `PACKAGE_NAME` we may have different kinds of tags:
+# temporary tag, release tag,...; we will list all tags and get one. To
+# do that, we will (1) list all commits since `TheBigBang`, and (2) get
+# every tags associcated with those commit, and (3) find the good tag.
+#
+# The `good tag` matches the pattern `PACKAGE_NAME-x.y.z(-release)?`
+#
+# FIXME: This is very *slow*. Please find a better way
+#
+# Input
+#   $1 => The branch name on that you want get all tags from `TheBigBang`
+#
+_get_git_tags_on_package_branch() {
+  local _br="${1:-HEAD}"
+  local _gs=
+  local _tag=
+
+  _get_git_commits_between_two_points TheBigBang "$_br" \
+  | while read _commit; do
+      if _tag="$(git tag --contains "$_commit")"; then
+        echo "$_tag"
+      fi
+    done
+}
+
+# Get the latest version of the a package branch. We need to find a tag
+# that: (1) is on the branch `PACKAGE_NAME`, (2) it is the latest tag
+# before the current HEAD/point (3) its name matches `PACKAGE_NAME`.
+#
+# As this function can run on any branch we need the environment var.
+# `PACKAGE_NAME`. This also means it can work on at most one package
+# at the same time.
+#
+# If we can not find the package version, we will return the first version
+# of the package. This is not a recommendation, though.
+#
+# FIXME: + support to work with any package branch
+#
+# This function is useful if we are on patching branch for a package.
+#
+#  ---*---o-----*---*----*----*-------- thebigbang
+#         |
+#         \--x----*-*----x----*-----*-- package branch `foobar`
+#            |    | |    |          |
+#            |    | \--*-|--*----*--|-- patch branch `p_foobar-stuff`
+#            |    |      |       |  |
+#            |    |   foobar-y   |  |
+#            |     \             |  \-- foobar-y-<release = 2+1>
+#            |      |            |
+#        foobar-x   |            \----- foobar-y-<release = 3+1> (!!)
+#            |      |
+#            |      \--- foobar-x-<release = 1+1>
+#            |
+#       release = 0+1
+#
+_get_package_version() {
+  local _ver=
+  local _rel=
+  local _point=
+  local _pkg="${PACKAGE_NAME:-}"
+
+  if [[ -z "$_pkg" ]]; then
+    _err "Environment not set PACKAGE_NAME or package name isn't provided"
+    return 1
+  fi
+
+  if _point="$(git describe --abbrev=0 --tags ${_pkg})"; then
+    echo 0
+  else
+    echo ""
+    return 1
+  fi
 }
 
 # This is used to update this script by invoking `git pull --rebase`.
