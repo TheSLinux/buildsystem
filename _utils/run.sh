@@ -433,6 +433,12 @@ _get_git_commits_between_two_points() {
   local _to="${2:-HEAD}"
 
   git log --pretty="format:%H" "$_from".."$_to"
+  # This is tricky to add newline to EOF. This help the output is countable
+  # by `wc`, and readable by `while` loop. Without a `newline` at the end,
+  # the last line from the output will be ignored by `while` loop.
+  # FIXME: This possibly change in the future, by `git`. Should find
+  # FIXME: a more robust way and add a test case to ensure things work.
+  echo
 }
 
 # See also (_get_git_commits_between_two_points)
