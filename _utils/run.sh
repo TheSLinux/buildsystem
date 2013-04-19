@@ -432,9 +432,7 @@ _get_git_commits_between_two_points() {
   local _from="$1"
   local _to="${2:-HEAD}"
 
-  git log --pretty="format:%H" "$_from".."$_to" -- \
-  | grep '^* ' \
-  | sed -e 's/^* //g'
+  git log --pretty="format:%H" "$_from".."$_to"
 }
 
 # See also (_get_git_commits_between_two_points)
