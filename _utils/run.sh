@@ -503,6 +503,14 @@ _get_number_of_git_commits_from_branch_point() {
 #
 # FIXME: This is very *slow*. Please find a better way
 #
+#  ---o----*-----*----*-----*--- thebigbang
+#      \-*----*----*-----*------ package branch
+#             \-*--|--*--|------ working branch
+#                  |     |
+#                  |      \----- this tag should be ignored
+#                  |
+#                  \--- acceptable tag
+#
 # Input
 #   $1 => The branch name on that you want get the latest tag
 #
@@ -516,8 +524,17 @@ _get_git_tags_on_package_branch() {
   local _gs=
   local _tag=
   local _commmit=
+  local _br_time=
+  local _commit_time=
+
+  _br_time="$(git log -1 --pretty='format:%ct' $_br --)"
 
   while read _commit; do
+    _commit_time="$(git log -1 --pretty='format:%ct' $_commit --)"
+    if [[ "$_commit_time" > "$_br_time" ]]; then
+      continue
+    fi
+
     # Bc the following command will list all tags in the past that leads
     # to the current commit, we only use the first tag if found!
     _tag="$(git tag --contains "$_commit" | head -1)"
