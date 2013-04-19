@@ -1,16 +1,16 @@
-From d52c440b65eacee607eae1e3ae3eefaaceda2a86 Mon Sep 17 00:00:00 2001
+From 0e482f3a4e290367bd24d6407412bcda7f53beeb Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Sat, 6 Apr 2013 07:15:24 +0000
 Subject: [PATCH 1/2] Fix a minor bug in po/Makefile.in.in
 
 ---
- m17n-db/src/m17n-db-1.6.4/po/Makefile.in.in | 2 +-
+ m17n-db-vi/src/m17n-db-1.6.4/po/Makefile.in.in | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/m17n-db/src/m17n-db-1.6.4/po/Makefile.in.in b/m17n-db/src/m17n-db-1.6.4/po/Makefile.in.in
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/po/Makefile.in.in b/m17n-db-vi/src/m17n-db-1.6.4/po/Makefile.in.in
 index 2ed49e6..098e15b 100644
---- a/m17n-db/src/m17n-db-1.6.4/po/Makefile.in.in
-+++ b/m17n-db/src/m17n-db-1.6.4/po/Makefile.in.in
+--- a/m17n-db-vi/src/m17n-db-1.6.4/po/Makefile.in.in
++++ b/m17n-db-vi/src/m17n-db-1.6.4/po/Makefile.in.in
 @@ -31,7 +31,7 @@ gettextsrcdir = $(datadir)/gettext/po
  INSTALL = @INSTALL@
  INSTALL_DATA = @INSTALL_DATA@
@@ -21,28 +21,28 @@ index 2ed49e6..098e15b 100644
  GMSGFMT_ = @GMSGFMT@
  GMSGFMT_no = @GMSGFMT@
 -- 
-1.8.2
+1.8.2.1
 
 
-From c0a7b2b84a8aa56d6a044c4d6d41242d83b5cd00 Mon Sep 17 00:00:00 2001
+From 861781e1767f32cee64d6aac2b99b90f825d1b7e Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Sat, 6 Apr 2013 07:15:59 +0000
 Subject: [PATCH 2/2] Disable unused language supports
 
 ---
- m17n-db/src/m17n-db-1.6.4/FLT/Makefile.am      | 25 +--------
- m17n-db/src/m17n-db-1.6.4/LANGDATA/Makefile.am |  2 +-
- m17n-db/src/m17n-db-1.6.4/MIM/Makefile.am      | 53 +------------------
- m17n-db/src/m17n-db-1.6.4/Makefile.am          |  6 +--
- m17n-db/src/m17n-db-1.6.4/configure.ac         |  4 +-
- m17n-db/src/m17n-db-1.6.4/po/LINGUAS           |  2 +-
- m17n-db/src/m17n-db-1.6.4/po/POTFILES.in       | 72 --------------------------
+ m17n-db-vi/src/m17n-db-1.6.4/FLT/Makefile.am      | 25 +-------
+ m17n-db-vi/src/m17n-db-1.6.4/LANGDATA/Makefile.am |  2 +-
+ m17n-db-vi/src/m17n-db-1.6.4/MIM/Makefile.am      | 53 +----------------
+ m17n-db-vi/src/m17n-db-1.6.4/Makefile.am          |  6 +-
+ m17n-db-vi/src/m17n-db-1.6.4/configure.ac         |  4 +-
+ m17n-db-vi/src/m17n-db-1.6.4/po/LINGUAS           |  2 +-
+ m17n-db-vi/src/m17n-db-1.6.4/po/POTFILES.in       | 72 -----------------------
  7 files changed, 8 insertions(+), 156 deletions(-)
 
-diff --git a/m17n-db/src/m17n-db-1.6.4/FLT/Makefile.am b/m17n-db/src/m17n-db-1.6.4/FLT/Makefile.am
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/FLT/Makefile.am b/m17n-db-vi/src/m17n-db-1.6.4/FLT/Makefile.am
 index 1bee158..de5e434 100644
---- a/m17n-db/src/m17n-db-1.6.4/FLT/Makefile.am
-+++ b/m17n-db/src/m17n-db-1.6.4/FLT/Makefile.am
+--- a/m17n-db-vi/src/m17n-db-1.6.4/FLT/Makefile.am
++++ b/m17n-db-vi/src/m17n-db-1.6.4/FLT/Makefile.am
 @@ -25,29 +25,6 @@ pkgdata_DATA = ${FONT_LAYOUT_TABLE}
  
  EXTRA_DIST = ${FONT_LAYOUT_TABLE}
@@ -74,10 +74,10 @@ index 1bee158..de5e434 100644
  
  pkgdatadir=$(datadir)/m17n
 -
-diff --git a/m17n-db/src/m17n-db-1.6.4/LANGDATA/Makefile.am b/m17n-db/src/m17n-db-1.6.4/LANGDATA/Makefile.am
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/LANGDATA/Makefile.am b/m17n-db-vi/src/m17n-db-1.6.4/LANGDATA/Makefile.am
 index 7191e33..3326177 100644
---- a/m17n-db/src/m17n-db-1.6.4/LANGDATA/Makefile.am
-+++ b/m17n-db/src/m17n-db-1.6.4/LANGDATA/Makefile.am
+--- a/m17n-db-vi/src/m17n-db-1.6.4/LANGDATA/Makefile.am
++++ b/m17n-db-vi/src/m17n-db-1.6.4/LANGDATA/Makefile.am
 @@ -32,7 +32,7 @@ EXTRA_DIST = ${TABLES} native.txt ISO-639-2.txt
  dist_noinst_SCRIPTS = LANGUAGE.awk
  
@@ -87,10 +87,10 @@ index 7191e33..3326177 100644
  	  l=`basename $$f .tbl`; \
  	  sed -n -e "/($$l /s/(\([a-z]*\)[^\"]*\"\([^\"]*\)\")/\1|\2/p" < $$f; \
  	done) > $@
-diff --git a/m17n-db/src/m17n-db-1.6.4/MIM/Makefile.am b/m17n-db/src/m17n-db-1.6.4/MIM/Makefile.am
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/MIM/Makefile.am b/m17n-db-vi/src/m17n-db-1.6.4/MIM/Makefile.am
 index debebaa..b9cb928 100644
---- a/m17n-db/src/m17n-db-1.6.4/MIM/Makefile.am
-+++ b/m17n-db/src/m17n-db-1.6.4/MIM/Makefile.am
+--- a/m17n-db-vi/src/m17n-db-1.6.4/MIM/Makefile.am
++++ b/m17n-db-vi/src/m17n-db-1.6.4/MIM/Makefile.am
 @@ -26,58 +26,7 @@ pkgdata_DATA = ${INPUT_METHOD}
  EXTRA_DIST = ${INPUT_METHOD}
  
@@ -151,10 +151,10 @@ index debebaa..b9cb928 100644
 +	global.mim
  
  pkgdatadir=$(datadir)/m17n
-diff --git a/m17n-db/src/m17n-db-1.6.4/Makefile.am b/m17n-db/src/m17n-db-1.6.4/Makefile.am
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/Makefile.am b/m17n-db-vi/src/m17n-db-1.6.4/Makefile.am
 index d65fe7e..32ab2fc 100644
---- a/m17n-db/src/m17n-db-1.6.4/Makefile.am
-+++ b/m17n-db/src/m17n-db-1.6.4/Makefile.am
+--- a/m17n-db-vi/src/m17n-db-1.6.4/Makefile.am
++++ b/m17n-db-vi/src/m17n-db-1.6.4/Makefile.am
 @@ -42,7 +42,7 @@ EXTRA_DIST = config.rpath mkinstalldirs m4/ChangeLog bootstrap.sh \
  	get-glibc.sh \
  	${FORMATS}
@@ -175,10 +175,10 @@ index d65fe7e..32ab2fc 100644
  
  CHAR_TABLE = \
  	NAME.tab SCRIPT.tab CASE-S.tab CASE-C.tab \
-diff --git a/m17n-db/src/m17n-db-1.6.4/configure.ac b/m17n-db/src/m17n-db-1.6.4/configure.ac
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/configure.ac b/m17n-db-vi/src/m17n-db-1.6.4/configure.ac
 index 5ec1205..8c89bcb 100644
---- a/m17n-db/src/m17n-db-1.6.4/configure.ac
-+++ b/m17n-db/src/m17n-db-1.6.4/configure.ac
+--- a/m17n-db-vi/src/m17n-db-1.6.4/configure.ac
++++ b/m17n-db-vi/src/m17n-db-1.6.4/configure.ac
 @@ -70,10 +70,10 @@ if test "x$CHARMAPS" != "x"; then
  else :
  fi
@@ -192,17 +192,17 @@ index 5ec1205..8c89bcb 100644
  AC_SUBST(LANGNAME_TABLES)
  
  AC_CONFIG_FILES([Makefile mapconv m17n-db m17n-db.pc
-diff --git a/m17n-db/src/m17n-db-1.6.4/po/LINGUAS b/m17n-db/src/m17n-db-1.6.4/po/LINGUAS
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/po/LINGUAS b/m17n-db-vi/src/m17n-db-1.6.4/po/LINGUAS
 index b42e47d..7c74f87 100644
---- a/m17n-db/src/m17n-db-1.6.4/po/LINGUAS
-+++ b/m17n-db/src/m17n-db-1.6.4/po/LINGUAS
+--- a/m17n-db-vi/src/m17n-db-1.6.4/po/LINGUAS
++++ b/m17n-db-vi/src/m17n-db-1.6.4/po/LINGUAS
 @@ -1 +1 @@
 -ja vi de
 +vi
-diff --git a/m17n-db/src/m17n-db-1.6.4/po/POTFILES.in b/m17n-db/src/m17n-db-1.6.4/po/POTFILES.in
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/po/POTFILES.in b/m17n-db-vi/src/m17n-db-1.6.4/po/POTFILES.in
 index 9e7a8ca..85c1dd6 100644
---- a/m17n-db/src/m17n-db-1.6.4/po/POTFILES.in
-+++ b/m17n-db/src/m17n-db-1.6.4/po/POTFILES.in
+--- a/m17n-db-vi/src/m17n-db-1.6.4/po/POTFILES.in
++++ b/m17n-db-vi/src/m17n-db-1.6.4/po/POTFILES.in
 @@ -1,77 +1,5 @@
 -MIM/am-sera.mim
 -MIM/ar-kbd.mim
@@ -282,5 +282,5 @@ index 9e7a8ca..85c1dd6 100644
 -MIM/zh-tonepy.mim
 -MIM/zh-util.mim
 -- 
-1.8.2
+1.8.2.1
 
