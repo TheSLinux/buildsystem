@@ -490,7 +490,9 @@ _get_number_of_git_commits_from_branch_point() {
   fi
 }
 
-# Return all tags on the package branch.
+# Return -all tags- the first tag on the package branch, that is also
+# the latest tag until the current time / commit (despite the name due
+# to a history version, the function only return one tag.)
 #
 # Note, on the branch `PACKAGE_NAME` we may have different kinds of tags:
 # temporary tag, release tag,...; we will list all tags and get one. To
@@ -502,19 +504,33 @@ _get_number_of_git_commits_from_branch_point() {
 # FIXME: This is very *slow*. Please find a better way
 #
 # Input
-#   $1 => The branch name on that you want get all tags from `TheBigBang`
+#   $1 => The branch name on that you want get the latest tag
 #
+
+_get_git_tag_on_package_branch() {
+  _get_git_tags_on_package_branch $*
+}
+
 _get_git_tags_on_package_branch() {
   local _br="${1:-HEAD}"
   local _gs=
   local _tag=
+  local _commmit=
 
-  _get_git_commits_between_two_points TheBigBang "$_br" \
-  | while read _commit; do
-      if _tag="$(git tag --contains "$_commit")"; then
-        echo "$_tag"
-      fi
-    done
+  while read _commit; do
+    # Bc the following command will list all tags in the past that leads
+    # to the current commit, we only use the first tag if found!
+    _tag="$(git tag --contains "$_commit" | head -1)"
+    ruby \
+      -e "_tag=\"$_tag\"" \
+      -e "_br=\"$_br\"" \
+      -e 'exit _tag.match(/^#{_br}-[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?$/) ? 0 : 1'
+
+    if [[ $? -eq 0 ]]; then
+      echo "$_tag"
+    fi
+  done < \
+    <(_get_git_commits_between_two_points TheBigBang "$_br")
 }
 
 # Get the latest version of the a package branch. We need to find a tag
@@ -527,8 +543,6 @@ _get_git_tags_on_package_branch() {
 #
 # If we can not find the package version, we will return the first version
 # of the package. This is not a recommendation, though.
-#
-# FIXME: + support to work with any package branch
 #
 # This function is useful if we are on patching branch for a package.
 #
@@ -547,11 +561,14 @@ _get_git_tags_on_package_branch() {
 #            |
 #       release = 0+1
 #
+# Input
+#   $1 => the branch name. Default: PACKAGE_NAME
+#
 _get_package_version() {
   local _ver=
   local _rel=
   local _point=
-  local _pkg="${PACKAGE_NAME:-}"
+  local _pkg="${1:-$PACKAGE_NAME}"
 
   if [[ -z "$_pkg" ]]; then
     _err "Environment not set PACKAGE_NAME or package name isn't provided"
