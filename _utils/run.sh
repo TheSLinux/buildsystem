@@ -627,6 +627,16 @@ _get_next_tag_from_tag() {
         end'
 }
 
+# Return the latest tag on the current working branch
+_get_current_tag() {
+  local _br=
+  if _br="$(_get_git_branch)"; then
+    _get_git_tag_on_package_branch $_br
+  else
+    return 1
+  fi
+}
+
 # Get the latest version of the a package branch. We need to find a tag
 # that: (1) is on the branch `PACKAGE_NAME`, (2) it is the latest tag
 # before the current HEAD/point (3) its name matches `PACKAGE_NAME`.
