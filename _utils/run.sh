@@ -634,7 +634,19 @@ _get_next_tag_from_tag() {
         end'
 }
 
+# Return the next tag (the current tag is implicitly provided.)
+# Input
+#   => nothing
+_get_next_tag() {
+  local _tag
+  if _tag="$(_get_current_tag)"; then
+    _get_next_tag_from_tag "$_tag"
+  fi
+}
+
 # Return the latest tag on the current working branch
+# Input
+#   => nothing
 _get_current_tag() {
   local _br=
   if _br="$(_get_git_branch)"; then
