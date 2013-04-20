@@ -554,7 +554,10 @@ _get_git_tags_on_package_branch() {
   local _commmit=
   local _ref_time=
 
-  _ref_time="$(git log -1 --pretty='format:%ct' $_ref --)"
+  if ! _ref_time="$(git log -1 --pretty='format:%ct' $_ref --)"; then
+    _err "Failed to get info. from (possibly invalid) reference point '$_ref'"
+    return 1
+  fi
 
   while read _commit; do
     if _tag="$(git describe --tags --exact-match $_commit 2>/dev/null)"; then
