@@ -30,7 +30,7 @@ source=(ftp://ftp.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz{,.sig}
 
 build() {
   cd $srcdir/$pkgname-$pkgver
-  patch -Np1 < "${srcdir}/theslinux-makepkg.patch"
+  patch -Np4 < "${srcdir}/theslinux-makepkg.patch"
 
   ./configure --prefix=/usr --sysconfdir=/etc \
     --localstatedir=/var --enable-doc \
