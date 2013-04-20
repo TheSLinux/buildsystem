@@ -342,18 +342,18 @@ _get_git_branch() {
 # The common rules (TheBigBang) says that the package branch would be
 # the package name, and it's the same as the working directory. If
 # there is any difference (for example when we are working on patch branch)
-# the branch name would be got from the environment `PACKAGE_NAME`.
-# We don't have any way to check if `PACKAGE_NAME` matches the current
+# the branch name would be got from the environment `PACKAGE_BASE`.
+# We don't have any way to check if `PACKAGE_BASE` matches the current
 # working directory.
 #
 # When a valid package name is found, this will set the environment
-# `PACKAGE_NAME` to use the result.
+# `PACKAGE_BASE` to use the result.
 #
 # FIXME: + more description and illustration
 #
 # Input
 #   => Working directory is a package directory
-#   => PACKAGE_NAME (env. var.) is set
+#   => PACKAGE_BASE (env. var.) is set
 #
 _get_package_name() {
   local _wd="$(basename $PWD)"
@@ -361,10 +361,10 @@ _get_package_name() {
 
   if _br="$(_get_git_branch)"; then
     if [[ "$_br" == "$_wd" ]]; then
-      export PACKAGE_NAME="$_br"
+      export PACKAGE_BASE="$_br"
       echo "$_br"
-    elif [[ "$_wd" == "${PACKAGE_NAME:-}" ]]; then
-      _warn "Getting branch name from the environment PACKAGE_NAME"
+    elif [[ "$_wd" == "${PACKAGE_BASE:-}" ]]; then
+      _warn "Getting branch name from the environment PACKAGE_BASE"
       echo "$_br"
     else
       _err "Working directory \"$_wd\" and working branch \"$_br\" are not matched"
@@ -498,12 +498,12 @@ _get_number_of_git_commits_from_branch_point() {
 # the latest tag until the current time / commit (despite the name due
 # to a history version, the function only return one tag.)
 #
-# Note, on the branch `PACKAGE_NAME` we may have different kinds of tags:
+# Note, on the branch `PACKAGE_BASE` we may have different kinds of tags:
 # temporary tag, release tag,...; we will list all tags and get one. To
 # do that, we will (1) list all commits since `TheBigBang`, and (2) get
 # every tags associcated with those commit, and (3) find the good tag.
 #
-# The `good tag` matches the pattern `PACKAGE_NAME-x.y.z(-release)?`
+# The `good tag` matches the pattern `PACKAGE_BASE-x.y.z(-release)?`
 #
 # FIXME: This is very *slow*. Please find a better way
 #
@@ -657,11 +657,11 @@ _get_current_tag() {
 }
 
 # Get the latest version of the a package branch. We need to find a tag
-# that: (1) is on the branch `PACKAGE_NAME`, (2) it is the latest tag
-# before the current HEAD/point (3) its name matches `PACKAGE_NAME`.
+# that: (1) is on the branch `PACKAGE_BASE`, (2) it is the latest tag
+# before the current HEAD/point (3) its name matches `PACKAGE_BASE`.
 #
 # As this function can run on any branch we need the environment var.
-# `PACKAGE_NAME`. This also means it can work on at most one package
+# `PACKAGE_BASE`. This also means it can work on at most one package
 # at the same time.
 #
 # If we can not find the package version, we will return the first version
@@ -685,16 +685,16 @@ _get_current_tag() {
 #       release = 0+1
 #
 # Input
-#   $1 => the branch name. Default: PACKAGE_NAME
+#   $1 => the branch name. Default: PACKAGE_BASE
 #
 _get_package_version() {
   local _ver=
   local _rel=
   local _point=
-  local _pkg="${1:-$PACKAGE_NAME}"
+  local _pkg="${1:-$PACKAGE_BASE}"
 
   if [[ -z "$_pkg" ]]; then
-    _err "Environment not set PACKAGE_NAME or package name isn't provided"
+    _err "Environment not set PACKAGE_BASE or package name isn't provided"
     return 1
   fi
 
