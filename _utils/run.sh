@@ -709,6 +709,36 @@ _get_package_version() {
   fi
 }
 
+# TheSLinux's version of Arch makepkg. This will check and generate
+# some environment variables before invoking the real program `makepkg`.
+# Note: the dash (-) hides this function from Geany symbols listing
+s-makepkg() {
+  local _tag=
+  local _ver=
+  local _rel=
+
+  _get_package_name >/dev/null \
+  || { _err "Failed to get package name"; return 1; }
+
+  if _tag="$(_get_git_tag_on_package_branch ${PACKAGE_BASE})"; then
+    if _ver="$(_get_version_from_tag $_tag)"; then
+      if _rel="$(_get_release_from_tag $_tag)"; then
+        :; \
+          PACKAGE_RELEASE="$_rel" \
+          PACKAGE_VERSION="$_ver" \
+          exec makepkg "$@"
+      else
+        _err "Failed to get release number from tag '$_tag'"
+      fi
+    else
+      _err "Failed to get version number from tag '$_tag'"
+    fi
+  else
+    _err "Failed to get current tag on the branch '$(_get_git_branch)'"
+  fi
+  return 1
+}
+
 # This is used to update this script by invoking `git pull --rebase`.
 # It's a quite dangerous way :)
 selfupdate() {
