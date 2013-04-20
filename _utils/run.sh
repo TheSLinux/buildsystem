@@ -559,6 +559,13 @@ _get_git_tags_on_package_branch() {
     return 1
   fi
 
+  if [[ "$_br" == "HEAD" ]]; then
+    if ! _br="$(_get_git_branch)"; then
+      _err "Failed to get current branch"
+      return 1
+    fi
+  fi
+
   while read _commit; do
     if _tag="$(git describe --tags --exact-match $_commit 2>/dev/null)"; then
       ruby \
