@@ -346,9 +346,6 @@ _get_git_branch() {
 # We don't have any way to check if `PACKAGE_BASE` matches the current
 # working directory.
 #
-# When a valid package name is found, this will set the environment
-# `PACKAGE_BASE` to use the result.
-#
 # FIXME: + more description and illustration
 #
 # Input
@@ -361,12 +358,11 @@ _get_package_name() {
 
   if _br="$(_get_git_branch)"; then
     if [[ "$_br" == "$_wd" ]]; then
-      export PACKAGE_BASE="$_br"
       echo "$_br"
       return 0
     elif [[ "$_wd" == "${PACKAGE_BASE:-}" ]]; then
       _warn "Getting branch name from the environment PACKAGE_BASE"
-      echo "$_br"
+      echo "$PACKAGE_BASE"
       return 0
     else
       _err "Working directory \"$_wd\" and working branch \"$_br\" are not matched"
@@ -716,14 +712,16 @@ s-makepkg() {
   local _tag=
   local _ver=
   local _rel=
+  local _pkg=
 
-  _get_package_name >/dev/null \
+  _pkg="$(_get_package_name)" \
   || { _err "Failed to get package name"; return 1; }
 
-  if _tag="$(_get_git_tag_on_package_branch ${PACKAGE_BASE})"; then
+  if _tag="$(_get_git_tag_on_package_branch ${_pkg})"; then
     if _ver="$(_get_version_from_tag $_tag)"; then
       if _rel="$(_get_release_from_tag $_tag)"; then
         :; \
+          PACKAGE_BASE="$_pkg" \
           PACKAGE_RELEASE="$_rel" \
           PACKAGE_VERSION="$_ver" \
           exec makepkg "$@"
