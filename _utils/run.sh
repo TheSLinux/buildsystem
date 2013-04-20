@@ -371,43 +371,6 @@ _get_package_name() {
   return 1
 }
 
-# Get the point on `TheBigBang` where a branch starts. See also
-# http://stackoverflow.com/questions/1527234/finding-a-branch-point-with-git
-#
-# The branch name is got from the first argument. If no argument is
-# provided, the `HEAD` is used instead. Please note that our package
-# branch always starts from `TheBigBang`.
-#
-# The output would be some commint on the branch `TheBigBang`, and it
-# should not be always the starting point the `TheBigBang`.
-#
-#  ---*---o--------*----*----*----- thebigbang
-#         \--*---*----*----*----*-- package branch
-#                \--*----*----*---- patch branch
-#
-# The brach point for both branches `package` and `patch` is `o`.
-#
-# Input
-#   $1 => Any branch name
-#
-_get_git_branch_point() {
-  local _point=
-
-  _point="$( \
-    diff -u \
-      <(git rev-list --first-parent "${1:-HEAD}" --) \
-      <(git rev-list --first-parent "TheBigBang" --) \
-    | sed -ne 's/^ //p' \
-    | head -1)"
-
-  if [[ -z "$_point" ]]; then
-    _err "Failed to get the branch point for ${1:-HEAD}'"
-    return 1
-  else
-    echo "$_point"
-  fi
-}
-
 # Return the number of commits between two points. This will actually
 # return number of commits that are on the `dest` and not on the `source`.
 #
@@ -461,36 +424,6 @@ _get_number_of_git_commits_between_two_points() {
   fi
 }
 
-# Get the number of changes from a branch/HEAD to its branch point
-# (the point where it is started.) If there is something wrong with
-# `git` we will return error code 1 and print to STDOUT the number 0.
-# The `branc point` will be excluded.
-#
-# Please note that 1 is the mininum result that is acceptable by `makepkg`
-#
-#  ---o----*-----*----*-----*--- master
-#      \-*----*----------*------ thebigbang
-#
-# On `master`:      4 commits since the branch point
-# On `thebigbang:`  3 commits since the branch point
-#
-# Input
-#   $1 => the branch name
-#   $@ => Optional arguments for `_get_number_of_git_commits_between_two_points`
-#
-_get_number_of_git_commits_from_branch_point() {
-  local _point=
-  local _num=
-  local _br="${1:-HEAD}"; shift
-
-  if _point="$(_get_git_branch_point ${1:-HEAD})"; then
-    _get_number_of_git_commits_between_two_points "$_point" "$_br" "$@"
-  else
-    echo 0
-    return 1
-  fi
-}
-
 # Return -all tags- the first tag on the *package branch*, that is also
 # the latest tag until the current time / commit (despite the name due
 # to a history version, the function only return one tag.)
@@ -540,10 +473,6 @@ _get_number_of_git_commits_from_branch_point() {
 #
 
 _get_git_tag_on_package_branch() {
-  _get_git_tags_on_package_branch "$@"
-}
-
-_get_git_tags_on_package_branch() {
   local _br="${1:-HEAD}"
   local _ref="${2:-HEAD}"
   local _gs=
@@ -611,62 +540,6 @@ _get_release_from_tag() {
 }
 
 # Return the next tag from current tag + working branch
-# Input
-#   $1 => The current tag
-#   $2 => The working branch (as reference)
-_get_next_tag_from_tag() {
-  local _tag="$1"
-  local _ref="${2:-HEAD}"
-  local _rel=
-
-  _rel="$(_get_number_of_git_commits_between_two_points $_tag $_ref)"
-  ruby \
-    -e "_tag=\"$_tag\"" \
-    -e "_rel=$_rel" \
-    -e 'if gs=_tag.match(/^(.+-[0-9]+\.[0-9]+\.[0-9]+)(-([0-9]+))?$/)
-          _rel += gs[2] ? gs[3].to_i : 1
-          puts "#{gs[1]}-#{_rel}"
-        else
-          exit 1
-        end'
-}
-
-# Return the next tag (the current tag is implicitly provided.)
-# Input
-#   => nothing
-_get_next_tag() {
-  local _tag
-  if _tag="$(_get_current_tag)"; then
-    _get_next_tag_from_tag "$_tag"
-  else
-    return 1
-  fi
-}
-
-# Return the latest tag on the current working branch
-# Input
-#   => nothing
-_get_current_tag() {
-  local _br=
-  if _br="$(_get_git_branch)"; then
-    _get_git_tag_on_package_branch $_br
-  else
-    return 1
-  fi
-}
-
-# Get the latest version of the a package branch. We need to find a tag
-# that: (1) is on the branch `PACKAGE_BASE`, (2) it is the latest tag
-# before the current HEAD/point (3) its name matches `PACKAGE_BASE`.
-#
-# As this function can run on any branch we need the environment var.
-# `PACKAGE_BASE`. This also means it can work on at most one package
-# at the same time.
-#
-# If we can not find the package version, we will return the first version
-# of the package. This is not a recommendation, though.
-#
-# This function is useful if we are on patching branch for a package.
 #
 #  ---*---o-----*---*----*----*-------- thebigbang
 #         |
@@ -684,25 +557,24 @@ _get_current_tag() {
 #       release = 0+1
 #
 # Input
-#   $1 => the branch name. Default: PACKAGE_BASE
+#   $1 => The current tag
+#   $2 => The working branch (as reference)
 #
-_get_package_version() {
-  local _ver=
+_get_next_tag_from_tag() {
+  local _tag="$1"
+  local _ref="${2:-HEAD}"
   local _rel=
-  local _point=
-  local _pkg="${1:-$PACKAGE_BASE}"
 
-  if [[ -z "$_pkg" ]]; then
-    _err "Environment not set PACKAGE_BASE or package name isn't provided"
-    return 1
-  fi
-
-  if _point="$(git describe --abbrev=0 --tags ${_pkg})"; then
-    echo 0
-  else
-    echo ""
-    return 1
-  fi
+  _rel="$(_get_number_of_git_commits_between_two_points $_tag $_ref)"
+  ruby \
+    -e "_tag=\"$_tag\"" \
+    -e "_rel=$_rel" \
+    -e 'if gs=_tag.match(/^(.+-[0-9]+\.[0-9]+\.[0-9]+)(-([0-9]+))?$/)
+          _rel += gs[2] ? gs[3].to_i : 1
+          puts "#{gs[1]}-#{_rel}"
+        else
+          exit 1
+        end'
 }
 
 # TheSLinux's version of Arch makepkg. This will check and generate
