@@ -363,15 +363,16 @@ _get_package_name() {
     if [[ "$_br" == "$_wd" ]]; then
       export PACKAGE_BASE="$_br"
       echo "$_br"
+      return 0
     elif [[ "$_wd" == "${PACKAGE_BASE:-}" ]]; then
       _warn "Getting branch name from the environment PACKAGE_BASE"
       echo "$_br"
+      return 0
     else
       _err "Working directory \"$_wd\" and working branch \"$_br\" are not matched"
     fi
-  else
-    return 1
   fi
+  return 1
 }
 
 # Get the point on `TheBigBang` where a branch starts. See also
