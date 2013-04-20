@@ -642,6 +642,8 @@ _get_next_tag() {
   local _tag
   if _tag="$(_get_current_tag)"; then
     _get_next_tag_from_tag "$_tag"
+  else
+    return 1
   fi
 }
 
