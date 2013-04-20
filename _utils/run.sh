@@ -426,13 +426,14 @@ _get_git_branch_point() {
 #
 # Input
 #   $1 => The starting point (a branch name)
-#   $2 => The end point (a branch name)
+#   $2 => The end point (a branch name
+#   $* => Optional arguments for `git log`
 #
 _get_git_commits_between_two_points() {
-  local _from="$1"
-  local _to="${2:-HEAD}"
+  local _from="$1"; shift
+  local _to="${1:-HEAD}"; shift
 
-  git log --pretty="format:%H" "$_from".."$_to"
+  git log --pretty="format:%H" "$_from".."$_to" $*
   # This is tricky to add newline to EOF. This help the output is countable
   # by `wc`, and readable by `while` loop. Without a `newline` at the end,
   # the last line from the output will be ignored by `while` loop.
@@ -445,13 +446,14 @@ _get_git_commits_between_two_points() {
 # Input
 #   $1 => The starting point (a branch name)
 #   $2 => The end point (a branch name)
+#   $* => Optional arguments for `_get_git_commits_between_two_points`
 #
 _get_number_of_git_commits_between_two_points() {
-  local _from="$1"
-  local _to="${2:-HEAD}"
+  local _from="$1"; shift
+  local _to="${1:-HEAD}"; shift
   local _num=
 
-  _num="$(_get_git_commits_between_two_points | _linecount)"
+  _num="$(_get_git_commits_between_two_points $_from $_to $* | _linecount)"
   # FIXME: `_num` will never be empty. We need another way
   # FIXME: to check error. This is a bad deal in Bash.
   if [[ -z "$_num" ]]; then
@@ -477,13 +479,15 @@ _get_number_of_git_commits_between_two_points() {
 #
 # Input
 #   $1 => the branch name
+#   $* => Optional arguments for `_get_number_of_git_commits_between_two_points`
 #
 _get_number_of_git_commits_from_branch_point() {
   local _point=
   local _num=
+  local _br="${1:-HEAD}"; shift
 
   if _point="$(_get_git_branch_point ${1:-HEAD})"; then
-    _get_number_of_git_commits_between_two_points "$_point" "${1:-HEAD}"
+    _get_number_of_git_commits_between_two_points "$_point" "$_br" "$*"
   else
     echo 0
     return 1
