@@ -577,6 +577,56 @@ _get_git_tags_on_package_branch() {
   return 1
 }
 
+# Return the version number from a tag
+# Input
+#   $1 => The current tag
+#
+_get_version_from_tag() {
+  local _tag="$1"
+  ruby \
+    -e "_tag=\"$_tag\"" \
+    -e 'if gs=_tag.match(/^.+-([0-9]+\.[0-9]+\.[0-9]+)(-[0-9]+)?$/)
+          puts gs[1]
+        else
+          exit 1
+        end'
+}
+
+# Return the release number of a tag
+# Input
+#   $1 => The current tag
+_get_release_from_tag() {
+  local _tag="$1"
+  ruby \
+    -e "_tag=\"$_tag\"" \
+    -e 'if gs=_tag.match(/^.+-[0-9]+\.[0-9]+\.[0-9]+(-([0-9]+))?$/)
+          puts gs[1] ? gs[2] : 1
+        else
+          exit 1
+        end'
+}
+
+# Return the next tag from current tag + working branch
+# Input
+#   $1 => The current tag
+#   $2 => The working branch (as reference)
+_get_next_tag_from_tag() {
+  local _tag="$1"
+  local _ref="${2:-HEAD}"
+  local _rel=
+
+  _rel="$(_get_number_of_git_commits_between_two_points $_tag $_ref)"
+  ruby \
+    -e "_tag=\"$_tag\"" \
+    -e "_rel=$_rel" \
+    -e 'if gs=_tag.match(/^(.+-[0-9]+\.[0-9]+\.[0-9]+)(-([0-9]+))?$/)
+          _rel += gs[2] ? gs[3].to_i : 1
+          puts "#{gs[1]}-#{_rel}"
+        else
+          exit 1
+        end'
+}
+
 # Get the latest version of the a package branch. We need to find a tag
 # that: (1) is on the branch `PACKAGE_NAME`, (2) it is the latest tag
 # before the current HEAD/point (3) its name matches `PACKAGE_NAME`.
