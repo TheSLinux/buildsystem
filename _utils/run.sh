@@ -494,7 +494,7 @@ _get_number_of_git_commits_from_branch_point() {
   fi
 }
 
-# Return -all tags- the first tag on the package branch, that is also
+# Return -all tags- the first tag on the *package branch*, that is also
 # the latest tag until the current time / commit (despite the name due
 # to a history version, the function only return one tag.)
 #
@@ -508,15 +508,38 @@ _get_number_of_git_commits_from_branch_point() {
 # FIXME: This is very *slow*. Please find a better way
 #
 #  ---o----*-----*----*-----*--- thebigbang
-#      \-*----*----*-----*------ package branch
-#             \-*--|--*--|------ working branch
-#                  |     |
-#                  |      \----- this tag should be ignored
+#      \-*----*----o-----o---o-- package branch
+#             |    |     |   |
+#             \-*--|--*--|---|-- working branch
+#                  |     |   |
+#                  |      \--+-- these tags should be ignored
 #                  |
 #                  \--- acceptable tag
 #
+# Notes: What does `git tag --contains <commit>` mean? See below
+#
+#  --*---^--...
+#     \          /---------------------- how to get this point ?
+#      *--*--*---o---o---o--o---?--?---- package branch
+#      U     T   |          S      R
+#                \--#--#---------------- the development branch
+#
+# The tag `T` contains any `*`. The tag `S`, `R` contain any `*` and `o`.
+# So `git tag --contains` will return a list of commits. And that list
+# will not help to find the correct tag.
+#
+# There may be two different ways to get *the tag we want*
+#
+#   1. Return tag `T` for any `o` (but don't return `S`)
+#   2. Return tag `S` for any `o` (but don't return `R`)
+#
+# We want to find the next version tag, we want to get the `latest`
+# tag, do some increment (something like `T + 1`) to the next tag.
+# So we will use `1.`: return the latest tag just before working time.
+#
 # Input
 #   $1 => The branch name on that you want get the latest tag
+#   $2 => The reference point to get the time (usually the working branch)
 #
 
 _get_git_tag_on_package_branch() {
@@ -525,33 +548,30 @@ _get_git_tag_on_package_branch() {
 
 _get_git_tags_on_package_branch() {
   local _br="${1:-HEAD}"
+  local _ref="${2:-HEAD}"
   local _gs=
   local _tag=
   local _commmit=
-  local _br_time=
-  local _commit_time=
+  local _ref_time=
 
-  _br_time="$(git log -1 --pretty='format:%ct' $_br --)"
+  _ref_time="$(git log -1 --pretty='format:%ct' $_ref --)"
 
   while read _commit; do
-    _commit_time="$(git log -1 --pretty='format:%ct' $_commit --)"
-    if [[ "$_commit_time" > "$_br_time" ]]; then
-      continue
-    fi
+    if _tag="$(git describe --tags --exact-match $_commit 2>/dev/null)"; then
+      ruby \
+        -e "_tag=\"$_tag\"" \
+        -e "_br=\"$_br\"" \
+        -e 'exit _tag.match(/^#{_br}-[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?$/) ? 0 : 1'
 
-    # Bc the following command will list all tags in the past that leads
-    # to the current commit, we only use the first tag if found!
-    _tag="$(git tag --contains "$_commit" | head -1)"
-    ruby \
-      -e "_tag=\"$_tag\"" \
-      -e "_br=\"$_br\"" \
-      -e 'exit _tag.match(/^#{_br}-[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?$/) ? 0 : 1'
-
-    if [[ $? -eq 0 ]]; then
-      echo "$_tag"
+      if [[ $? -eq 0 ]]; then
+        echo "$_tag"
+        return 0
+      fi
     fi
   done < \
-    <(_get_git_commits_between_two_points TheBigBang "$_br")
+    <(_get_git_commits_between_two_points TheBigBang "$_br" --until="$_ref_time")
+
+  return 1
 }
 
 # Get the latest version of the a package branch. We need to find a tag
