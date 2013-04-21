@@ -338,15 +338,25 @@ _get_git_branch() {
   fi
 }
 
-# Get the package name if the branch name and working directory is the same.
-# The common rules (TheBigBang) says that the package branch would be
-# the package name, and it's the same as the working directory. If
-# there is any difference (for example when we are working on patch branch)
-# the branch name would be got from the environment `PACKAGE_BASE`.
-# We don't have any way to check if `PACKAGE_BASE` matches the current
-# working directory.
+# Get the package name from the working directory / branch.
 #
-# FIXME: + more description and illustration
+# The common rules (TheBigBang) says that the package branch would be
+# the package name, and it's the same as the working directory. The work-
+# ing directory will play the main role. It is used to test if the branch
+# is the package branch or a feature branch of the package.
+#
+# If the environment `PACKAGE_BASE` is provided, and it matches the work-
+# ing directory, the program will return that variable.
+#
+# Conventions: A feature branch should start with `p_`, follow by the
+# package name, and the feature (if any). Example
+#
+#   p_foobar
+#   p_foobar+feature   foobar+feature
+#   p_foobar#feature   foobar#feature
+#   p_foobar=feature   foobar=feature
+#   p_foobar%feature   foobar%feature
+#   p_foobar@feature   foobar@feature
 #
 # Input
 #   => Working directory is a package directory
@@ -356,19 +366,25 @@ _get_package_name() {
   local _wd="$(basename $PWD)"
   local _br=
 
-  if _br="$(_get_git_branch)"; then
-    if [[ "$_br" == "$_wd" ]]; then
-      echo "$_br"
-      return 0
-    elif [[ "$_wd" == "${PACKAGE_BASE:-}" ]]; then
-      _warn "Getting branch name from the environment PACKAGE_BASE"
-      echo "$PACKAGE_BASE"
-      return 0
-    else
-      _err "Working directory \"$_wd\" and working branch \"$_br\" are not matched"
-    fi
+  if [[ "$_wd" == "${PACKAGE_BASE:-}" ]]; then
+    _warn "Getting branch name from the environment PACKAGE_BASE"
+    echo "$PACKAGE_BASE"
+    return 0
+  else
+    _warn "PACKAGE_BASE '$PACKAGE_BASE' doesn't match working directory '$_wd'"
   fi
-  return 1
+
+  _br="$(_get_git_branch)" || return 1
+
+  ruby \
+    -e "_br=\"$_br\"" \
+    -e "_wd=\"$_wd\"" \
+    -e 'exit \
+        _br.match(%r{^(p_)?#{_wd}([@+#=%].+)?$}) \
+          ? 0 : 1
+      ' \
+  && echo "$_wd" \
+  || _err "Failed to get package name in \"$_wd\" and on \"$_br\""
 }
 
 # Return the number of commits between two points. This will actually
