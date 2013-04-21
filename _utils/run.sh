@@ -540,6 +540,7 @@ _get_package_name_from_tag() {
     -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
           puts gs[1]
         else
+          STDERR.puts ":: Error: Failed to get package name from tag \"#{_tag}\""
           exit 1
         end'
 }
@@ -555,6 +556,7 @@ _get_version_from_tag() {
     -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
           puts gs[1]
         else
+          STDERR.puts ":: Error: Failed to get version number from tag \"#{_tag}\""
           exit 1
         end'
 }
@@ -569,6 +571,7 @@ _get_release_from_tag() {
     -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
           puts gs[3] ? gs[4] : 1
         else
+          STDERR.puts ":: Error: Failed to get release number from tag \"#{_tag}\""
           exit 1
         end'
 }
@@ -607,6 +610,7 @@ _get_next_tag_from_tag() {
           _rel += gs[4] ? gs[5].to_i : 1
           puts "#{gs[1]}-#{gs[2]}-#{_rel}"
         else
+          STDERR.puts ":: Error: Failed to the next of tag \"#{_tag}\""
           exit 1
         end'
 }
@@ -692,11 +696,7 @@ s-makepkg() {
 
   # If reference is provided, and or
   if [[ "$_type" == "--reference" ]]; then
-    _tag="$(_get_next_tag_from_tag ${_tag})" \
-    || {
-      _err "Failed to get next tag from tag '$_tag'"
-      return 1
-    }
+    _tag="$(_get_next_tag_from_tag ${_tag})" || return 1
   fi
 
   if [[ "$1" == "--next-tag" ]]; then
@@ -708,17 +708,8 @@ s-makepkg() {
     return $?
   fi
 
-  _ver="$(_get_version_from_tag $_tag)" \
-  || {
-    _err "Failed to get version number from tag '$_tag'"
-    return 1
-  }
-
-  _rel="$(_get_release_from_tag $_tag)" \
-  || {
-    _err "Failed to get release number from tag '$_tag'"
-    return 1
-  }
+  _ver="$(_get_version_from_tag $_tag)" || return 1
+  _rel="$(_get_release_from_tag $_tag)" || return 1
 
   :; \
     PACKAGE_BASE="$_pkg" \
