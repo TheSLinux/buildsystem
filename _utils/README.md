@@ -35,7 +35,7 @@ is just another way to call `echo "Hello, world."`.
 
 This is `TheSLinux` version of the original ArchLinux `makepkg`. This
 script will set up the environment before invoking the real program
-`makepkg`, and it is designed to work `TheSLinux` build system.
+`makepkg`, and it is designed to work  with `TheSLinux` build system.
 
 For example, to build the package `pacman` from `TheSLinux`
 (Of course you can replace `pacman` by any package.)
