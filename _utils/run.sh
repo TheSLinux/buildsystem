@@ -736,6 +736,6 @@ case "${0##*/}" in
   "s-makepkg")        _func="s-makepkg" ;;
 esac
 
-(( $# )) || _die "Missing arguments"
+[[ -n "$_func" ]] || (( $# )) || _die "Missing arguments"
 
 $_func "$@"
