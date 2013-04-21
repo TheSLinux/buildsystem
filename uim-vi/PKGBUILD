@@ -4,9 +4,6 @@
 # Original Maintainer: Gaetan Bisson <bisson@archlinux.org>
 # Original Contributor: damir <damir@archlinux.org>
 
-pkgname=uim-vi
-pkgver=1.8.5
-pkgrel=1
 pkgdesc='Vietnamese input method library'
 url='http://code.google.com/p/uim/'
 license=('custom:BSD')
