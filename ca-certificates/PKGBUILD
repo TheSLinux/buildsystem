@@ -13,8 +13,6 @@ depends=('bash' 'openssl' 'findutils' 'coreutils' 'sed')
 makedepends=('python2')
 install='ca-certificates.install'
 backup=('etc/ca-certificates.conf')
-sha256sums=('beeef0dfd21d5fc9a25b37f691aeacd8a0bd8aa468f40cbc8509b8e4ef30f1f8'
-        'fb51ec9a2c551838cc1646a0b3c9e6bea5c1bb20ff5d71c542451fac4b191c22')
 
 build() {
 	cd ${srcdir}/${pkgbase}-${pkgver//.}
