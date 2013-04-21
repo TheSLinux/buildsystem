@@ -423,13 +423,15 @@ _get_git_commits_between_two_points() {
   local _from="$1"; shift
   local _to="${1:-HEAD}"; shift
 
-  git log --pretty="format:%H" "$_from".."$_to" "$@"
+  # Using of `echo`:
   # This is tricky to add newline to EOF. This help the output is countable
   # by `wc`, and readable by `while` loop. Without a `newline` at the end,
   # the last line from the output will be ignored by `while` loop.
   # FIXME: This possibly change in the future, by `git`. Should find
   # FIXME: a more robust way and add a test case to ensure things work.
-  echo
+  git log --pretty="format:%H" "$_from".."$_to" "$@" \
+  && echo \
+  || _err "Failed to get commits between two points '$_from' and '$_to'"
 }
 
 # See also (_get_git_commits_between_two_points)
@@ -441,17 +443,16 @@ _get_git_commits_between_two_points() {
 _get_number_of_git_commits_between_two_points() {
   local _from="$1"; shift
   local _to="${1:-HEAD}"; shift
-  local _num=
+  local _num=0
 
-  _num="$(_get_git_commits_between_two_points $_from $_to "$@" | _linecount)"
-  # FIXME: `_num` will never be empty. We need another way
-  # FIXME: to check error. This is a bad deal in Bash.
-  if [[ -z "$_num" ]]; then
-    echo 0
-    return 1
-  else
-    echo "$_num"
-  fi
+  _num="$( \
+      _get_git_commits_between_two_points $_from $_to "$@" \
+        | _linecount ; \
+      [[ ${PIPESTATUS[0]} -eq 0 ]] || exit 1 ; \
+      [[ ${PIPESTATUS[1]} -eq 0 ]] || exit 1 ; \
+    )" \
+  && echo "$_num" \
+  || _err "Unable to get number of commits between '$_from' and '$_to'"
 }
 
 # Return -all tags- the first tag on the *package branch*, that is also
@@ -531,10 +532,9 @@ _get_git_tag_on_package_branch() {
       && echo "$_tag" && return 0
     fi
   done < \
-    <(_get_git_commits_between_two_points TheBigBang "$_br" --until="$_ref_time")
+    <(_get_git_commits_between_two_points "TheBigBang" "$_br" --until="$_ref_time")
 
   _err "Failed to get tag from package branch '$_br'"
-  return 1
 }
 
 
@@ -611,7 +611,9 @@ _get_next_tag_from_tag() {
   local _ref="${2:-HEAD}"
   local _rel=
 
-  _rel="$(_get_number_of_git_commits_between_two_points $_tag $_ref)"
+  _rel="$(_get_number_of_git_commits_between_two_points $_tag $_ref)" \
+  || return 1
+
   ruby \
     -e "_tag=\"$_tag\"" \
     -e "_rel=$_rel" \
