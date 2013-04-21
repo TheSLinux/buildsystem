@@ -9,10 +9,10 @@ arch=('i686' 'x86_64')
 url="http://www.info-zip.org/"
 license=('custom')
 depends=('bzip2' 'bash')
-source=('http://downloads.sourceforge.net/infozip/unzip60.tar.gz')
+source=("http://downloads.sourceforge.net/infozip/unzip${pkgver//.}.tar.gz")
 
 build() {
-  cd ${srcdir}/${pkgname}${pkgver/./}
+  cd ${srcdir}/${pkgname}${pkgver//.}
 
   # set CFLAGS -- from Debian
   export CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64 -DACORN_FTYPE_NFS \
@@ -28,7 +28,7 @@ build() {
 }
 
 package() {
-  cd ${srcdir}/${pkgname}${pkgver/./}
+  cd ${srcdir}/${pkgname}${pkgver//.}
 
   # install -- from Debian
   make -f unix/Makefile prefix=${pkgdir}/usr INSTALL_PROGRAM="install" install
