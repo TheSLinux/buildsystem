@@ -515,7 +515,7 @@ _get_git_tag_on_package_branch() {
       ruby \
         -e "_tag=\"$_tag\"" \
         -e "_br=\"$_br\"" \
-        -e 'exit _tag.match(/^#{_br}-[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?$/) ? 0 : 1'
+        -e 'exit _tag.match(/^#{_br}-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/) ? 0 : 1'
 
       if [[ $? -eq 0 ]]; then
         echo "$_tag"
@@ -536,7 +536,7 @@ _get_version_from_tag() {
   local _tag="$1"
   ruby \
     -e "_tag=\"$_tag\"" \
-    -e 'if gs=_tag.match(/^.+-([0-9]+\.[0-9]+\.[0-9]+)(-[0-9]+)?$/)
+    -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
           puts gs[1]
         else
           exit 1
@@ -550,8 +550,8 @@ _get_release_from_tag() {
   local _tag="$1"
   ruby \
     -e "_tag=\"$_tag\"" \
-    -e 'if gs=_tag.match(/^.+-[0-9]+\.[0-9]+\.[0-9]+(-([0-9]+))?$/)
-          puts gs[1] ? gs[2] : 1
+    -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
+          puts gs[3] ? gs[4] : 1
         else
           exit 1
         end'
@@ -587,9 +587,9 @@ _get_next_tag_from_tag() {
   ruby \
     -e "_tag=\"$_tag\"" \
     -e "_rel=$_rel" \
-    -e 'if gs=_tag.match(/^(.+-[0-9]+\.[0-9]+\.[0-9]+)(-([0-9]+))?$/)
-          _rel += gs[2] ? gs[3].to_i : 1
-          puts "#{gs[1]}-#{_rel}"
+    -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
+          _rel += gs[4] ? gs[5].to_i : 1
+          puts "#{gs[1]}-#{gs[2]}-#{_rel}"
         else
           exit 1
         end'
