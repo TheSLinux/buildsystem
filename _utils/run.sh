@@ -672,6 +672,7 @@ _get_next_tag_from_tag() {
 #      This is possibly due to history reason. This number will be converted
 #      two number forms by adding zero `0` to the original string. E.g,
 #      `xterm-291-1` should read `xterm-0.291-1`.
+#   8. `PACKAGE_BASE` (so `pkgbase`) is alway defined.
 #
 # Input
 #      => PACKAGE_TAG      => the tag of new package
