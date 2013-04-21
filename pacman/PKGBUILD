@@ -4,9 +4,9 @@
 # Original Maintainer: Dan McGee <dan@archlinux.org>
 # Original Maintainer: Dave Reisner <dreisner@archlinux.org>
 
-# PACKAGE_BASE is always defined in `s-makepkg`, and this is to make sure
+# `PACKAGE_BASE` is always defined in `s-makepkg`, and this is to make sure
 # that this `PKGBUILD` can be used with the old `makepkg`
-
+pkgbase="${PACKAGE_BASE:-}"
 pkgname="${PACKAGE_BASE:-}"
 pkgver="${PACKAGE_VERSION:-}"
 pkgrel="${PACKAGE_RELEASE:-}"
