@@ -4,9 +4,6 @@
 # Original Maintainer: Dan McGee <dan@archlinux.org>
 # Original Maintainer: Dave Reisner <dreisner@archlinux.org>
 
-pkgname=pacman
-pkgver=4.1.0
-pkgrel=2
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -22,7 +19,7 @@ replaces=('pacman-contrib')
 backup=(etc/pacman.conf etc/makepkg.conf)
 install=pacman.install
 options=(!libtool)
-source=(ftp://ftp.archlinux.org/other/pacman/$pkgname-$pkgver.tar.gz{,.sig}
+source=("ftp://ftp.archlinux.org/other/pacman/$pkgbase-$pkgver.tar.gz"{,.sig}
         pacman.conf.i686
         pacman.conf.x86_64
         makepkg.conf
