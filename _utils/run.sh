@@ -515,16 +515,16 @@ _get_git_tag_on_package_branch() {
       ruby \
         -e "_tag=\"$_tag\"" \
         -e "_br=\"$_br\"" \
-        -e 'exit _tag.match(/^#{_br}-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/) ? 0 : 1'
-
-      if [[ $? -eq 0 ]]; then
-        echo "$_tag"
-        return 0
-      fi
+        -e 'exit \
+              _tag.match(/^#{_br}-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/) \
+              ? 0 : 1
+          ' \
+      && echo "$_tag" && return 0
     fi
   done < \
     <(_get_git_commits_between_two_points TheBigBang "$_br" --until="$_ref_time")
 
+  _err "Failed to get tag from package branch '$_br'"
   return 1
 }
 
