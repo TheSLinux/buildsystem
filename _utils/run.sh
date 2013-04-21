@@ -599,6 +599,29 @@ _get_next_tag_from_tag() {
 # some environment variables before invoking the real program `makepkg`.
 # Note: the dash (-) hides this function from Geany symbols listing
 #
+# `s-makepkg` will
+#
+#   1. Detect the package name from working environment
+#   2. Get the latest tag on the package branch
+#   3. Find the next valid tag
+#   4. Retrieve the version number and release number for the tag
+#   5. Invoke the original `makepkg` with new environment
+#
+# Difference from the original `makepkg`
+#
+#   1. Package information {name, version, release} can be provided
+#      externally (from the environment)
+#   2. `PKGBUILD` should provide metadata and build process, it doesn't
+#      contain any real data (version number, checksums,..)
+#   3. The default hash is `sha512` (this's part of `pacman` though)
+#   4. Can build any version of package quickly without modifying the
+#      `PKGBUILD`. However, some `PKGBUILD` may only work with a limit
+#      set of versions (if this is the case, we may split `PKGBUILD`
+#      into parts.)
+#   5. `Release number` is detected automatically
+#   6. `PKGBUILD` isn't independent and it can't be used with the original
+#      `makepkg` without some environment settings
+#
 # Input
 #   $1 => --current-tag => print current tag and exit
 #      => --next-tag    => print next tag and exit
