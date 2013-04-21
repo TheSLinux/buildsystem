@@ -372,7 +372,8 @@ _get_package_name() {
     echo "$PACKAGE_BASE"
     return 0
   else
-    _warn "PACKAGE_BASE '$PACKAGE_BASE' doesn't match working directory '$_wd'"
+    [[ -z "$PACKAGE_BASE" ]] \
+    || _warn "PACKAGE_BASE '$PACKAGE_BASE' doesn't match working directory '$_wd'"
   fi
 
   _br="$(_get_git_branch)" || return 1
