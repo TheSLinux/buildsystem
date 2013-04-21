@@ -46,20 +46,11 @@ $ cd theslinux-buildsystem
 $ git checkout TheBigBang     # This is a must
 $ git checkout pacman
 $ cd pacman/
-$ s-makepkg                   # See trick below
+$ s-makepkg
 ````
 
-**Note 1**: Because `s-makepkg` needs a special version of
-`pacman` [3], you almost fail to build any package without a trick.
-If you are using `s-makepkg` for the first time, please replace the
-invoking `s-makepkg` as above by the following command
-
-````
-$ PACKAGE_REF_TAG="pacman-4.1.0" s-makepkg
-````
-
-After this build process, you will have a new version of `pacman`.
-Please install it so that you can use `s-makepkg` easily.
+**Note 1**: Because `s-makepkg` needs a special version of `pacman` [3],
+you need to build and install `pacman` before any other package.
 
 **Note 2**: We doesn't have support for `checksum`. In the mean time,
 please use `--skipchecksums` when invoking `s-makepkg`.
