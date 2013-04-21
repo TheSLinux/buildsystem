@@ -624,10 +624,19 @@ _get_next_tag_from_tag() {
 #   5. Invoke the original `makepkg` with new environment
 #
 # By default, `s-makepkg` uses the latest tag from the `package branch`.
-# If you want to specify an exact tag, please use `PACKAGE_TAG` instead.
-# This tag must do exist in the git repository. If `PACKAGE_TAG` is used,
-# you don't need to provide `PACKAGE_BASE` because we can retrieve it
-# from `PACKAGE_TAG`. (`PACKAGE_TAG` == `PACKAGE_BASE-<ver>[-<rel>]`)
+# If you want to specify an exact tag, use `PACKAGE_[REF_]TAG` instead.
+# This tag `PACKAGE_REF_TAG` must exist in the git repository bc it is
+# used as reference. `PACKAGE_TAG` don't need to be exist.
+# If `PACKAGE_[REF_]TAG` is used, you don't need to set `PACKAGE_BASE`
+# because we can retrieve it from `PACKAGE_[REF_]TAG` as in the form
+#
+#   PACKAGE_[REF_]TAG == PACKAGE_BASE-<version number>[-<release number>
+#
+# The order of these variables
+#
+#   1. PACKAGE_TAG      (you are at your own risk)
+#   2. PACKAGE_REF_TAG  (start from the known point in the past)
+#   3. PACKAGE_BASE     (+ reference tag from the current branch)
 #
 # Difference from the original `makepkg`
 #
@@ -650,10 +659,11 @@ _get_next_tag_from_tag() {
 #      `xterm-291-1` should read `xterm-0.291-1`.
 #
 # Input
-#      => PACKAGE_BASE  => the original package branch
-#      => PACKAGE_TAG   => the reference tag to start from
-#   $1 => --current-tag => print current tag and exit
-#      => --next-tag    => print next tag and exit
+#      => PACKAGE_TAG      => the tag of new package
+#      => PACKAGE_REF_TAG  => the reference tag (where the package starts)
+#      => PACKAGE_BASE     => the original package branch
+#   $1 => --current-tag    => print current tag and exit
+#      => --next-tag       => print next tag and exit
 #   $@ => pass to original `makepkg`
 #
 s-makepkg() {
@@ -661,29 +671,41 @@ s-makepkg() {
   local _ver=
   local _rel=
   local _pkg=
+  local _type="--reference"
 
   _pkg="$(_get_package_name)" || return 1
 
-  _tag="$(_get_git_tag_on_package_branch ${_pkg})" \
-  || {
-    _err "Failed to get current tag on the branch '$(_get_git_branch)'"
+  # If package tag is provided
+  if [[ -n "$PACKAGE_TAG" ]]; then
+    _type="--absolute"
+    _tag="$PACKAGE_TAG"
+  elif [[ -n "$PACKAGE_REF_TAG" ]]; then
+    _tag="$PACKAGE_REF_TAG"
+  elif ! _tag="$(_get_git_tag_on_package_branch ${_pkg})"; then
     return 1
-  }
+  fi
 
   if [[ "$1" == "--current-tag" ]]; then
     echo "$_tag"
     return 0
   fi
 
-  _tag="$(_get_next_tag_from_tag ${_tag})" \
-  || {
-    _err "Failed to get next tag from tag '$_tag'"
-    return 1
-  }
+  # If reference is provided, and or
+  if [[ "$_type" == "--reference" ]]; then
+    _tag="$(_get_next_tag_from_tag ${_tag})" \
+    || {
+      _err "Failed to get next tag from tag '$_tag'"
+      return 1
+    }
+  fi
 
   if [[ "$1" == "--next-tag" ]]; then
-    echo "$_tag"
-    return 0
+    if [[ "$_type" == "--reference" ]]; then
+      echo "$_tag"
+    else
+      _err "No reference tag as PACKAGE_TAG is provided"
+    fi
+    return $?
   fi
 
   _ver="$(_get_version_from_tag $_tag)" \
