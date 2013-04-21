@@ -6,9 +6,6 @@
 # Original Contributor: damir <damir@archlinux.org>
 # Original Contributor: Camille Moncelier <pix@devlife.org>
 
-pkgname=m17n-db-vi
-pkgver=1.6.4
-pkgrel=1
 pkgdesc='Vietnamese text processing library (database)'
 url='http://www.nongnu.org/m17n/'
 arch=('any')
