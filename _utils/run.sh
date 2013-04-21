@@ -406,10 +406,10 @@ _get_package_name() {
 #
 #  ---*---o--------*----*----*----- thebigbang
 #         \--*---*----*----*----*-- package branch
-#                \--*----*----*---- patch branch
+#                \--*----*----*---- feature branch
 #
 #   thebigbang .. package branch  => 5
-#   thebigbang .. patch branch    => 3
+#   thebigbang .. feature branch  => 3
 #   package branch .. thebigbang  => 3
 #
 # The branch point `o` is excluded from the output.
@@ -591,7 +591,7 @@ _get_release_from_tag() {
 #         |
 #         \--x----*-*----x----*-----*-- package branch `foobar`
 #            |    | |    |          |
-#            |    | \--*-|--*----*--|-- patch branch `p_foobar-stuff`
+#            |    | \--*-|--*----*--|-- feature branch `p_foobar-stuff`
 #            |    |      |       |  |
 #            |    |   foobar-y   |  |
 #            |     \             |  \-- foobar-y-<release = 2+1>
