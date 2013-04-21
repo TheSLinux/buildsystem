@@ -598,6 +598,12 @@ _get_next_tag_from_tag() {
 # TheSLinux's version of Arch makepkg. This will check and generate
 # some environment variables before invoking the real program `makepkg`.
 # Note: the dash (-) hides this function from Geany symbols listing
+#
+# Input
+#   $1 => --current-tag => print current tag and exit
+#      => --next-tag    => print next tag and exit
+#   $@ => pass to original `makepkg`
+#
 s-makepkg() {
   local _tag=
   local _ver=
@@ -616,11 +622,21 @@ s-makepkg() {
     return 1
   }
 
+  if [[ "$1" == "--current-tag" ]]; then
+    echo "$_tag"
+    return 0
+  fi
+
   _tag="$(_get_next_tag_from_tag ${_tag})" \
   || {
     _err "Failed to get next tag from tag '$_tag'"
     return 1
   }
+
+  if [[ "$1" == "--next-tag" ]]; then
+    echo "$_tag"
+    return 0
+  fi
 
   _ver="$(_get_version_from_tag $_tag)" \
   || {
