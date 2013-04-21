@@ -325,17 +325,22 @@ convert() {
 }
 
 # Get the current git branch in the working directory.
+# or check if a local branch does exist.
+#
 # Input
-#   => Working directory is a git directory
+#   $1 => branch => A branch to check if it exist
+#   $1 => empty  => Get current branch in working directory
 #
 _get_git_branch() {
   local _br=
-  _br="$(git rev-parse --abbrev-ref HEAD)"
-  if [[ -z "$_br" ]]; then
-    _error "Failed to run 'git branch' in $PWD"
-    return 1
+  if [[ -n "$1" ]]; then
+    git show-branch "$1" >/dev/null \
+    && echo "$1" \
+    || return 1
   else
-    echo "$_br"
+    _br="$(git rev-parse --abbrev-ref HEAD)" \
+    && echo "$_br" \
+    || _err "Failed to run geat HEAD information in $PWD"
   fi
 }
 
@@ -366,27 +371,34 @@ _get_git_branch() {
 _get_package_name() {
   local _wd="$(basename $PWD)"
   local _br=
+  local _tag=
 
-  if [[ "$_wd" == "${PACKAGE_BASE:-}" ]]; then
-    _warn "Getting branch name from the environment PACKAGE_BASE"
-    echo "$PACKAGE_BASE"
-    return 0
-  else
-    [[ -z "$PACKAGE_BASE" ]] \
-    || _warn "PACKAGE_BASE '$PACKAGE_BASE' doesn't match working directory '$_wd'"
-  fi
+  # Check if tag is provided
+  _tag="${PACKAGE_TAG:-}"
+  _tag="${_tag:-$PACKAGE_REF_TAG}"
 
-  _br="$(_get_git_branch)" || return 1
+  [[ -z "$_tag" ]] \
+  || _br="$(_get_package_name_from_tag $_tag)" \
+  || return 1
 
+  _br="${_br:-$PACKAGE_BASE}"
+
+  # Make sure there is local branch
+  _br="$(_get_git_branch "$_br")" || return 1
+
+  # We only need to check for the last case (br = <current branch>)
   ruby \
     -e "_br=\"$_br\"" \
     -e "_wd=\"$_wd\"" \
-    -e 'exit \
-        _br.match(%r{^(p_)?#{_wd}([@+#=%].+)?$}) \
-          ? 0 : 1
+    -e 'if _br.match(%r{^(p_)?#{_wd}([@+#=%].+)?$})
+          exit 0
+        else
+          STDERR.puts ":: Error: Branch \"#{_br}\" and directory \"#{_wd}\" do not match"
+          exit 1
+        end
       ' \
   && echo "$_wd" \
-  || _err "Failed to get package name in \"$_wd\" and on \"$_br\""
+  || return 1
 }
 
 # Return the number of commits between two points. This will actually
