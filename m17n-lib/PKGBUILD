@@ -1,19 +1,17 @@
-# $Id: PKGBUILD 172091 2012-11-28 06:10:31Z bisson $
-# Maintainer: Gaetan Bisson <bisson@archlinux.org>
-# Contributor: Camille Moncelier <pix@devlife.org>
+#!/bin/bash
 
-pkgname=m17n-lib
-pkgver=1.6.4
-pkgrel=1
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Original Contributor: Camille Moncelier <pix@devlife.org>
+
 pkgdesc='Multilingual text processing library (runtimes)'
 url='http://www.nongnu.org/m17n/'
 arch=('i686' 'x86_64')
 license=('GPL')
 depends=('libxft' 'm17n-db' 'fribidi' 'libxml2' 'gd' 'libotf')
-optdepends=('anthy: to use the anthy input method')
+# optdepends=('anthy: to use the anthy input method')
 options=('!makeflags' '!libtool' '!emptydirs')
-source=("http://download.savannah.gnu.org/releases/m17n/${pkgname}-${pkgver}.tar.gz")
-sha1sums=('83f2fc4facfd70a580bb95d9381eac7472d85171')
+source=("http://download.savannah.gnu.org/releases/m17n/${pkgbase}-${pkgver}.tar.gz")
 
 build() {
 	cd "${srcdir}/${pkgname}-${pkgver}"
