@@ -11,6 +11,7 @@ _msg() {
 
 _err() {
   echo >&2 ":: Error: $@"
+  return 1
 }
 
 _warn() {
