@@ -2,7 +2,7 @@
 
 # Purpose: Various tools (See function docs.)
 # Author : Anh K. Huynh
-# License: GPL v2
+# License: GPL v2 (http://www.gnu.org/licenses/gpl-2.0.html)
 # Date   : 2013 March 30th
 
 _msg() {
