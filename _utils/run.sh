@@ -610,11 +610,7 @@ s-makepkg() {
   local _rel=
   local _pkg=
 
-  _pkg="$(_get_package_name)" \
-  || {
-    _err "Failed to get package name"
-    return 1
-  }
+  _pkg="$(_get_package_name)" || return 1
 
   _tag="$(_get_git_tag_on_package_branch ${_pkg})" \
   || {
