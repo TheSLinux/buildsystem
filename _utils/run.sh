@@ -670,7 +670,7 @@ _get_next_tag_from_tag() {
 #   7. Doesn't support version string that only has one number. E.g,
 #      the package `xterm` or `less` only uses one number (patch number).
 #      This is possibly due to history reason. This number will be converted
-#      two number forms by adding zero `0` to the original string. E.g,
+#      to two number forms by adding zero `0` to the original string. E.g,
 #      `xterm-291-1` should read `xterm-0.291-1`.
 #   8. `PACKAGE_BASE` (so `pkgbase`) is alway defined.
 #
