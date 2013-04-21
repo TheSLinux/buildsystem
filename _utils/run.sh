@@ -528,6 +528,22 @@ _get_git_tag_on_package_branch() {
   return 1
 }
 
+
+# Return the package name from a tag
+# Input
+#   $1 => The current tag
+#
+_get_package_name_from_tag() {
+  local _tag="$1"
+  ruby \
+    -e "_tag=\"$_tag\"" \
+    -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
+          puts gs[1]
+        else
+          exit 1
+        end'
+}
+
 # Return the version number from a tag
 # Input
 #   $1 => The current tag
