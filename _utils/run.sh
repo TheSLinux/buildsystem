@@ -516,10 +516,7 @@ _get_git_tag_on_package_branch() {
   fi
 
   if [[ "$_br" == "HEAD" ]]; then
-    if ! _br="$(_get_git_branch)"; then
-      _err "Failed to get current branch"
-      return 1
-    fi
+    _br="$(_get_git_branch)" || return 1
   fi
 
   while read _commit; do
