@@ -607,6 +607,12 @@ _get_next_tag_from_tag() {
 #   4. Retrieve the version number and release number for the tag
 #   5. Invoke the original `makepkg` with new environment
 #
+# By default, `s-makepkg` uses the latest tag from the `package branch`.
+# If you want to specify an exact tag, please use `PACKAGE_TAG` instead.
+# This tag must do exist in the git repository. If `PACKAGE_TAG` is used,
+# you don't need to provide `PACKAGE_BASE` because we can retrieve it
+# from `PACKAGE_TAG`. (`PACKAGE_TAG` == `PACKAGE_BASE-<ver>[-<rel>]`)
+#
 # Difference from the original `makepkg`
 #
 #   1. Package information {name, version, release} can be provided
@@ -621,8 +627,15 @@ _get_next_tag_from_tag() {
 #   5. `Release number` is detected automatically
 #   6. `PKGBUILD` isn't independent and it can't be used with the original
 #      `makepkg` without some environment settings
+#   7. Doesn't support version string that only has one number. E.g,
+#      the package `xterm` or `less` only uses one number (patch number).
+#      This is possibly due to history reason. This number will be converted
+#      two number forms by adding zero `0` to the original string. E.g,
+#      `xterm-291-1` should read `xterm-0.291-1`.
 #
 # Input
+#      => PACKAGE_BASE  => the original package branch
+#      => PACKAGE_TAG   => the reference tag to start from
 #   $1 => --current-tag => print current tag and exit
 #      => --next-tag    => print next tag and exit
 #   $@ => pass to original `makepkg`
