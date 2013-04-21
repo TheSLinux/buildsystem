@@ -626,6 +626,25 @@ _get_next_tag_from_tag() {
         end'
 }
 
+# Return version number from the old PKGBUILD. This is useful when
+# importing the old package to our build system: immediately after
+# importing we will need the version number to create the first tag.
+#
+# Input
+#   $1 => STDIN (contents of an ArchLinux PKGBUILD)
+#
+_get_version_from_old_PKGBUILD() {
+  ruby -e "STDIN.readlines.each do |line|
+    if gs = line.match(%r{^pkgver=(['\"])([0-9]+(\.[0-9]+){0,2})\1[[:space:]]*$})
+      puts gs[2]; exit 0
+    elsif gs = line.match(%r{^pkgver=([0-9]+(\.[0-9]+){0,2})[[:space:]]*$})
+      puts gs[1]; exit 0
+    end
+  end
+  STDERR.puts ':: Error:: Unable to read \"pkgver\" from PKGBUILD'
+  exit 1"
+}
+
 # TheSLinux's version of Arch makepkg. This will check and generate
 # some environment variables before invoking the real program `makepkg`.
 # Note: the dash (-) hides this function from Geany symbols listing
