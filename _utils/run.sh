@@ -730,6 +730,12 @@ s-makepkg() {
   makepkg "$@"
 }
 
+_func=""
+case "${0##*/}" in
+  "s-package-import") _func="import" ;;
+  "s-makepkg")        _func="s-makepkg" ;;
+esac
+
 (( $# )) || _die "Missing arguments"
 
-"$@"
+$_func "$@"
