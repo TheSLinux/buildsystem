@@ -11,14 +11,11 @@ license=('GPL' 'BSD')
 url="http://www.skbuff.net/iputils/"
 groups=('base')
 depends=('openssl' 'sysfsutils' 'libcap')
-optdepends=('xinetd: for tftpd')
 makedepends=('docbook2x' 'opensp' 'perl-xml-libxml')
-conflicts=('netkit-base' 'arping' 'netkit-tftpd')
+conflicts=('netkit-base' 'arping')
 replaces=('netkit-base')
-backup=(etc/xinetd.d/tftp)
-install=${pkgname}.install
-source=("http://www.skbuff.net/${pkgbase}/${pkgbase}-s${pkgver//.}.tar.bz2"
-        tftp.xinetd)
+install=${pkgbase}.install
+source=("http://www.skbuff.net/${pkgbase}/${pkgbase}-s${pkgver//.}.tar.bz2")
 
 build() {
   cd "${srcdir}/${pkgname}-s${pkgver//.}"
@@ -39,21 +36,17 @@ package() {
 
   install -dm755 "${pkgdir}"/usr/{bin,sbin} "${pkgdir}"/bin
 
-  install -m755 arping clockdiff rarpd rdisc tftpd tracepath tracepath6 \
+  install -m755 arping clockdiff rarpd rdisc tracepath tracepath6 \
     "${pkgdir}"/usr/sbin/
 
   install -m755 ping{,6} "${pkgdir}"/usr/bin/
    ln -sf /usr/bin/ping{,6}  "${pkgdir}"/bin/
 
    install -dm755 "${pkgdir}"/usr/share/man/man8
-   install -m644 doc/{arping,clockdiff,ping,rarpd,rdisc,tftpd,tracepath}.8 \
+   install -m644 doc/{arping,clockdiff,ping,rarpd,rdisc,tracepath}.8 \
      "${pkgdir}"/usr/share/man/man8/
 
   cd "${pkgdir}"/usr/share/man/man8
   ln -sf ping.8.gz  ping6.8.gz
   ln -sf tracepath.8.gz tracepath6.8.gz
-
-  # FS#24768
-  install -dm755 "${pkgdir}"/etc/xinetd.d/
-  install -m644 "${srcdir}"/tftp.xinetd "${pkgdir}"/etc/xinetd.d/tftp
 }
