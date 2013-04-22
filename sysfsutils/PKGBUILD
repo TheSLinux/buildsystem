@@ -1,17 +1,15 @@
-# $Id: PKGBUILD 157735 2012-04-29 05:13:28Z dreisner $
-# Maintainer: Tobias Powalowski <tpowa@archlinux.org>
+#!/bin/bash
 
-pkgname=sysfsutils
-pkgver=2.1.0
-pkgrel=8
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Tobias Powalowski <tpowa@archlinux.org>
+
 pkgdesc="System Utilities Based on Sysfs"
 arch=(i686 x86_64)
 license=('GPL' 'LGPL')
 url="http://linux-diag.sourceforge.net/Sysfsutils.html"
 groups=('base')
 depends=('glibc')
-source=(http://downloads.sourceforge.net/sourceforge/linux-diag/${pkgname}-${pkgver}.tar.gz)
-md5sums=('14e7dcd0436d2f49aa403f67e1ef7ddc')
+source=(http://downloads.sourceforge.net/sourceforge/linux-diag/${pkgbase}-${pkgver}.tar.gz)
 options=(!libtool)
 
 build() {
