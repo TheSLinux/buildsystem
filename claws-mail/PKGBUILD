@@ -19,7 +19,6 @@ provides=('claws')
 options=(!libtool)
 install=claws-mail.install
 source=(http://downloads.sourceforge.net/sourceforge/sylpheed-claws/${pkgbase}-${pkgver}.tar.bz2)
-md5sums=('4c5ac7b21f0ed17d0f6404124c2229a4')
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
