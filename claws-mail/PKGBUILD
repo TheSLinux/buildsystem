@@ -1,9 +1,8 @@
-# $Id: PKGBUILD 171008 2012-11-14 19:48:49Z andyrtr $
-# Maintainer: Andreas Radke <andyrtr@archlinux.org>
+#!/bin/bash
 
-pkgname=claws-mail
-pkgver=3.9.0
-pkgrel=1
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Andreas Radke <andyrtr@archlinux.org>
+
 pkgdesc="A GTK+ based e-mail client."
 arch=('i686' 'x86_64')
 license=('GPL3')
@@ -19,7 +18,7 @@ replaces=('sylpheed-claws')
 provides=('claws')
 options=(!libtool)
 install=claws-mail.install
-source=(http://downloads.sourceforge.net/sourceforge/sylpheed-claws/${pkgname}-${pkgver}.tar.bz2)
+source=(http://downloads.sourceforge.net/sourceforge/sylpheed-claws/${pkgbase}-${pkgver}.tar.bz2)
 md5sums=('4c5ac7b21f0ed17d0f6404124c2229a4')
 
 build() {
@@ -49,8 +48,9 @@ package() {
   cd tools
   make
    # all executables and .conf files ; only top directory
-  find -maxdepth 1 -type f -and -perm /111 -or -name '*.conf' | while read i ; do
+  find -maxdepth 1 -type f -and -perm /111 -or -name '*.conf' \
+  | while read i; do
       install -D -m755 ${i} \
         ${pkgdir}/usr/lib/claws-mail/tools/${i}
-  done
+    done
 }
