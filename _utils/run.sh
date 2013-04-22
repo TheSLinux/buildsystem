@@ -52,6 +52,7 @@ _import_package() {
   local _dd="$PWD/$_pkg/"             # path to desntination
   local _rev=                         # package revision (SVN)
   local _f_readme="$_dd/README.md"    # the reade file
+  local _pkgver=
 
   _msg ">> Trying to import package $_pkg <<"
 
@@ -140,6 +141,20 @@ _import_package() {
     && git branch --set-upstream-to="origin/$_pkg" \
     && git co master \
     || { _err "Something wrong with git repository"; return 1; }
+
+    if _pkgver="$(git show "$_pkg:$_pkg/PKGBUILD" \
+                | _get_version_from_old_PKGBUILD ;\
+              [[ ${PIPESTATUS[0]} -eq 0 ]] \
+              && [[ ${PIPESTATUS[1]} -eq 0 ]] \
+              || exit 1 \
+            )" ; then
+      git tag -a \
+        -m "The original source from the ABS" \
+        "${_pkg}-${_pkgver}" "$_pkg"
+      git push origin "${_pkg}-${_pkgver}"
+    else
+      _err "Failed to get version number from PKGBUILD of $_pkg"
+    fi
   } \
   || {
     _err "Failed to switch to 'master' or to create new branch $_pkg"
