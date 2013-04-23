@@ -661,6 +661,68 @@ _get_version_from_old_PKGBUILD() {
   exit 1"
 }
 
+# Check if there is a tag that indicates time when package is imported
+# from the ABS. This first tag is important bc it helps `s-makepkg`.
+#
+# Strategy
+#
+#   1. Check if the branch is a package branch: the name of the branch
+#      <branch> shoud lead to the file <branch>:<branch>/PKGBUILD
+#   2. Find the first commit of the <branch>
+#   3. Check if there is tag at the commit
+#      1. If there is tag, but it isn't an annotation tag -> fix it
+#      2. If there is not a tag
+#         1. Find the version from PKGBUILD
+#         2. Create new annotatag from that version
+#
+# Input
+#   $1 => The branch to check (this should be a package branch)
+#
+_fix_the_1st_tag_on_package_branch() {
+  local _br="${1:-HEAD}"
+  local _commit=
+  local _tag=
+  local _pkgver=
+
+  _br="$(_get_git_branch "$_br")" || return 1
+  git show "$_br:$_br/PKGBUILD" >/dev/null \
+  || {
+    _err "The branch '$_br' is not a package branch"
+    return 1
+  }
+  _commit="$( \
+      git log --pretty="format:%H" "TheBigBang".."$_br" -- | tail -1 ;\
+      [[ ${PIPESTATUS[0]} -eq 0 ]] \
+      && [[ ${PIPESTATUS[1]} -eq 0 ]] \
+      || exit 1 \
+    )" \
+  || return 1
+
+  # Because the file `PKGBUILD` does exist in the branch, there is
+  # no way that `_commit` is empty (as `TheBigBang` and our branch
+  # have a the same current commit.
+
+  if _tag="$(git describe --tags --exact-match "$_commit" 2>/dev/null)"; then
+    _tag="$(_get_package_name_from_tag "$_tag")" || return 1
+    [[ "$_tag" != "$_br" ]] || return 0
+    _err "Tag was created but it doesn't match package branch '$_br'"
+    return 1
+  fi
+
+  _pkgver="$(
+      git show "$_commit":$_br/PKGBUILD \
+        | _get_version_from_old_PKGBUILD ; \
+      [[ ${PIPESTATUS[0]} -eq 0 ]] \
+      && [[ ${PIPESTATUS[1]} -eq 0 ]] \
+      || exit 1 \
+    )" \
+  || return 1
+
+  git tag -s -a \
+    -m"The original source from the ABS" \
+    "$_br-$_pkgver" "$_commit"
+}
+
 # TheSLinux's version of Arch makepkg. This will check and generate
 # some environment variables before invoking the real program `makepkg`.
 # Note: the dash (-) hides this function from Geany symbols listing
