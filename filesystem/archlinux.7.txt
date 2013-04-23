@@ -1,20 +1,20 @@
 /////
 vim:set ts=4 sw=4 syntax=asciidoc noet:
 /////
-archlinux(7)
+theslinux(7)
 ============
 
 NAME
 ----
-archlinux - basic configuration
+theslinux - basic configuration
 
 SYNOPSIS
 --------
-Overview of the basic configuration of Arch Linux.
+Overview of the basic configuration of TheSLinux.
 
 DESCRIPTION
 -----------
-Arch Linux exposes the user to the system without hiding any details.
+TheSLinux exposes the user to the system without hiding any details.
 This man page gives a brief overview of the configuration files that should be set up on a fresh install.
 
 SYSTEM SERVICES[[S]]
@@ -87,4 +87,5 @@ SEE ALSO
 
 AUTHORS
 -------
-Written by Tom Gundersen.
+This man page is originally written by Tom Gundersen.
+It is updated to be used in TheSLinux by Anh K. Huynh.

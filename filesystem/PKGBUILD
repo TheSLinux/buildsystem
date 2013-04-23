@@ -8,9 +8,6 @@
 # and modify them to use in `TheSLinux`. The field `mainainer`
 # of this file was modified to have it to work with `makepkg`.
 
-pkgname=filesystem
-pkgver=2013.03
-pkgrel=2
 pkgdesc='Base filesystem'
 arch=('i686' 'x86_64')
 license=('GPL')
