@@ -532,9 +532,7 @@ _get_git_tag_on_package_branch() {
     return 1
   fi
 
-  if [[ "$_br" == "HEAD" ]]; then
-    _br="$(_get_git_branch)" || return 1
-  fi
+  _br="$(_get_git_branch "$_br")" || return 1
 
   while read _commit; do
     if _tag="$(git describe --tags --exact-match $_commit 2>/dev/null)"; then
