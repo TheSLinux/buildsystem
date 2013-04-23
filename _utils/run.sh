@@ -502,7 +502,7 @@ _get_number_of_git_commits_between_two_points() {
 #                \--#--#---------------- the development branch
 #
 # The tag `T` contains any `*`. The tag `S`, `R` contain any `*` and `o`.
-# So `git tag --contains` will return a list of commits. And that list
+# So `git tag --contains` will return a list of tags. And that list
 # will not help to find the correct tag.
 #
 # There may be two different ways to get *the tag we want*
