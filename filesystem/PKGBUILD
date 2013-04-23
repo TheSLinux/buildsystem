@@ -21,13 +21,13 @@ backup=('etc/fstab' 'etc/crypttab' 'etc/group' 'etc/hosts' 'etc/ld.so.conf' 'etc
         'etc/shells' 'etc/host.conf' 'etc/securetty' 'etc/profile' 'etc/issue')
 source=('group' 'issue' 'nsswitch.conf' 'securetty' 'host.conf' 'ld.so.conf'
         'passwd' 'shadow' 'fstab' 'crypttab' 'hosts' 'motd' 'os-release' 'resolv.conf'
-        'shells' 'gshadow' 'profile' 'modprobe.d.usb-load-ehci-first' 'archlinux.7.txt'
+        'shells' 'gshadow' 'profile' 'modprobe.d.usb-load-ehci-first' 'theslinux.7.txt'
         'locale.sh')
 md5sums=()
 
 build() {
 	cd ${srcdir}
-	a2x -d manpage -f manpage archlinux.7.txt
+	a2x -d manpage -f manpage theslinux.7.txt
 }
 
 package() {
@@ -89,10 +89,7 @@ package() {
 		ln -s lib ${pkgdir}/usr/lib64
 	)
 
-	#
-	# install archlinux(7) manpage
-	#
-	install -D -m644 ${srcdir}/archlinux.7 usr/share/man/man7/archlinux.7
+	install -D -m644 ${srcdir}/theslinux.7 usr/share/man/man7/theslinux.7
 
 	#
 	# setup /usr/local hierarchy
