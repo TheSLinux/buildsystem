@@ -349,14 +349,14 @@ convert() {
 #
 _get_git_branch() {
   local _br=
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" && "$1" != "HEAD" ]]; then
     git show-branch "$1" >/dev/null \
     && echo "$1" \
     || return 1
   else
     _br="$(git rev-parse --abbrev-ref HEAD)" \
     && echo "$_br" \
-    || _err "Failed to run geat HEAD information in $PWD"
+    || return 1
   fi
 }
 
