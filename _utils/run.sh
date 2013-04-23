@@ -144,10 +144,8 @@ _import_package() {
     || { _err "Something wrong with git repository"; return 1; }
 
     if _pkgver="$(git show "$_pkg:$_pkg/PKGBUILD" \
-                | _get_version_from_old_PKGBUILD ;\
-              [[ ${PIPESTATUS[0]} -eq 0 ]] \
-              && [[ ${PIPESTATUS[1]} -eq 0 ]] \
-              || exit 1 \
+                | _get_version_from_old_PKGBUILD ; \
+              [[ ${PIPESTATUS[0]} -eq 0 && ${PIPESTATUS[1]} -eq 0 ]] || exit 1 \
             )" ; then
       git tag -a \
         -m "The original source from the ABS" \
@@ -464,8 +462,7 @@ _get_number_of_git_commits_between_two_points() {
   _num="$( \
       _get_git_commits_between_two_points $_from $_to "$@" \
         | _linecount ; \
-      [[ ${PIPESTATUS[0]} -eq 0 ]] || exit 1 ; \
-      [[ ${PIPESTATUS[1]} -eq 0 ]] || exit 1 ; \
+      [[ ${PIPESTATUS[0]} -eq 0 && ${PIPESTATUS[1]} -eq 0 ]] || exit 1 ; \
     )" \
   && echo "$_num" \
   || _err "Unable to get number of commits between '$_from' and '$_to'"
@@ -692,9 +689,7 @@ _fix_the_1st_tag_on_package_branch() {
   }
   _commit="$( \
       git log --pretty="format:%H" "TheBigBang".."$_br" -- | tail -1 ;\
-      [[ ${PIPESTATUS[0]} -eq 0 ]] \
-      && [[ ${PIPESTATUS[1]} -eq 0 ]] \
-      || exit 1 \
+      [[ ${PIPESTATUS[0]} -eq 0 && ${PIPESTATUS[1]} -eq 0 ]] || exit 1 \
     )" \
   || return 1
 
@@ -712,9 +707,7 @@ _fix_the_1st_tag_on_package_branch() {
   _pkgver="$(
       git show "$_commit":$_br/PKGBUILD \
         | _get_version_from_old_PKGBUILD ; \
-      [[ ${PIPESTATUS[0]} -eq 0 ]] \
-      && [[ ${PIPESTATUS[1]} -eq 0 ]] \
-      || exit 1 \
+      [[ ${PIPESTATUS[0]} -eq 0 && ${PIPESTATUS[1]} -eq 0 ]] || exit 1 \
     )" \
   || return 1
 
