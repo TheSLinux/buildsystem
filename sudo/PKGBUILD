@@ -18,11 +18,11 @@ depends=('glibc' 'pam')
 backup=('etc/sudoers' 'etc/pam.d/sudo')
 options=('!libtool')
 source=("http://www.sudo.ws/sudo/dist/${pkgbase}-$_sudover.tar.gz"{,.sig}
-        sudo.pam)
+        "sudo.pam" "new-default-sudoers.patch")
 
 build() {
   cd "$srcdir/$pkgname-$_sudover"
-
+  patch -Np4 < "${srcdir}/new-default-sudoers.patch"
   ./configure \
     --prefix=/usr \
     --libexecdir=/usr/lib \
