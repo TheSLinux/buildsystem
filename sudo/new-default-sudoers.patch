@@ -1,0 +1,159 @@
+From 139a74838c2ddcddb38d9193bba44c15e494a14d Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Wed, 24 Apr 2013 21:16:01 +0700
+Subject: [PATCH 1/2] Provide our own sample/default file :sudoers
+
+---
+ sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in | 115 +++++------------------
+ 1 file changed, 25 insertions(+), 90 deletions(-)
+
+diff --git a/sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in b/sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in
+index 42e639e..0333823 100644
+--- a/sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in
++++ b/sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in
+@@ -1,90 +1,25 @@
+-## sudoers file.
+-##
+-## This file MUST be edited with the 'visudo' command as root.
+-## Failure to use 'visudo' may result in syntax or file permission errors
+-## that prevent sudo from running.
+-##
+-## See the sudoers man page for the details on how to write a sudoers file.
+-##
+-
+-##
+-## Host alias specification
+-##
+-## Groups of machines. These may include host names (optionally with wildcards),
+-## IP addresses, network numbers or netgroups.
+-# Host_Alias	WEBSERVERS = www1, www2, www3
+-
+-##
+-## User alias specification
+-##
+-## Groups of users.  These may consist of user names, uids, Unix groups,
+-## or netgroups.
+-# User_Alias	ADMINS = millert, dowdy, mikef
+-
+-##
+-## Cmnd alias specification
+-##
+-## Groups of commands.  Often used to group related commands together.
+-# Cmnd_Alias	PROCESSES = /usr/bin/nice, /bin/kill, /usr/bin/renice, \
+-# 			    /usr/bin/pkill, /usr/bin/top
+-
+-##
+-## Defaults specification
+-##
+-## You may wish to keep some of the following environment variables
+-## when running commands via sudo.
+-##
+-## Locale settings
+-# Defaults env_keep += "LANG LANGUAGE LINGUAS LC_* _XKB_CHARSET"
+-##
+-## Run X applications through sudo; HOME is used to find the
+-## .Xauthority file.  Note that other programs use HOME to find   
+-## configuration files and this may lead to privilege escalation!
+-# Defaults env_keep += "HOME"
+-##
+-## X11 resource path settings
+-# Defaults env_keep += "XAPPLRESDIR XFILESEARCHPATH XUSERFILESEARCHPATH"
+-##
+-## Desktop path settings
+-# Defaults env_keep += "QTDIR KDEDIR"
+-##
+-## Allow sudo-run commands to inherit the callers' ConsoleKit session
+-# Defaults env_keep += "XDG_SESSION_COOKIE"
+-##
+-## Uncomment to enable special input methods.  Care should be taken as
+-## this may allow users to subvert the command being run via sudo.
+-# Defaults env_keep += "XMODIFIERS GTK_IM_MODULE QT_IM_MODULE QT_IM_SWITCHER"
+-##
+-## Uncomment to enable logging of a command's output, except for
+-## sudoreplay and reboot.  Use sudoreplay to play back logged sessions.
+-# Defaults log_output
+-# Defaults!/usr/bin/sudoreplay !log_output
+-# Defaults!/usr/local/bin/sudoreplay !log_output
+-# Defaults!/sbin/reboot !log_output
+-
+-##
+-## Runas alias specification
+-##
+-
+-##
+-## User privilege specification
+-##
+-root ALL=(ALL) ALL
+-
+-## Uncomment to allow members of group wheel to execute any command
+-# %wheel ALL=(ALL) ALL
+-
+-## Same thing without a password
+-# %wheel ALL=(ALL) NOPASSWD: ALL
+-
+-## Uncomment to allow members of group sudo to execute any command
+-# %sudo	ALL=(ALL) ALL
+-
+-## Uncomment to allow any user to run sudo if they know the password
+-## of the user they are running the command as (root by default).
+-# Defaults targetpw  # Ask for the password of the target user
+-# ALL ALL=(ALL) ALL  # WARNING: only use this together with 'Defaults targetpw'
+-
+-## Read drop-in files from @sysconfdir@/sudoers.d
+-## (the '#' here does not indicate a comment)
+-#includedir @sysconfdir@/sudoers.d
++#
++# This file SHOULD be edited with the `visudo` command as root.
++#
++# If you don't want to use `visudo`, please edit *A COPY* of this file,
++# and use the command `visudo -c -f /path/to/your/copy` to check if
++# there is any error. If the command returns successfully you can move
++# that copy to replace the file `/etc/sudoers`.
++#
++
++# Keep the following environments
++Defaults env_reset
++Defaults env_keep += "LANG LANGUAGE LINGUAS LC_* _XKB_CHARSET"
++
++# Log all output, except for some special commands. Please refer to
++# the man page of the command `sudoreplay` for details.
++Defaults log_output
++Defaults!/usr/bin/sudoreplay !log_output
++Defaults!/usr/local/bin/sudoreplay !log_output
++Defaults!/sbin/reboot !log_output
++
++# The default settings you wouldn't want to change them
++root    ALL=(ALL) ALL
++%wheel  ALL=(ALL) NOPASSWD: ALL
++
++# Put your settings below this line
+-- 
+1.8.2.1
+
+
+From 88ae8b5fcc6b8bb67f2e49528522cd2b9a9c00bf Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Wed, 24 Apr 2013 21:23:41 +0700
+Subject: [PATCH 2/2] Clean up default :sudoers file
+
+Bc. the account "root" belongs to the group %wheel we
+donot to provide both "root" and "%wheel"
+---
+ sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in b/sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in
+index 0333823..a09407c 100644
+--- a/sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in
++++ b/sudo/src/sudo-1.8.6p8/plugins/sudoers/sudoers.in
+@@ -19,7 +19,6 @@ Defaults!/usr/local/bin/sudoreplay !log_output
+ Defaults!/sbin/reboot !log_output
+ 
+ # The default settings you wouldn't want to change them
+-root    ALL=(ALL) ALL
+ %wheel  ALL=(ALL) NOPASSWD: ALL
+ 
+ # Put your settings below this line
+-- 
+1.8.2.1
+
