@@ -526,7 +526,7 @@ _get_git_tag_on_package_branch() {
         -e "_tag=\"$_tag\"" \
         -e "_br=\"$_br\"" \
         -e 'exit \
-              _tag.match(/^#{_br}-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/) \
+              _tag.match(/^#{_br}-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/) \
               ? 0 : 1
           ' \
       && echo "$_tag" && return 0
@@ -546,7 +546,7 @@ _get_package_name_from_tag() {
   local _tag="$1"
   ruby \
     -e "_tag=\"$_tag\"" \
-    -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
+    -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
           puts gs[1]
         else
           STDERR.puts ":: Error: Failed to get package name from tag \"#{_tag}\""
@@ -562,7 +562,7 @@ _get_version_from_tag() {
   local _tag="$1"
   ruby \
     -e "_tag=\"$_tag\"" \
-    -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
+    -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
           puts gs[1]
         else
           STDERR.puts ":: Error: Failed to get version number from tag \"#{_tag}\""
@@ -577,7 +577,7 @@ _get_release_from_tag() {
   local _tag="$1"
   ruby \
     -e "_tag=\"$_tag\"" \
-    -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
+    -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
           puts gs[3] ? gs[4] : 1
         else
           STDERR.puts ":: Error: Failed to get release number from tag \"#{_tag}\""
@@ -617,7 +617,7 @@ _get_next_tag_from_tag() {
   ruby \
     -e "_tag=\"$_tag\"" \
     -e "_rel=$_rel" \
-    -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,2})(-([0-9]+))?$/)
+    -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
           _rel += gs[4] ? gs[5].to_i : 1
           puts "#{gs[1]}-#{gs[2]}-#{_rel}"
         else
@@ -637,9 +637,9 @@ _get_next_tag_from_tag() {
 #
 _get_version_from_old_PKGBUILD() {
   ruby -e "STDIN.readlines.each do |line|
-    if gs = line.match(%r{^pkgver=(['\"])([0-9]+(\.[0-9]+){1,2})\1[[:space:]]*$})
+    if gs = line.match(%r{^pkgver=(['\"])([0-9]+(\.[0-9]+){1,3})\1[[:space:]]*$})
       puts gs[2]; exit 0
-    elsif gs = line.match(%r{^pkgver=([0-9]+(\.[0-9]+){1,2})[[:space:]]*$})
+    elsif gs = line.match(%r{^pkgver=([0-9]+(\.[0-9]+){1,3})[[:space:]]*$})
       puts gs[1]; exit 0
     end
   end
