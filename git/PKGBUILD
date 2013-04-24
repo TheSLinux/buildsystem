@@ -33,6 +33,8 @@ build() {
   make prefix=/usr gitexecdir=/usr/lib/git-core \
     CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" \
     USE_LIBPCRE=1 \
+    NO_TCLTK=1 \
+    NO_IPV6=1 \
     NO_CROSS_DIRECTORY_HARDLINKS=1 \
     all
 
