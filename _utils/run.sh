@@ -426,15 +426,15 @@ _get_git_commits_between_two_points() {
   local _from="$1"; shift
   local _to="${1:-HEAD}"; shift
 
-  # Using of `echo`:
-  # This is tricky to add newline to EOF. This help the output is countable
-  # by `wc`, and readable by `while` loop. Without a `newline` at the end,
-  # the last line from the output will be ignored by `while` loop.
-  # FIXME: This possibly change in the future, by `git`. Should find
-  # FIXME: a more robust way and add a test case to ensure things work.
   git log --pretty="format:%H" "$_from".."$_to" "$@" \
-  && echo \
-  || _err "Failed to get commits between two points '$_from' and '$_to'"
+    | grep -E "^[a-f0-9]{40}$"
+
+  # The 2nd `grep` is to filter output. If there is nothing found
+  # we still consider that is an valid.
+  [[ "${PIPESTATUS[0]}" -ge 1 || "${PIPESTATUS[1]}" -ge 2 ]] \
+  || return 0
+
+  _err "Failed to get commits between two points '$_from' and '$_to'"
 }
 
 # See also (_get_git_commits_between_two_points)
