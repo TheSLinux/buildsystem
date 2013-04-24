@@ -7,7 +7,7 @@ arch=('i686' 'x86_64')
 url="http://www.freedesktop.org/wiki/Software/systemd"
 license=('GPL2' 'LGPL2.1' 'MIT')
 makedepends=('acl' 'cryptsetup' 'dbus-core' 'docbook-xsl' 'gobject-introspection' 'gperf'
-             'gtk-doc' 'intltool' 'kmod' 'libcap' 'libgcrypt'  'libmicrohttpd' 'libxslt'
+             'intltool' 'kmod' 'libcap' 'libgcrypt' 'libxslt'
              'linux-api-headers' 'pam' 'python' 'quota-tools' 'xz')
 options=('!libtool')
 source=("http://www.freedesktop.org/software/$pkgbase/$pkgbase-$_pkgver.tar.xz"
@@ -35,9 +35,14 @@ build() {
       --localstatedir=/var \
       --sysconfdir=/etc \
       --enable-introspection \
-      --enable-gtk-doc \
+      --disable-gtk-doc \
+      --disable-selinux \
       --disable-audit \
+      --disable-tcpwrap \
+      --disable-qrencode \
       --disable-ima \
+      --disable-microhttpd \
+      --disable-tests \
       --with-sysvinit-path= \
       --with-sysvrcnd-path= \
       --with-firmware-path="/usr/lib/firmware/updates:/usr/lib/firmware"
