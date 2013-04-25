@@ -1,0 +1,703 @@
+From f8a302a6a04f03d49c7163a5b57b5c7536b673a1 Mon Sep 17 00:00:00 2001
+From: NgoHuy <huynhok.uit@gmail.com>
+Date: Thu, 25 Apr 2013 13:21:24 +0700
+Subject: [PATCH] patch releases
+
+---
+ gtk2/Makefile.am           |   2 +-
+ gtk2/immodule/Makefile.am  |   4 -
+ gtk2/immodule/gtk-im-uim.c | 411 +--------------------------------------------
+ gtk3/Makefile.am           |   2 +-
+ gtk3/immodule/Makefile.am  |   8 -
+ qt3/Makefile.am            |   2 +-
+ qt3/immodule/Makefile.am   |  10 +-
+ qt4/Makefile.am            |   2 +-
+ qt4/immodule/Makefile.am   |  12 +-
+ 9 files changed, 15 insertions(+), 438 deletions(-)
+
+diff --git a/gtk2/Makefile.am b/gtk2/Makefile.am
+index 99802b5..ee15df1 100644
+--- a/gtk2/Makefile.am
++++ b/gtk2/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS = candwin dict immodule pad pref switcher test toolbar
++SUBDIRS = immodule pad pref switcher test toolbar
+diff --git a/gtk2/immodule/Makefile.am b/gtk2/immodule/Makefile.am
+index 9475b91..ec34766 100644
+--- a/gtk2/immodule/Makefile.am
++++ b/gtk2/immodule/Makefile.am
+@@ -22,10 +22,6 @@ endif
+ 
+ IM_UIM_SOURCES = \
+ 	gtk-im-uim.c gtk-im-uim.h key-util-gtk.c key-util-gtk.h \
+-	uim-cand-win-gtk.c uim-cand-win-gtk.h \
+-	uim-cand-win-vertical-gtk.c uim-cand-win-vertical-gtk.h \
+-	uim-cand-win-tbl-gtk.c uim-cand-win-tbl-gtk.h \
+-	uim-cand-win-horizontal-gtk.c uim-cand-win-horizontal-gtk.h \
+ 	caret-state-indicator.c caret-state-indicator.h \
+ 	compose.c compose.h text-util.c text-util.h
+ 
+diff --git a/gtk2/immodule/gtk-im-uim.c b/gtk2/immodule/gtk-im-uim.c
+index c1fb1de..c80dcaa 100644
+--- a/gtk2/immodule/gtk-im-uim.c
++++ b/gtk2/immodule/gtk-im-uim.c
+@@ -58,10 +58,6 @@
+ #include "uim/counted-init.h"
+ 
+ #include "gtk-im-uim.h"
+-#include "uim-cand-win-gtk.h"
+-#include "uim-cand-win-vertical-gtk.h"
+-#include "uim-cand-win-tbl-gtk.h"
+-#include "uim-cand-win-horizontal-gtk.h"
+ #include "caret-state-indicator.h"
+ #include "key-util-gtk.h"
+ #ifdef GDK_WINDOWING_X11
+@@ -79,7 +75,7 @@ void im_module_init(GTypeModule *type_module);
+ extern int compose_handle_key(GdkEventKey *key, IMUIMContext *uic);
+ #endif
+ 
+-#define NR_CANDIDATES 20
++
+ #define DEFAULT_SEPARATOR_STR "|"
+ 
+ struct preedit_segment {
+@@ -112,7 +108,6 @@ typedef struct _IMContextUIMClass
+ } IMContextUIMClass;
+ 
+ 
+-static void cand_select_cb(void *ptr, int index);
+ static void im_uim_class_init(GtkIMContextClass *class);
+ static void im_uim_class_finalize(GtkIMContextClass *class);
+ static void im_uim_init(IMUIMContext *uic);
+@@ -124,15 +119,8 @@ static gboolean key_snoop(GtkWidget *grab_widget, GdkEventKey *key, gpointer dat
+ #elif IM_UIM_USE_TOPLEVEL
+ static gboolean handle_key_on_toplevel(GtkWidget *widget, GdkEventKey *event, gpointer data);
+ #endif
+-#if IM_UIM_USE_DELAY
+-static void cand_delay_timer_remove(UIMCandWinGtk *cwin);
+-#endif
+-#if IM_UIM_USE_NEW_PAGE_HANDLING
+-static GSList *get_page_candidates(IMUIMContext *uic, guint page, guint nr, guint display_limit);
+-static void free_candidates(GSList *candidates);
+-#endif
++
+ static void send_im_list(void);
+-static UIMCandWinGtk *im_uim_create_cand_win_gtk(void);
+ 
+ static const GTypeInfo class_info = {
+   sizeof(IMContextUIMClass),
+@@ -357,20 +345,6 @@ update_cur_toplevel(IMUIMContext *uic)
+ {
+   /* Don't set our candwin's text widget as cur_toplevel */
+   if (uic->widget) {
+-    UIMCandWinGtk *cwin;
+-    GList *tmp_list;
+-
+-    tmp_list = cwin_list;
+-    while (tmp_list) {
+-      cwin = tmp_list->data;
+-      if (cwin->sub_window.text_view &&
+-		      cwin->sub_window.text_view == uic->widget)
+-	  return;
+-      tmp_list = tmp_list->next;
+-    }
+-  }
+-
+-  if (uic->widget) {
+     GtkWidget *toplevel = gtk_widget_get_toplevel(uic->widget);
+ #if GTK_CHECK_VERSION(2, 18, 0)
+     if (toplevel && gtk_widget_is_toplevel(toplevel)) {
+@@ -488,70 +462,10 @@ preedit_strlen(IMUIMContext *uic)
+   return len;
+ }
+ 
+-static void
+-index_changed_cb(UIMCandWinGtk *cwin, IMUIMContext *uic)
+-{
+-  gint index;
+ #if IM_UIM_USE_NEW_PAGE_HANDLING
+   guint new_page;
+ #endif
+ 
+-  g_return_if_fail(UIM_IS_CAND_WIN_GTK(cwin));
+-
+-  index = uim_cand_win_gtk_get_index(cwin);
+-  uim_set_candidate_index(uic->uc, index);
+-
+-#if IM_UIM_USE_NEW_PAGE_HANDLING
+-  new_page = uim_cand_win_gtk_query_new_page_by_cand_select(uic->cwin, index);
+-
+-  if (!uic->cwin->stores->pdata[new_page]) {
+-    /* index_changed signal was triggered by prev/next page button on candwin
+-     * (not from uim (cand_select_cb(), cand_shift_page_cb()))
+-     */
+-    guint nr = uic->cwin->nr_candidates;
+-    guint display_limit = uic->cwin->display_limit;
+-    GSList *list = get_page_candidates(uic, new_page, nr, display_limit);
+-    uim_cand_win_gtk_set_page_candidates(uic->cwin, new_page, list);
+-    free_candidates(list);
+-  }
+-#endif /* IM_UIM_USE_NEW_PAGE_HANDLING */
+-}
+-
+-static void
+-layout_candwin(IMUIMContext *uic)
+-{
+-#if GTK_CHECK_VERSION(2, 90, 0)
+-  gint x, y, width, height;
+-#else
+-  gint x, y, width, height, depth;
+-#endif
+-
+-  g_return_if_fail(uic);
+-
+-  if (uic->win && uic->cwin) {
+-#if GTK_CHECK_VERSION(2, 90, 0)
+-    gdk_window_get_geometry(uic->win, &x, &y, &width, &height);
+-#else
+-    gdk_window_get_geometry(uic->win, &x, &y, &width, &height, &depth);
+-#endif
+-    gdk_window_get_origin(uic->win, &x, &y);
+-    uim_cand_win_gtk_layout(uic->cwin, x, y, width, height);
+-  }
+-}
+-
+-static GdkFilterReturn
+-toplevel_window_candidate_cb(GdkXEvent *xevent, GdkEvent *ev, gpointer data)
+-{
+-  IMUIMContext *uic = data;
+-
+-  if (!uic)
+-    return GDK_FILTER_CONTINUE;
+-
+-  if (uic->cwin_is_active)
+-    layout_candwin(uic);
+-
+-  return GDK_FILTER_CONTINUE;
+-}
+ 
+ #if IM_UIM_USE_TOPLEVEL
+ static inline gboolean
+@@ -728,208 +642,9 @@ update_prop_list_cb(void *ptr, const char *str)
+ }
+ 
+ #if IM_UIM_USE_NEW_PAGE_HANDLING
+-static GSList *
+-get_page_candidates(IMUIMContext *uic,
+-		    guint page,
+-		    guint nr,
+-		    guint display_limit)
+-{
+-  gint i, page_nr, start;
+-  GSList *list = NULL;
+-
+-  start = page * display_limit;
+-  if (display_limit && (nr - start) > display_limit)
+-    page_nr = display_limit;
+-  else
+-    page_nr = nr - start;
+-
+-  for (i = start; i < (start + page_nr); i++) {
+-    uim_candidate cand = uim_get_candidate(uic->uc, i,
+-		    display_limit ? (int)(i % display_limit) : i);
+-    list = g_slist_prepend(list, cand);
+-  }
+-  list = g_slist_reverse(list);
+-
+-  return list;
+-}
+-
+-static void
+-free_candidates(GSList *candidates)
+-{
+-  g_slist_foreach(candidates, (GFunc)uim_candidate_free, NULL);
+-  g_slist_free(candidates);
+-}
+-#endif /* IM_UIM_USE_NEW_PAGE_HANDLING */
+- 
+-static void
+-cand_activate_cb(void *ptr, int nr, int display_limit)
+-{
+-  IMUIMContext *uic = (IMUIMContext *)ptr;
+-  GSList *list = NULL;
+-#if !IM_UIM_USE_NEW_PAGE_HANDLING
+-  uim_candidate cand;
+-  gint i;
+-#endif
+-
+-#if IM_UIM_USE_DELAY
+-  cand_delay_timer_remove(uic->cwin);
+-#endif
+-
+-  uic->cwin_is_active = TRUE;
+-
+-#if !IM_UIM_USE_NEW_PAGE_HANDLING
+-  for (i = 0; i < nr; i++) {
+-    cand = uim_get_candidate(uic->uc, i, display_limit ? i % display_limit : i);
+-    list = g_slist_prepend(list, cand);
+-  }
+-  list = g_slist_reverse(list);
+-
+-  uim_cand_win_gtk_set_candidates(uic->cwin, display_limit, list);
+-
+-  g_slist_foreach(list, (GFunc)uim_candidate_free, NULL);
+-  g_slist_free(list);
+-#else
+-  list = get_page_candidates(uic, 0, nr, display_limit);
+-
+-  uim_cand_win_gtk_set_nr_candidates(uic->cwin, nr, display_limit);
+-  uic->cwin->candidate_index = -1; /* Don't select any candidate at first */
+-  uim_cand_win_gtk_set_page_candidates(uic->cwin, 0, list);
+-  uim_cand_win_gtk_set_page(uic->cwin, 0);
+ 
+-  free_candidates(list);
+ #endif /* IM_UIM_USE_NEW_PAGE_HANDLING */
+ 
+-  layout_candwin(uic);
+-  gtk_widget_show(GTK_WIDGET(uic->cwin));
+-
+-  if (uic->win) {
+-    GdkWindow *toplevel;
+-
+-    toplevel = gdk_window_get_toplevel(uic->win);
+-    gdk_window_add_filter(toplevel, toplevel_window_candidate_cb, uic);
+-  }
+-}
+-
+-#if IM_UIM_USE_DELAY
+-static gint
+-cand_activate_timeout(gpointer data)
+-{
+-  IMUIMContext *uic = (IMUIMContext *)data;
+-  int nr = -1, display_limit = -1, selected_index = -1;
+-
+-  g_object_set_data(G_OBJECT(uic->cwin), "timeout-tag", GUINT_TO_POINTER(0));
+-  uim_delay_activating(uic->uc, &nr, &display_limit, &selected_index);
+-  if (nr > 0) {
+-    cand_activate_cb(uic, nr, display_limit);
+-    if (selected_index >= 0) {
+-      cand_select_cb(uic, selected_index);
+-    }
+-  }
+-  return FALSE;
+-}
+-
+-static void
+-cand_delay_timer_remove(UIMCandWinGtk *cwin)
+-{
+-  guint tag = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(cwin), "timeout-tag"));
+-  if (tag > 0)
+-    g_source_remove(tag);
+-}
+-
+-static void
+-cand_activate_with_delay_cb(void *ptr, int delay)
+-{
+-  IMUIMContext *uic = (IMUIMContext *)ptr;
+-  guint tag;
+-
+-  cand_delay_timer_remove(uic->cwin);
+-  if (delay > 0) {
+-    /* g_timeout_add_seconds() needs GLib 2.14 */
+-    tag = g_timeout_add(delay * 1000, cand_activate_timeout, (gpointer)uic);
+-    g_object_set_data(G_OBJECT(uic->cwin), "timeout-tag", GUINT_TO_POINTER(tag));
+-  } else {
+-    cand_activate_timeout(ptr);
+-  }
+-}
+-#endif /* IM_UIM_USE_DELAY */
+-
+-static void
+-cand_select_cb(void *ptr, int index)
+-{
+-  IMUIMContext *uic = (IMUIMContext *)ptr;
+-#if IM_UIM_USE_NEW_PAGE_HANDLING
+-  guint new_page;
+-#endif
+-
+-  layout_candwin(uic);
+-#if IM_UIM_USE_NEW_PAGE_HANDLING
+-  new_page = uim_cand_win_gtk_query_new_page_by_cand_select(uic->cwin, index);
+-
+-  if (!uic->cwin->stores->pdata[new_page]) {
+-    guint nr = uic->cwin->nr_candidates;
+-    guint display_limit = uic->cwin->display_limit;
+-    GSList *list = get_page_candidates(uic, new_page, nr, display_limit);
+-    uim_cand_win_gtk_set_page_candidates(uic->cwin, new_page, list);
+-    free_candidates(list);
+-  }
+-#endif /* IM_UIM_USE_NEW_PAGE_HANDLING */
+-  g_signal_handlers_block_by_func(uic->cwin, (gpointer)(uintptr_t)index_changed_cb, uic);
+-  uim_cand_win_gtk_set_index(uic->cwin, index);
+-  g_signal_handlers_unblock_by_func(uic->cwin, (gpointer)(uintptr_t)index_changed_cb, uic);
+-}
+-
+-static void
+-cand_shift_page_cb(void *ptr, int direction)
+-{
+-  IMUIMContext *uic = (IMUIMContext *)ptr;
+-#if IM_UIM_USE_NEW_PAGE_HANDLING
+-  guint new_page;
+-#endif
+-
+-  layout_candwin(uic);
+-
+-  g_signal_handlers_block_by_func(uic->cwin,
+-				  (gpointer)(uintptr_t)index_changed_cb, uic);
+-#if IM_UIM_USE_NEW_PAGE_HANDLING
+-  new_page = uim_cand_win_gtk_query_new_page_by_shift_page(uic->cwin,
+-							 direction);
+-  if (!uic->cwin->stores->pdata[new_page]) {
+-    guint nr = uic->cwin->nr_candidates;
+-    guint display_limit = uic->cwin->display_limit;
+-    GSList *list = get_page_candidates(uic, new_page, nr, display_limit);
+-    uim_cand_win_gtk_set_page_candidates(uic->cwin, new_page, list);
+-    free_candidates(list);
+-  }
+-#endif /* IM_UIM_USE_NEW_PAGE_HANDLING */
+-  uim_cand_win_gtk_shift_page(uic->cwin, direction);
+-  if (uic->cwin->candidate_index != -1)
+-    uim_set_candidate_index(uic->uc, uic->cwin->candidate_index);
+-  g_signal_handlers_unblock_by_func(uic->cwin,
+-				   (gpointer)(uintptr_t)index_changed_cb, uic);
+-}
+-
+-static void
+-cand_deactivate_cb(void *ptr)
+-{
+-  IMUIMContext *uic = (IMUIMContext *)ptr;
+-
+-  uic->cwin_is_active = FALSE;
+-
+-  if (uic->cwin) {
+-#if IM_UIM_USE_DELAY
+-    cand_delay_timer_remove(uic->cwin);
+-#endif
+-    gtk_widget_hide(GTK_WIDGET(uic->cwin));
+-    uim_cand_win_gtk_clear_candidates(uic->cwin);
+-  }
+-
+-  if (uic->win) {
+-    GdkWindow *toplevel;
+-
+-    toplevel = gdk_window_get_toplevel(uic->win);
+-    gdk_window_remove_filter(toplevel, toplevel_window_candidate_cb, uic);
+-  }
+-}
+ 
+ static void
+ configuration_changed_cb(void *ptr)
+@@ -1174,50 +889,6 @@ commit_string_from_other_process(const gchar *str)
+   g_strfreev(lines);
+ }
+ 
+-static void
+-update_candwin_pos_type()
+-{
+-  IMUIMContext *cc;
+-
+-  for (cc = context_list.next; cc != &context_list; cc = cc->next) {
+-    if (cc->cwin)
+-      uim_cand_win_gtk_get_window_pos_type(cc->cwin);
+-  }
+-}
+-
+-static void
+-update_candwin_style()
+-{
+-  IMUIMContext *cc;
+-  char *candwinprog; /* deprecated */
+-
+-  candwinprog = uim_scm_symbol_value_str("uim-candwin-prog");
+-  /* don't update window style if deprecated uim-candwin-prog is set */
+-  if (candwinprog) {
+-    free(candwinprog);
+-    return;
+-  }
+-
+-  for (cc = context_list.next; cc != &context_list; cc = cc->next) {
+-    if (cc->cwin) {
+-      g_signal_handlers_disconnect_by_func(cc->cwin,
+-		      (gpointer)(uintptr_t)index_changed_cb, cc);
+-#if IM_UIM_USE_DELAY
+-      cand_delay_timer_remove(cc->cwin);
+-#endif
+-      gtk_widget_destroy(GTK_WIDGET(cc->cwin));
+-#if IM_UIM_USE_TOPLEVEL
+-      cwin_list = g_list_remove(cwin_list, cc->cwin);
+-#endif
+-      cc->cwin = im_uim_create_cand_win_gtk();
+-#if IM_UIM_USE_TOPLEVEL
+-      cwin_list = g_list_append(cwin_list, cc->cwin);
+-#endif
+-      g_signal_connect(G_OBJECT(cc->cwin), "index-changed",
+-		       G_CALLBACK(index_changed_cb), cc);
+-    }
+-  }
+-}
+ 
+ static void
+ parse_helper_str(const char *str)
+@@ -1233,18 +904,12 @@ parse_helper_str(const char *str)
+     if (lines && lines[0] && lines[1] && lines[2]) {
+       for (cc = context_list.next; cc != &context_list; cc = cc->next) {
+ 	uim_prop_update_custom(cc->uc, lines[1], lines[2]);
+-	if (!strcmp(lines[1], "candidate-window-position"))
+-	  update_candwin_pos_type();
+-	if (!strcmp(lines[1], "candidate-window-style"))
+-	  update_candwin_style();
+ 	break;  /* all custom variables are global */
+       }
+       g_strfreev(lines);
+     }
+   } else if (g_str_has_prefix(str, "custom_reload_notify") == TRUE) {
+     uim_prop_reload_configs();
+-    update_candwin_pos_type();
+-    update_candwin_style();
+   } else if (focused_context && !disable_focused_context) {
+     if (g_str_has_prefix(str, "prop_list_get") == TRUE) {
+       uim_prop_list_update(focused_context->uc);
+@@ -1385,19 +1050,6 @@ im_uim_get_preedit_string(GtkIMContext *ic, gchar **str, PangoAttrList **attrs,
+ }
+ 
+ static void
+-im_uim_set_cursor_location(GtkIMContext *ic, GdkRectangle *area)
+-{
+-  IMUIMContext *uic = IM_UIM_CONTEXT(ic);
+-
+-  uic->preedit_pos = *area;
+-  uim_cand_win_gtk_set_cursor_location(uic->cwin, area);
+-  caret_state_indicator_set_cursor_location(uic->caret_state_indicator, area);
+-
+-  if (uic->cwin_is_active)
+-    layout_candwin(uic);
+-}
+-
+-static void
+ im_uim_focus_in(GtkIMContext *ic)
+ {
+   IMUIMContext *uic = IM_UIM_CONTEXT(ic);
+@@ -1521,37 +1173,6 @@ im_uim_set_client_window(GtkIMContext *ic, GdkWindow *w)
+   update_client_widget(uic);
+ }
+ 
+-static UIMCandWinGtk *
+-im_uim_create_cand_win_gtk()
+-{
+-  UIMCandWinGtk *cwin = NULL;
+-  char *candwinprog; /* deprecated */
+-  char *style;
+-
+-  candwinprog = uim_scm_symbol_value_str("uim-candwin-prog");
+-  style= uim_scm_symbol_value_str("candidate-window-style");
+-
+-  if (candwinprog) {
+-    if (!strncmp(candwinprog, "uim-candwin-tbl", 15))
+-      cwin = UIM_CAND_WIN_GTK(uim_cand_win_tbl_gtk_new());
+-    else if (!strncmp(candwinprog, "uim-candwin-horizontal", 22))
+-      cwin = UIM_CAND_WIN_GTK(uim_cand_win_horizontal_gtk_new());
+-  } else {
+-    if (style) {
+-      if (!strcmp(style, "table"))
+-        cwin = UIM_CAND_WIN_GTK(uim_cand_win_tbl_gtk_new());
+-      else if (!strcmp(style, "horizontal"))
+-        cwin = UIM_CAND_WIN_GTK(uim_cand_win_horizontal_gtk_new());
+-    }
+-  }
+-  free(candwinprog);
+-  free(style);
+-
+-  if (!cwin)
+-    cwin = UIM_CAND_WIN_GTK(uim_cand_win_vertical_gtk_new());
+-
+-  return cwin;
+-}
+ 
+ static void
+ im_uim_init(IMUIMContext *uic)
+@@ -1566,16 +1187,7 @@ im_uim_init(IMUIMContext *uic)
+   uic->nr_psegs = 0;
+   uic->prev_preedit_len = 0;
+ 
+-  uic->cwin = im_uim_create_cand_win_gtk();
+-#if IM_UIM_USE_TOPLEVEL
+-  cwin_list = g_list_append(cwin_list, uic->cwin);
+-#endif
+-  uic->cwin_is_active = FALSE;
+-  uic->preedit_window = NULL;
+-  uic->preedit_handler_id = 0;
+ 
+-  g_signal_connect(G_OBJECT(uic->cwin), "index-changed",
+-		   G_CALLBACK(index_changed_cb), uic);
+ }
+ 
+ static void
+@@ -1588,17 +1200,6 @@ im_uim_finalize(GObject *obj)
+   uic->next->prev = uic->prev;
+   uic->prev->next = uic->next;
+ 
+-  if (uic->cwin) {
+-#if IM_UIM_USE_DELAY
+-    cand_delay_timer_remove(uic->cwin);
+-#endif
+-    gtk_widget_destroy(GTK_WIDGET(uic->cwin));
+-#if IM_UIM_USE_TOPLEVEL
+-    cwin_list = g_list_remove(cwin_list, uic->cwin);
+-#endif
+-    uic->cwin = NULL;
+-  }
+-
+   if (uic->caret_state_indicator) {
+     guint tag = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(uic->caret_state_indicator), "timeout-tag"));
+     if (tag > 0)
+@@ -1640,7 +1241,6 @@ im_uim_class_init(GtkIMContextClass *class)
+   class->set_client_window = im_uim_set_client_window;
+   class->filter_keypress = im_uim_filter_keypress;
+   class->get_preedit_string = im_uim_get_preedit_string;
+-  class->set_cursor_location = im_uim_set_cursor_location;
+   class->focus_in = im_uim_focus_in;
+   class->focus_out = im_uim_focus_out;
+   class->reset = im_uim_reset;
+@@ -1685,16 +1285,12 @@ im_module_create(const gchar *context_id)
+ 
+   uim_set_preedit_cb(uic->uc, clear_cb, pushback_cb, update_cb);
+   uim_set_prop_list_update_cb(uic->uc, update_prop_list_cb);
+-  uim_set_candidate_selector_cb(uic->uc, cand_activate_cb, cand_select_cb,
+-				cand_shift_page_cb, cand_deactivate_cb);
++
+   uim_set_configuration_changed_cb(uic->uc, configuration_changed_cb);
+   uim_set_im_switch_request_cb(uic->uc,
+ 			       switch_app_global_im_cb,
+ 			       switch_system_global_im_cb);
+   uim_set_text_acquisition_cb(uic->uc, acquire_text_cb, delete_text_cb);
+-#if IM_UIM_USE_DELAY
+-  uim_set_delay_candidate_selector_cb(uic->uc, cand_activate_with_delay_cb);
+-#endif
+ 
+   uim_prop_list_update(uic->uc);
+ 
+@@ -1796,7 +1392,6 @@ im_module_init(GTypeModule *type_module)
+   context_list.prev = (IMUIMContext *)&context_list;
+   type_im_uim = g_type_module_register_type(type_module, GTK_TYPE_IM_CONTEXT,
+ 					    "GtkIMContextUIM", &class_info, 0);
+-  uim_cand_win_gtk_register_type(type_module);
+ 
+ #if IM_UIM_USE_SNOOPER
+   /* Using snooper is not recommended! */
+diff --git a/gtk3/Makefile.am b/gtk3/Makefile.am
+index 99802b5..ee15df1 100644
+--- a/gtk3/Makefile.am
++++ b/gtk3/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS = candwin dict immodule pad pref switcher test toolbar
++SUBDIRS = immodule pad pref switcher test toolbar
+diff --git a/gtk3/immodule/Makefile.am b/gtk3/immodule/Makefile.am
+index 4055496..c307995 100644
+--- a/gtk3/immodule/Makefile.am
++++ b/gtk3/immodule/Makefile.am
+@@ -22,14 +22,6 @@ endif
+ IM_UIM_SOURCES = \
+ 	../../gtk2/immodule/gtk-im-uim.c ../../gtk2/immodule/gtk-im-uim.h \
+ 	../../gtk2/immodule/key-util-gtk.c ../../gtk2/immodule/key-util-gtk.h \
+-	../../gtk2/immodule/uim-cand-win-gtk.c \
+-	../../gtk2/immodule/uim-cand-win-gtk.h \
+-	../../gtk2/immodule/uim-cand-win-vertical-gtk.c \
+-	../../gtk2/immodule/uim-cand-win-vertical-gtk.h \
+-	../../gtk2/immodule/uim-cand-win-tbl-gtk.c \
+-	../../gtk2/immodule/uim-cand-win-tbl-gtk.h \
+-	../../gtk2/immodule/uim-cand-win-horizontal-gtk.c \
+-	../../gtk2/immodule/uim-cand-win-horizontal-gtk.h \
+ 	../../gtk2/immodule/caret-state-indicator.c \
+ 	../../gtk2/immodule/caret-state-indicator.h \
+ 	../../gtk2/immodule/compose.c ../../gtk2/immodule/compose.h \
+diff --git a/qt3/Makefile.am b/qt3/Makefile.am
+index 362c20c..be8f5fd 100644
+--- a/qt3/Makefile.am
++++ b/qt3/Makefile.am
+@@ -1,3 +1,3 @@
+-SUBDIRS = candwin chardict test immodule pref switcher toolbar
++SUBDIRS = test immodule pref switcher toolbar
+ 
+ EXTRA_DIST = qtgettext.h
+diff --git a/qt3/immodule/Makefile.am b/qt3/immodule/Makefile.am
+index 88df248..8bafae4 100644
+--- a/qt3/immodule/Makefile.am
++++ b/qt3/immodule/Makefile.am
+@@ -11,21 +11,21 @@ extra_LTLIBRARIES = libquiminputcontextplugin.la
+ extradir = $(QT_PLUGINSDIR)/inputmethods
+ 
+ noinst_HEADERS = \
+-	candidatewindow.h qhelpermanager.h \
++	qhelpermanager.h \
+ 	quiminputcontext.h quiminputcontext_with_slave.h \
+ 	quiminputcontext_compose.h \
+ 	qtextutil.h quiminfomanager.h \
+ 	subwindow.h
+ MOC_FILES = \
+-	candidatewindow.moc qhelpermanager.moc \
++	qhelpermanager.moc \
+ 	quiminputcontext.moc quiminputcontext_with_slave.moc \
+ 	qtextutil.moc \
+ 	subwindow.moc
+ 
+ libquiminputcontextplugin_la_SOURCES = \
+-	candidatewindow.cpp  qhelpermanager.cpp \
++	qhelpermanager.cpp \
+ 	plugin.cpp plugin.h \
+-	candidatewindow.h    qhelpermanager.h \
++	qhelpermanager.h \
+ 	quiminputcontext.cpp quiminputcontext_with_slave.cpp \
+ 	quiminputcontext.h   quiminputcontext_with_slave.h \
+ 	quiminputcontext_compose.cpp \
+@@ -58,4 +58,4 @@ CLEANFILES = \
+ 	$(MOC) $< -o $*.moc
+ .ui.h: 
+ 	$(UIC) $< -o $*.h
+-endif
++endif
+diff --git a/qt4/Makefile.am b/qt4/Makefile.am
+index c6fbb1a..28dc794 100644
+--- a/qt4/Makefile.am
++++ b/qt4/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS = candwin chardict edittest immodule pref switcher toolbar
++SUBDIRS = edittest immodule pref switcher toolbar
+ 
+ EXTRA_DIST = qtgettext.h \
+ 	     common.pro.in
+diff --git a/qt4/immodule/Makefile.am b/qt4/immodule/Makefile.am
+index 323ca70..00d57b7 100644
+--- a/qt4/immodule/Makefile.am
++++ b/qt4/immodule/Makefile.am
+@@ -21,10 +21,7 @@ EXTRA_DIST = INDENT \
+ 	     quiminputcontext_with_slave.h \
+ 	     quiminputcontext_with_slave.cpp
+ 
+-EXTRA_DIST += abstractcandidatewindow.h \
+-              candidatetablewindow.h \
+-              candidatewindow.h \
+-              caretstateindicator.h \
++EXTRA_DIST += caretstateindicator.h \
+               plugin.h \
+               qhelpermanager.h \
+               qtextutil.h \
+@@ -33,14 +30,11 @@ EXTRA_DIST += abstractcandidatewindow.h \
+               quiminputcontext_compose.h \
+               subwindow.h
+ 
+-EXTRA_DIST += abstractcandidatewindow.cpp \
+-              candidatetablewindow.cpp \
+-              candidatewindow.cpp \
+-              caretstateindicator.cpp \
++EXTRA_DIST += caretstateindicator.cpp \
+               plugin.cpp \
+               qhelpermanager.cpp \
+               qtextutil.cpp \
+               quiminfomanager.cpp \
+               quiminputcontext.cpp \
+               quiminputcontext_compose.cpp \
+-              subwindow.cpp
++	      subwindow.cpp
+-- 
+1.8.2.1
+
