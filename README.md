@@ -7,6 +7,24 @@ The package `foobar` follows some simple rules
 3. It should not be merged with any other `package branch`
 4. It follows the latest guideline found on the branch `TheBigBang`
 
+## Feature branch
+
+If you want to add some features and/or to fix some issues of a package,
+please fork and create your own `feature branch`. _(See below for examples)_.
+The name of `feature branch` should start by `p_`, follow by the name of
+the package per-se, and follow the `feature name`. For example
+
+````
+p_foobar@this-is-a-new-feature
+p_foobar#this-is-abug-fix
+````
+
+Here you can see some special characters `@`, `#`. You can also use
+`+`, `=` or `%`. This character will help `s-makepkg` _(see the branch
+**_utils** of our build system) to quickly find the package name.
+Technically details can be found in the documentation of the function
+`_get_package_name` from the branch `_utils`.
+
 ## How to patch
 
 Assume that you want to modify the build process of the package `foobar`.
@@ -17,7 +35,7 @@ The new branch's name should start with `p_` as below.
 ````
 $ git clone /uri/of/the/repository/buildsystem
 $ git checkout foobar
-$ git checkout -b p_foobar-new-feature
+$ git checkout -b p_foobar@new-feature
 #
 # do what ever you want, commit your changes and create your patch
 #
@@ -62,7 +80,7 @@ $ cd foobar-<version>
 $ git init
 $ git add *
 $ git commit -am'The original source code'
-$ git checkout -b p_foobar-new-feature
+$ git checkout -b p_foobar@new-feature
 #
 # make changes, commits
 #
