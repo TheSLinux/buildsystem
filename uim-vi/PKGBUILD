@@ -28,16 +28,25 @@ options=('!libtool')
 # FIXME: how can we provide package version number? In factr, Arch is
 # FIXME: using `pkgrel` to support this. That forces us not to use
 # FIXME: the `master` works from `mysquartz-scim2uim` like this.
+#
+# FIXME: It's so hard to make `PKGBUILD` compatible with all versions
+# FIXME: of the external sources. We can only ensure the newest `PKGBUILD`
+# FIXME: to work with some recent versions of the extenal sources. The
+# FIXME: best way (!?) is to provide the external source as some package.
+# FIXME: However, in our case (uim) this will lead to another problem.
+# FIXME: Bc. `uim` requires some files in its source directory to make
+# FIXME: the package, we still need some *tricks* to get a good build.
+# FIXME: We need to think of this problem carefully!
+#
+# FIXME: As a work-around, we use here the version `v0.0.1` of the tables.
+# FIXME: In this version, the tables are full (while in some next versions
+# FIXME: the tables contain only the lowercase combinations). This way we
+# FIXME: are against ourselves: providing real-data in the `PKGBUILD`.
 source=("uim-vi.patch"
         "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/bin/scim2uim.rb"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/src/Telex.txt.in"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/src/VNI.txt.in"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/icons/telex.png"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/icons/telex.svg"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/icons/vni.png"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/icons/vni.svg"
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/src/"{Telex,VNI}.txt.in
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/icons/"{telex,vni}.{png,svg}
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
-sha1sums=()
 
 provides=('uim')
 conflicts=('uim')
