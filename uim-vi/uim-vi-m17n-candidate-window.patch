@@ -1,0 +1,35 @@
+From fef061382e7ddb9332b3244db260b33b7ff37824 Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Sat, 27 Apr 2013 03:59:01 +0700
+Subject: [PATCH] Hide/show candidate window via generic option
+
+Adding a new option to "m17nlib.scm" to add new option is
+still possible, however we just need to use the known option.
+This may cause confusion, because "Other input methods" (that
+is that name of "Generic") often excludes "m17n-lib". So
+it is a feature (possibly a bug) that "m17n-lib" uses a
+generic option for its. This also requires dependencies,
+and we will not be able to have a separated settings for "m
+17n-lib". This is almost good, bc. showing/hiding the window
+for candidates may be a personal setting: someone just likes
+to see them all (for any input methods/settings), while some
+others just like to see nothing
+---
+ uim-vi/src/uim-1.8.5/scm/m17nlib.scm | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/uim-vi/src/uim-1.8.5/scm/m17nlib.scm b/uim-vi/src/uim-1.8.5/scm/m17nlib.scm
+index 3f413db..7dba894 100644
+--- a/uim-vi/src/uim-1.8.5/scm/m17nlib.scm
++++ b/uim-vi/src/uim-1.8.5/scm/m17nlib.scm
+@@ -142,6 +142,7 @@
+ 	    (m17nlib-context-set-showing-candidate! mc #f)))
+ 
+       (if (and
++     generic-use-candidate-window?
+ 	   (or
+ 	    candidates-changed?
+ 	    (and
+-- 
+1.8.2.1
+

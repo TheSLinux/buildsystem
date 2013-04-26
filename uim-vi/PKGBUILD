@@ -43,6 +43,7 @@ options=('!libtool')
 # FIXME: the tables contain only the lowercase combinations). This way we
 # FIXME: are against ourselves: providing real-data in the `PKGBUILD`.
 source=("uim-vi.patch"
+        "uim-vi-m17n-candidate-window.patch"
         "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/bin/scim2uim.rb"
         "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/src/"{Telex,VNI}.txt.in
         "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/icons/"{telex,vni}.{png,svg}
@@ -70,6 +71,8 @@ build() {
 	done
 
 	patch -Np4 < "${srcdir}/uim-vi.patch"
+	patch -Np4 < "${srcdir}/uim-vi-m17n-candidate-window.patch"
+
 	./autogen.sh
 	./configure \
 		--prefix=/usr \
