@@ -43,9 +43,9 @@ options=('!libtool')
 # FIXME: the tables contain only the lowercase combinations). This way we
 # FIXME: are against ourselves: providing real-data in the `PKGBUILD`.
 source=("uim-vi.patch"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/bin/scim2uim.rb"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/src/"{Telex,VNI}.txt.in
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/master/icons/"{telex,vni}.{png,svg}
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/bin/scim2uim.rb"
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/src/"{Telex,VNI}.txt.in
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/icons/"{telex,vni}.{png,svg}
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
 
 provides=('uim')
