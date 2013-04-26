@@ -56,48 +56,48 @@ replaces=('uim')
 install=install
 
 build() {
-	cd "${srcdir}/uim-${pkgver}"
+  cd "${srcdir}/uim-${pkgver}"
 
-	ruby "${srcdir}/scim2uim.rb" --telex \
-		< "${srcdir}/Telex.txt.in" \
-		> "./scm/xtelex.scm"
-	ruby "${srcdir}/scim2uim.rb" --vni \
-		< "${srcdir}/VNI.txt.in" \
-		> "./scm/xvni.scm"
+  ruby "${srcdir}/scim2uim.rb" --telex \
+    < "${srcdir}/Telex.txt.in" \
+    > "./scm/xtelex.scm"
+  ruby "${srcdir}/scim2uim.rb" --vni \
+    < "${srcdir}/VNI.txt.in" \
+    > "./scm/xvni.scm"
 
-	for _file in telex.png telex.svg vni.png vni.svg; do
-		[[ -f "./pixmaps/x${_file}" ]] \
-		|| ln -s "${srcdir}/${_file}" "./pixmaps/x${_file}"
-	done
+  for _file in telex.png telex.svg vni.png vni.svg; do
+    [[ -f "./pixmaps/x${_file}" ]] \
+    || ln -s "${srcdir}/${_file}" "./pixmaps/x${_file}"
+  done
 
-	patch -Np4 < "${srcdir}/uim-vi.patch"
-	patch -Np4 < "${srcdir}/uim-vi-m17n-candidate-window.patch"
+  patch -Np4 < "${srcdir}/uim-vi.patch"
+  patch -Np4 < "${srcdir}/uim-vi-m17n-candidate-window.patch"
 
-	./autogen.sh
-	./configure \
-		--prefix=/usr \
-		--libexecdir=/usr/lib/uim \
-		--without-anthy \
-		--with-qt4-immodule \
-		--with-qt4 \
-		--disable-gnome-applet \
-		--disable-dict \
-		--without-skk \
-		--without-mana \
-		--without-prime \
-		--without-sj3 \
-		--without-scim \
-		--without-eb \
-		--without-osx-dcs \
-		--without-sqlite3
+  ./autogen.sh
+  ./configure \
+    --prefix=/usr \
+    --libexecdir=/usr/lib/uim \
+    --without-anthy \
+    --with-qt4-immodule \
+    --with-qt4 \
+    --disable-gnome-applet \
+    --disable-dict \
+    --without-skk \
+    --without-mana \
+    --without-prime \
+    --without-sj3 \
+    --without-scim \
+    --without-eb \
+    --without-osx-dcs \
+    --without-sqlite3
 
-	make
+  make
 }
 
 package() {
-	cd "${srcdir}/uim-${pkgver}"
-	make DESTDIR="${pkgdir}" install
-	rm "${pkgdir}"/usr/lib/libgcroots.a
-	install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
-	ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
+  cd "${srcdir}/uim-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  rm "${pkgdir}"/usr/lib/libgcroots.a
+  install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
+  ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
 }
