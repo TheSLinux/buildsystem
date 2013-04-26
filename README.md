@@ -21,7 +21,7 @@ p_foobar#this-is-abug-fix
 
 Here you can see some special characters `@`, `#`. You can also use
 `+`, `=` or `%`. This character will help `s-makepkg` _(see the branch
-**_utils** of our build system) to quickly find the package name.
+**_utils** of our build system)_ to quickly find the package name.
 Technically details can be found in the documentation of the function
 `_get_package_name` from the branch `_utils`.
 
