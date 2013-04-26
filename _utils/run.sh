@@ -521,16 +521,22 @@ _get_git_tag_on_package_branch() {
   _br="$(_get_git_branch "$_br")" || return 1
 
   while read _commit; do
-    if _tag="$(git describe --tags --exact-match $_commit 2>/dev/null)"; then
-      ruby \
-        -e "_tag=\"$_tag\"" \
-        -e "_br=\"$_br\"" \
-        -e 'exit \
-              _tag.match(/^#{_br}-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/) \
-              ? 0 : 1
-          ' \
-      && echo "$_tag" && return 0
-    fi
+    _tag="$( \
+      git tag --points-at $_commit \
+      | while read _tag; do
+          ruby \
+            -e "_tag=\"$_tag\"" \
+            -e "_br=\"$_br\"" \
+            -e 'exit \
+                  _tag.match(/^#{_br}-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/) \
+                  ? 0 : 1
+              ' \
+          && echo "$_tag"
+        done \
+      | sort \
+      | tail -1 \
+      )"
+    [[ -z "$_tag" ]] || { echo "$_tag"; return 0 ; }
   done < \
     <(_get_git_commits_between_two_points "TheBigBang" "$_br" --until="$_ref_time")
 
