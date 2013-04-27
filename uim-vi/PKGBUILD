@@ -44,9 +44,11 @@ options=('!libtool')
 # FIXME: are against ourselves: providing real-data in the `PKGBUILD`.
 source=("uim-vi.patch"
         "uim-vi-m17n-candidate-window.patch"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/bin/scim2uim.rb"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/src/"{Telex,VNI}.txt.in
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v0.0.1/icons/"{telex,vni}.{png,svg}
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/bin/scim2uim.rb"
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/bin/upcase.awk"
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/bin/sort.rb"
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/src/"{Telex,VNI}.txt.in
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/icons/"{telex,vni}.{png,svg}
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
 
 provides=('uim')
@@ -58,11 +60,20 @@ install=install
 build() {
   cd "${srcdir}/uim-${pkgver}"
 
-  ruby "${srcdir}/scim2uim.rb" --telex \
-    < "${srcdir}/Telex.txt.in" \
+  msg "Generating xtelex.scm..."
+  cat "${srcdir}/Telex.txt.in" \
+    | awk -f "${srcdir}/upcase.awk" \
+    | sort -u \
+    | ruby "${srcdir}/sort.rb" \
+    | ruby "${srcdir}/scim2uim.rb" --telex \
     > "./scm/xtelex.scm"
-  ruby "${srcdir}/scim2uim.rb" --vni \
-    < "${srcdir}/VNI.txt.in" \
+
+  msg "Generating xvni.scm..."
+  cat "${srcdir}/VNI.txt.in" \
+    | awk -f "${srcdir}/upcase.awk" \
+    | sort -u \
+    | ruby "${srcdir}/sort.rb" \
+    | ruby "${srcdir}/scim2uim.rb" --vni \
     > "./scm/xvni.scm"
 
   for _file in telex.png telex.svg vni.png vni.svg; do
