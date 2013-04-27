@@ -19,36 +19,18 @@ optdepends=('qt4: immodule and helper applications'
             'gtk3: immodules and helper applications')
 options=('!libtool')
 
-# FIXME: The files from `scim2uim` should be downloaded every time
-# FIXME: we compile the package. This is to get the latest update
-# FIXME: from the upstream repository.
-#
-# FIXME: We also needs a way to track the change's number from the
-# FIXME: external source. If a package requires multiple source,
-# FIXME: how can we provide package version number? In factr, Arch is
-# FIXME: using `pkgrel` to support this. That forces us not to use
-# FIXME: the `master` works from `mysquartz-scim2uim` like this.
-#
-# FIXME: It's so hard to make `PKGBUILD` compatible with all versions
-# FIXME: of the external sources. We can only ensure the newest `PKGBUILD`
-# FIXME: to work with some recent versions of the extenal sources. The
-# FIXME: best way (!?) is to provide the external source as some package.
-# FIXME: However, in our case (uim) this will lead to another problem.
-# FIXME: Bc. `uim` requires some files in its source directory to make
-# FIXME: the package, we still need some *tricks* to get a good build.
-# FIXME: We need to think of this problem carefully!
-#
-# FIXME: As a work-around, we use here the version `v0.0.1` of the tables.
-# FIXME: In this version, the tables are full (while in some next versions
-# FIXME: the tables contain only the lowercase combinations). This way we
-# FIXME: are against ourselves: providing real-data in the `PKGBUILD`.
+# FIXME: Using a dedicated `Makefile` from the original source
 source=("uim-vi.patch"
         "uim-vi-m17n-candidate-window.patch"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/bin/scim2uim.rb"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/bin/upcase.awk"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/bin/sort.rb"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/src/"{Telex,VNI}.txt.in
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.0.4/icons/"{telex,vni}.{png,svg}
+        scim2uim.rb-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/scim2uim.rb"
+        upcase.awk-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/upcase.awk"
+        sort.rb-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/sort.rb"
+        Telex.txt.in-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/src/Telex.txt.in"
+        VNI.txt.in-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/src/VNI.txt.in"
+        xtelex.png-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/icons/telex.png"
+        xtelex.svg-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/icons/telex.svg"
+        xvni.png-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/icons/vni.png"
+        xvni.svg-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/icons/vni.svg"
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
 
 provides=('uim')
@@ -61,24 +43,24 @@ build() {
   cd "${srcdir}/uim-${pkgver}"
 
   msg "Generating xtelex.scm..."
-  cat "${srcdir}/Telex.txt.in" \
-    | awk -f "${srcdir}/upcase.awk" \
+  cat "${srcdir}/Telex.txt.in-${pkgver}" \
+    | awk -f "${srcdir}/upcase.awk-${pkgver}" \
     | sort -u \
-    | ruby "${srcdir}/sort.rb" \
-    | ruby "${srcdir}/scim2uim.rb" --telex \
+    | ruby "${srcdir}/sort.rb-${pkgver}" \
+    | ruby "${srcdir}/scim2uim.rb-${pkgver}" --telex \
     > "./scm/xtelex.scm"
 
   msg "Generating xvni.scm..."
-  cat "${srcdir}/VNI.txt.in" \
-    | awk -f "${srcdir}/upcase.awk" \
+  cat "${srcdir}/VNI.txt.in-${pkgver}" \
+    | awk -f "${srcdir}/upcase.awk-${pkgver}" \
     | sort -u \
-    | ruby "${srcdir}/sort.rb" \
-    | ruby "${srcdir}/scim2uim.rb" --vni \
+    | ruby "${srcdir}/sort.rb-${pkgver}" \
+    | ruby "${srcdir}/scim2uim.rb-${pkgver}" --vni \
     > "./scm/xvni.scm"
 
-  for _file in telex.png telex.svg vni.png vni.svg; do
-    [[ -f "./pixmaps/x${_file}" ]] \
-    || ln -s "${srcdir}/${_file}" "./pixmaps/x${_file}"
+  for _file in xtelex.png xtelex.svg xvni.png xvni.svg; do
+    [[ -f "./pixmaps/${_file}" ]] \
+    || ln -s "${srcdir}/${_file}-${pkgver}" "./pixmaps/${_file}"
   done
 
   patch -Np4 < "${srcdir}/uim-vi.patch"
