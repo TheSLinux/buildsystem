@@ -12,11 +12,12 @@ The package `foobar` follows some simple rules
 If you want to add some features and/or to fix some issues of a package,
 please fork and create your own `feature branch`. _(See below for examples)_.
 The name of `feature branch` should start by `p_`, follow by the name of
-the package per-se, and follow the `feature name`. For example
+the package per-se, and then by the `feature name`. For example
 
 ````
-p_foobar@this-is-a-new-feature
-p_foobar#this-is-abug-fix
+p_foobar                         # This is acceptable, but not good
+p_foobar@this-is-a-new-feature   # This is good
+p_foobar#this-is-abug-fix        # This is also good
 ````
 
 Here you can see some special characters `@`, `#`. You can also use
