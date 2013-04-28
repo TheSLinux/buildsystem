@@ -1,10 +1,8 @@
-# $Id: PKGBUILD 180090 2013-03-16 13:58:04Z dreisner $
-# Maintainer: Dave Reisner <dreisner@archlinux.org>
-# Maintainer: Aaron Griffin <aaron@archlinux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Dave Reisner <dreisner@archlinux.org>
+# Original Maintainer: Aaron Griffin <aaron@archlinux.org>
 
-pkgname=shadow
-pkgver=4.1.5.1
-pkgrel=5
 pkgdesc="Password and account management tool suite with support for shadow files and PAM"
 arch=('i686' 'x86_64')
 url='http://pkg-shadow.alioth.debian.org/'
@@ -18,7 +16,7 @@ backup=(etc/login.defs
         etc/default/useradd)
 options=('!libtool')
 install='shadow.install'
-source=("http://pkg-shadow.alioth.debian.org/releases/$pkgname-$pkgver.tar.bz2"{,.sig}
+source=("http://pkg-shadow.alioth.debian.org/releases/$pkgbase-$pkgver.tar.bz2"{,.sig}
         LICENSE
         chgpasswd
         chpasswd
@@ -31,20 +29,6 @@ source=("http://pkg-shadow.alioth.debian.org/releases/$pkgname-$pkgver.tar.bz2"{
         xstrdup.patch
         shadow-strncpy-usage.patch
         lastlog.tmpfiles)
-sha1sums=('81f38720b953ef9c2c100c43d02dfe19cafd6c30'
-          '126570e2939bf3b57f28df5197ab9309747a6b5c'
-          '33a6cf1e44a1410e5c9726c89e5de68b78f5f922'
-          '4ad0e059406a305c8640ed30d93c2a1f62c2f4ad'
-          '12427b1ca92a9b85ca8202239f0d9f50198b818f'
-          '0e56fed7fc93572c6bf0d8f3b099166558bb46f1'
-          '6fac49a4826e2b821c8d41ed5911bc8d04735986'
-          '12427b1ca92a9b85ca8202239f0d9f50198b818f'
-          '611be25d91c3f8f307c7fe2485d5f781e5dee75f'
-          '5d83ba7e11c765c951867cbe00b0ae7ff57148fa'
-          '9ae93de5987dd0ae428f0cc1a5a5a5cd53583f19'
-          '6010fffeed1fc6673ad9875492e1193b1a847b53'
-          '21e12966a6befb25ec123b403cd9b5c492fe5b16'
-          'f57ecde3f72b4738fad75c097d19cf46a412350f')
 
 build() {
   cd "$pkgname-$pkgver"
