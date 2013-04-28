@@ -1,0 +1,54 @@
+From 59aa8b5ab5a9a752d692bf30d1274a8347c78f0b Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Sun, 28 Apr 2013 08:10:27 +0700
+Subject: [PATCH] Generic input method default => on
+
+The default generic input method is now ON. This is clear,
+bc. when we move to new input method, we really want to
+used it, so just bring it on.
+
+TODO: + custom option allows use to choose ON/OFF as default
+
+NOTE: If you are using the method A, and which is OFF, then
+you will see that A will be ON after you switch to another
+method B and then switch back to A. A way to avoid this is
+to use INPUT TOGGLE. The best way is to remember users
+and per-application settings
+---
+ uim-vi/src/uim-1.8.5/scm/generic.scm | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/uim-vi/src/uim-1.8.5/scm/generic.scm b/uim-vi/src/uim-1.8.5/scm/generic.scm
+index d632c10..cb48f2d 100644
+--- a/uim-vi/src/uim-1.8.5/scm/generic.scm
++++ b/uim-vi/src/uim-1.8.5/scm/generic.scm
+@@ -40,7 +40,7 @@
+ (define generic-widgets '(widget_generic_input_mode))
+ 
+ ;; default activity for each widgets
+-(define default-widget_generic_input_mode 'action_generic_off)
++(define default-widget_generic_input_mode 'action_generic_on)
+ 
+ ;; actions of widget_generic_input_mode
+ (define generic-input-mode-actions
+@@ -282,7 +282,7 @@
+              (cands (if cs (cadr cs) '())))
+         (generic-context-set-cands! pc cands)
+         (if cs
+-          (if (null? (cdr cands)) 
++          (if (null? (cdr cands))
+             ;; single candidate
+             (begin
+               (im-commit pc (nth 0 cands))
+@@ -529,7 +529,7 @@
+ 	   (n (generic-context-rk-nth pc))
+ 	   (cands (generic-context-cands pc))
+ 	   (nr (length cands)))
+-      (if (and 
++      (if (and
+             (not (generic-context-multi-cand-input pc))
+             (not (null? cands))
+             (not (null? (cdr cands))))
+-- 
+1.8.2.1
+
