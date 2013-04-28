@@ -1,18 +1,13 @@
 # $Id: PKGBUILD 140803 2011-10-19 15:35:35Z dreisner $
 # Maintainer: damir <damir@archlinux.org>
 
-pkgname=pth
-pkgver=2.0.7
-pkgrel=4
 pkgdesc="The GNU Portable Threads."
 arch=('i686' 'x86_64')
 url="http://www.gnu.org/software/pth/"
 license=('LGPL')
 depends=('glibc' 'awk')
 options=('!libtool' '!makeflags')
-source=(ftp://ftp.gnu.org/gnu/pth/$pkgname-$pkgver.tar.gz{,.sig})
-sha1sums=('9a71915c89ff2414de69fe104ae1016d513afeee'
-          '8cb16dffbf15ba92bda8d08918eaf5995642fc38')
+source=(ftp://ftp.gnu.org/gnu/pth/$pkgbase-$pkgver.tar.gz{,.sig})
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
