@@ -793,11 +793,18 @@ _fix_the_1st_tag_on_package_branch() {
 #      to two number forms by adding zero `0` to the original string. E.g,
 #      `xterm-291-1` should read `xterm-0.291-1`.
 #   8. `PACKAGE_BASE` (so `pkgbase`) is alway defined.
+#   9. `PACKAGE_FEATURE` helps to provide package name with any special
+#       feature, without creating "official branch". We just need to
+#       create a feature branch and `s-makepkg` will use the branch name
+#       as `PACKAGE_FEATURE`, and will append the string to name of the
+#       final output package. It also helps to modify the variables
+#       `conflicts`, `provides`,... on-the-fly.
 #
 # Input
 #      => PACKAGE_TAG      => the tag of new package
 #      => PACKAGE_REF_TAG  => the reference tag (where the package starts)
 #      => PACKAGE_BASE     => the original package branch
+#      => PACKAGE_FEATURE  => special feature of the package
 #   $1 => --current-tag    => print current tag and exit
 #      => --next-tag       => print next tag and exit
 #   $@ => pass to original `makepkg`
