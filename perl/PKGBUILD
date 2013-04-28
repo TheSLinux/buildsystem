@@ -1,13 +1,11 @@
-# $Id: PKGBUILD 180064 2013-03-15 21:24:52Z bluewind $
-# Maintainer: Florian Pritz <bluewind@xinu.at>
-# Contributor: Angel Velasquez <angvp@archlinux.org>
-# Contributor: kevin <kevin.archlinux.org>
-# Contributor: judd <jvinet.zeroflux.org>
-# Contributor: francois <francois.archlinux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Florian Pritz <bluewind@xinu.at>
+# Original Contributor: Angel Velasquez <angvp@archlinux.org>
+# Original Contributor: kevin <kevin.archlinux.org>
+# Original Contributor: judd <jvinet.zeroflux.org>
+# Original Contributor: francois <francois.archlinux.org>
 
-pkgname=perl
-pkgver=5.16.3
-pkgrel=1
 pkgdesc="A highly capable, feature-rich programming language"
 arch=(i686 x86_64)
 license=('GPL' 'PerlArtistic')
@@ -21,14 +19,14 @@ source=(http://www.cpan.org/src/5.0/perl-${pkgver}.tar.bz2
         provides.pl)
 install=perl.install
 options=('makeflags' '!purge')
-md5sums=('025102de0e4a597cf541e57da80c6aa3'
-         '0486659c9eefe682364a3e364d814296'
-         '5ed2542fdb9a60682f215bd33701e61a'
-         '1f0cbbee783e8a6d32f01be5118e0d5e'
-         '999c3eea6464860704abbb055a0f0896')
+
 # workaround to let the integrity check find the correct provides array
 if [[ ${0##*/} = "parse_pkgbuilds.sh" ]]; then
-	true && provides=($(bsdtar -q -O -xf "/srv/ftp/pool/packages/$pkgname-$pkgver-$pkgrel-$CARCH.pkg.tar.xz" .PKGINFO | sed -rn 's#^provides = (.*)#\1#p'))
+	true && provides=( \
+    $(bsdtar -q -O -xf \
+        "/srv/ftp/pool/packages/$pkgbase-$pkgver-$pkgrel-$CARCH.pkg.tar.xz" \
+        .PKGINFO \
+      | sed -rn 's#^provides = (.*)#\1#p'))
 fi
 
 build() {
