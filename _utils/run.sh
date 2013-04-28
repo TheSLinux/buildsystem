@@ -382,7 +382,6 @@ _get_package_name() {
   local _br=
   local _tag=
   local _feature=
-  local _pkg_feature=
 
   case "$1" in
     ":feature") shift; _feature=":feature" ;;
@@ -395,9 +394,8 @@ _get_package_name() {
   _tag="${PACKAGE_TAG:-}"
   _tag="${_tag:-$PACKAGE_REF_TAG}"
 
-  _pkg_feature="${PACKAGE_FEATURE:-}"
-  if [[ "$_feature" == ":feature" && -n "$_pkg_feature" ]]; then
-    echo "$_pkg_feature"
+  if [[ "$_feature" == ":feature" && -n "$PACKAGE_FEATURE" ]]; then
+    echo "$PACKAGE_FEATURE"
     return 0
   fi
 
