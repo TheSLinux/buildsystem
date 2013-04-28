@@ -630,6 +630,11 @@ _get_release_from_tag() {
   _get_package_name_from_tag ":release" "$@"
 }
 
+# Return the current package tag from the working directory
+_get_current_tag() {
+  _get_git_tag_on_package_branch "$(_get_package_name)"
+}
+
 # Return the next tag from current tag + working branch
 #
 #  ---*---o-----*---*----*----*-------- thebigbang
