@@ -1,5 +1,6 @@
-# $Id: PKGBUILD 140803 2011-10-19 15:35:35Z dreisner $
-# Maintainer: damir <damir@archlinux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: damir <damir@archlinux.org>
 
 pkgdesc="The GNU Portable Threads."
 arch=('i686' 'x86_64')
