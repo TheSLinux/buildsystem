@@ -347,7 +347,7 @@ _get_git_branch() {
   fi
 }
 
-# Get the package name from the working directory / branch.
+# Get the package name/feature from the working directory / branch.
 #
 # The common rules (TheBigBang) says that the package branch would be
 # the package name, and it's the same as the working directory. The work-
@@ -372,6 +372,10 @@ _get_git_branch() {
 #   => PACKAGE_BASE (env. var.) is set (optional)
 #   => PACKAGE_REF_TAG (env. var.) is set (optional)
 #   => PACKAGE_RAG is set (optional)
+#
+#   $1 => :feature => return the feature string from the branch name
+#   $1 => :name    => return the package name
+#   $1 => <empty>  => as :name
 #
 _get_package_name() {
   local _wd="$(basename $PWD)"
@@ -420,6 +424,7 @@ _get_package_name() {
 # Input
 #   => the current working branch
 #   => the current package name
+#
 _get_package_feature() {
   _get_package_name ":feature"
 }
@@ -524,7 +529,6 @@ _get_number_of_git_commits_between_two_points() {
 #   $1 => The branch name on that you want get the latest tag
 #   $2 => The reference point to get the time (usually the working branch)
 #
-
 _get_git_tag_on_package_branch() {
   local _br="${1:-HEAD}"
   local _ref="${2:-HEAD}"
@@ -564,9 +568,13 @@ _get_git_tag_on_package_branch() {
 }
 
 
-# Return the package name from a tag
+# Return the package name/version/tag from a tag string
 # Input
-#   $1 => The current tag
+#   $1 => :version => get the version number
+#   $1 => :release => get release number
+#   $1 => :name    => get package number
+#   $1 => <empty>  => as :name
+#   $@ => the tag
 #
 _get_package_name_from_tag() {
   local _tag=
