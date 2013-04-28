@@ -536,6 +536,8 @@ _get_number_of_git_commits_between_two_points() {
 #
 # Input
 #   $1 => The branch name on that you want get the latest tag
+#         This must be `package branch`, not a `feature branch`.
+#         E.g, `uim-vi` is valid, but `p_uim-vi@foobar` is not valid.
 #   $2 => The reference point to get the time (usually the working branch)
 #
 _get_git_tag_on_package_branch() {
