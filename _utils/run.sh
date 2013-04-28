@@ -569,11 +569,27 @@ _get_git_tag_on_package_branch() {
 #   $1 => The current tag
 #
 _get_package_name_from_tag() {
-  local _tag="$1"
+  local _tag=
+  local _feature=
+
+  case "$1" in
+    ":version") shift; _feature=":version" ;;
+    ":release") shift; _feature=":release" ;;
+    ":name")    shift; _feature=":name" ;;
+  esac
+
+  _feature="${_feature:-:name}"
+  _tag="$1"
+
   ruby \
     -e "_tag=\"$_tag\"" \
+    -e "_feature=$_feature" \
     -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
-          puts gs[1]
+          case _feature
+            when :name    then puts gs[1]
+            when :version then puts gs[2]
+            when :release then puts gs[4] ? gs[5] : 1
+          end
         else
           STDERR.puts ":: Error: Failed to get package name from tag \"#{_tag}\""
           exit 1
@@ -585,30 +601,14 @@ _get_package_name_from_tag() {
 #   $1 => The current tag
 #
 _get_version_from_tag() {
-  local _tag="$1"
-  ruby \
-    -e "_tag=\"$_tag\"" \
-    -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
-          puts gs[1]
-        else
-          STDERR.puts ":: Error: Failed to get version number from tag \"#{_tag}\""
-          exit 1
-        end'
+  _get_package_name_from_tag ":version" "$@"
 }
 
 # Return the release number of a tag
 # Input
 #   $1 => The current tag
 _get_release_from_tag() {
-  local _tag="$1"
-  ruby \
-    -e "_tag=\"$_tag\"" \
-    -e 'if gs=_tag.match(/^.+-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
-          puts gs[3] ? gs[4] : 1
-        else
-          STDERR.puts ":: Error: Failed to get release number from tag \"#{_tag}\""
-          exit 1
-        end'
+  _get_package_name_from_tag ":release" "$@"
 }
 
 # Return the next tag from current tag + working branch
