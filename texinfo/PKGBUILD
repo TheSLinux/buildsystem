@@ -1,10 +1,9 @@
-# $Id: PKGBUILD 179944 2013-03-13 06:06:51Z allan $
-# Maintainer: Allan McRae <allan@archlinux.org>
-# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+#!/bin/bash
 
-pkgname=texinfo
-pkgver=5.1
-pkgrel=1
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Allan McRae <allan@archlinux.org>
+# Original Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+
 pkgdesc="Utilities to work with and produce manuals, ASCII text, and on-line documentation from a single source file"
 arch=('i686' 'x86_64')
 url="http://www.gnu.org/software/texinfo/"
@@ -12,9 +11,7 @@ license=('GPL3')
 groups=('base' 'base-devel')
 depends=('ncurses' 'findutils' 'gzip' 'perl' 'sh')
 install=texinfo.install
-source=(ftp://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz{,.sig})
-md5sums=('52ee905a3b705020d2a1b6ec36d53ca6'
-         '65c8c95799ea5905e03cee5825d3553f')
+source=(ftp://ftp.gnu.org/pub/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.xz{,.sig})
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
