@@ -377,6 +377,14 @@ _get_package_name() {
   local _wd="$(basename $PWD)"
   local _br=
   local _tag=
+  local _feature=
+
+  case "$1" in
+    ":feature") shift; _feature=":feature" ;;
+    ":name")    shift; _feature=":name" ;;
+  esac
+
+  _feature="${_feature:-:name}"
 
   # Check if tag is provided
   _tag="${PACKAGE_TAG:-}"
@@ -395,15 +403,25 @@ _get_package_name() {
   ruby \
     -e "_br=\"$_br\"" \
     -e "_wd=\"$_wd\"" \
-    -e 'if _br.match(%r{^(p_)?#{_wd}([@+#=%].+)?$})
+    -e "_feature=$_feature" \
+    -e 'if gs = _br.match(%r{^(p_)?#{_wd}([@+#=%](.+))?$})
+          puts _feature == :name ? _wd : gs[3]
           exit 0
         else
           STDERR.puts ":: Error: Branch \"#{_br}\" and directory \"#{_wd}\" do not match"
           exit 1
         end
       ' \
-  && echo "$_wd" \
   || return 1
+}
+
+# Return the feature of the current feature branch
+# This is almost as same as (_get_package_name), but it returns a feature
+# Input
+#   => the current working branch
+#   => the current package name
+_get_package_feature() {
+  _get_package_name ":feature"
 }
 
 # Return the number of commits between two points. This will actually
