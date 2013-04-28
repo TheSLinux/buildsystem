@@ -632,7 +632,9 @@ _get_release_from_tag() {
 
 # Return the current package tag from the working directory
 _get_current_tag() {
-  _get_git_tag_on_package_branch "$(_get_package_name)"
+  local _br=
+  _br="$(_get_package_name)" || return 1
+  _get_git_tag_on_package_branch $_br
 }
 
 # Return the next tag from current tag + working branch
