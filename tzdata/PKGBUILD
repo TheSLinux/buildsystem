@@ -1,16 +1,19 @@
-# $Id: PKGBUILD 179934 2013-03-12 17:38:09Z andyrtr $
-# Maintainer: Andreas Radke <andyrtr@archlinux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Andreas Radke <andyrtr@archlinux.org>
 
-pkgname=tzdata
-pkgver=2013b
-pkgrel=1
+# IANA <http://www.iana.org/time-zones> uses a (97), b (98),... in there
+# version string. Bc we only supports number in our version string, we
+# need to convert the last number in our version string to a character.
+_pkgver="${pkgver%%.*}$(awk -vnum=${pkgver##*.} 'BEGIN {print sprintf("%c", num)}')" \
+  || { error "Failed to get version string from pkgver = '$pkgver'"; exit 1; }
+
 pkgdesc="Sources for time zone and daylight saving time data"
 arch=('any')
 url="http://www.iana.org/time-zones"
 license=('GPL')
 options=('!emptydirs')
-source=(http://www.iana.org/time-zones/repository/releases/${pkgname}${pkgver}.tar.gz)
-sha1sums=('b2c08566efdbd9efd7a84ab2ba11aa3465577daa')
+source=(http://www.iana.org/time-zones/repository/releases/${pkgbase}${_pkgver}.tar.gz)
 
 timezones=('africa' 'antarctica' 'asia' 'australasia'
            'europe' 'northamerica' 'southamerica'
