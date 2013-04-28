@@ -5,17 +5,13 @@
 # Contributor: Judd Vinet <jvinet@zeroflux.org>
 # Contributor: John Proctor <jproctor@prium.net>
 
-pkgname=popt
-pkgver=1.16
-pkgrel=5
 pkgdesc="A commandline option parser"
 arch=('i686' 'x86_64')
 url="http://rpm5.org"
 license=('custom')
 depends=('glibc')
 options=('!libtool')
-source=(http://rpm5.org/files/${pkgname}/${pkgname}-${pkgver}.tar.gz)
-sha1sums=('cfe94a15a2404db85858a81ff8de27c8ff3e235e')
+source=(http://rpm5.org/files/${pkgbase}/${pkgbase}-${pkgver}.tar.gz)
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
