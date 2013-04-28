@@ -670,8 +670,12 @@ _get_next_tag_from_tag() {
     -e "_tag=\"$_tag\"" \
     -e "_rel=$_rel" \
     -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
-          _rel += gs[4] ? gs[5].to_i : 1
-          puts "#{gs[1]}-#{gs[2]}-#{_rel}"
+          if _rel == 0
+            puts _tag
+          else
+            _rel += gs[4] ? gs[5].to_i : 1
+            puts "#{gs[1]}-#{gs[2]}-#{_rel}"
+          end
         else
           STDERR.puts ":: Error: Failed to the next of tag \"#{_tag}\""
           exit 1
