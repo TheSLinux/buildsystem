@@ -1,7 +1,7 @@
 From efa864096449f6f22ad84e825f24d854f0781216 Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Tue, 16 Apr 2013 21:47:16 +0000
-Subject: [PATCH 1/4] Allow some package information to be fetched externally
+Subject: [PATCH 1/5] Allow some package information to be fetched externally
 
 The original "makepkg" will reset all package information, and that diasllows
 to support some hooks (no we do not have any hook when using PKGBUILD.)
@@ -32,7 +32,7 @@ index da620a4..389dee7 100644
 From e01c9a40f396348573a4a709032dc1f7a25a92ed Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Sat, 20 Apr 2013 16:55:36 +0700
-Subject: [PATCH 2/4] Accept checksum (512) from environment
+Subject: [PATCH 2/5] Accept checksum (512) from environment
 
 ---
  pacman/src/pacman-4.1.0/scripts/makepkg.sh.in | 4 ++++
@@ -60,7 +60,7 @@ index 389dee7..b887819 100644
 From ba7d6b9371e49a24631d135d31fa44bbb2c0f66b Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Sat, 20 Apr 2013 17:11:18 +0700
-Subject: [PATCH 3/4] pkgbase will define the behavior
+Subject: [PATCH 3/5] pkgbase will define the behavior
 
 As "pkgbase" is a string, while "pkgname" may be an array,
 we can only get "pkgbase" from environment.
@@ -102,10 +102,10 @@ index b887819..b1eb313 100644
 1.8.2.1
 
 
-From 2c4b663de5f81a3a29c927bc3ee3f6f31e39dd29 Mon Sep 17 00:00:00 2001
+From 7b4d4760708f322d1208929bdae31fa25335c703 Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
-Date: Sun, 28 Apr 2013 13:31:52 +0700
-Subject: [PATCH 4/4] makepkg accepts PACKAGE_FEATURE
+Date: Sun, 28 Apr 2013 13:33:42 +0700
+Subject: [PATCH 4/5] makepkg accepts PACKAGE_FEATURE
 
 This variable is used to control some feature of output filename,
 and of the package information
@@ -229,6 +229,62 @@ index b1eb313..9a9ca35 100644
  
  install_package
  
+-- 
+1.8.2.1
+
+
+From c959fe92ac35a7be2563f8dc42a25d10f7337575 Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Sun, 28 Apr 2013 16:31:59 +0700
+Subject: [PATCH 5/5] Add PACKAGE_FEATURE to some output message
+
+---
+ pacman/src/pacman-4.1.0/scripts/makepkg.sh.in | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in b/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
+index 9a9ca35..08dc94d 100644
+--- a/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
++++ b/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
+@@ -1857,7 +1857,7 @@ create_package() {
+ 	fi
+ 
+ 	cd_safe "$pkgdir"
+-	msg "$(gettext "Creating package \"%s\"...")" "$pkgname"
++	msg "$(gettext "Creating package \"%s\"...")" "$pkgname${PACKAGE_FEATURE}"
+ 
+ 	pkgarch=$(get_pkg_arch)
+ 
+@@ -1953,7 +1953,7 @@ create_debug_package() {
+ 	fi
+ 
+ 	depends=("$pkgname=$(get_full_version)")
+-	pkgdesc="Detached debugging symbols for $pkgname"
++	pkgdesc="Detached debugging symbols for $pkgname${PACKAGE_FEATURE}"
+ 	pkgname=$pkgname-@DEBUGSUFFIX@
+ 
+ 	unset groups optdepends provides conflicts replaces backup install changelog
+@@ -2060,7 +2060,7 @@ install_package() {
+ 	(( ! INSTALL )) && return
+ 
+ 	if (( ! SPLITPKG )); then
+-		msg "$(gettext "Installing package %s with %s...")" "$pkgname" "$PACMAN -U"
++		msg "$(gettext "Installing package %s with %s...")" "$pkgname${PACKAGE_FEATURE}" "$PACMAN -U"
+ 	else
+ 		msg "$(gettext "Installing %s package group with %s...")" "$pkgbase" "$PACMAN -U"
+ 	fi
+@@ -2098,9 +2098,10 @@ check_sanity() {
+ 
+ 	for i in "${pkgname[@]}"; do
+ 		if [[ ${i:0:1} = "-" ]]; then
+-			error "$(gettext "%s is not allowed to start with a hyphen.")" "pkgname"
++			error "$(gettext "%s is not allowed to start with a hyphen.")" "pkgname${PACKAGE_FEATURE}"
+ 			ret=1
+ 		fi
++		# FIXME: Possibly has problem with PACKAGE_FEATURE
+ 		if [[ $i = *[^[:alnum:]+_.@-]* ]]; then
+ 			error "$(gettext "%s contains invalid characters: '%s'")" \
+ 					'pkgname' "${pkgname//[[:alnum:]+_.@-]}"
 -- 
 1.8.2.1
 
