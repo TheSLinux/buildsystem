@@ -816,9 +816,11 @@ s-makepkg() {
   local _ver=
   local _rel=
   local _pkg=
+  local _pkg_feature=
   local _type="--reference"
 
   _pkg="$(_get_package_name)" || return 1
+  _pkg_feature="$(_get_package_feature)" || return 1
 
   # If package tag is provided
   if [[ -n "$PACKAGE_TAG" ]]; then
@@ -856,6 +858,7 @@ s-makepkg() {
     PACKAGE_BASE="$_pkg" \
     PACKAGE_RELEASE="$_rel" \
     PACKAGE_VERSION="$_ver" \
+    PACKAGE_FEATURE="$_pkg_feature" \
   makepkg "$@"
 }
 
