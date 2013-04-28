@@ -1,12 +1,10 @@
-# $Id: PKGBUILD 87748 2013-04-06 00:49:07Z seblu $
-# Maintainer: Sébastien Luttringer
-# Contributor: Angel Velasquez <angvp@archlinux.org>
-# Contributor: tobias <tobias@archlinux.org>
-# Contributor: dibblethewrecker dibblethewrecker.at.jiwe.dot.org
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Sébastien Luttringer
+# Original Contributor: Angel Velasquez <angvp@archlinux.org>
+# Original Contributor: tobias <tobias@archlinux.org>
+# Original Contributor: dibblethewrecker dibblethewrecker.at.jiwe.dot.org
 
-pkgname=rxvt-unicode
-pkgver=9.18
-pkgrel=2
 pkgdesc='An unicode enabled rxvt-clone terminal emulator (urxvt)'
 arch=('i686' 'x86_64')
 url='http://software.schmorp.de/pkg/rxvt-unicode.html'
@@ -14,15 +12,11 @@ license=('GPL')
 depends=('libxft' 'gdk-pixbuf2' 'perl' 'startup-notification')
 optdepends=('gtk2-perl: to use the urxvt-tabbed')
 source=(
-  "http://dist.schmorp.de/rxvt-unicode/$pkgname-$pkgver.tar.bz2"
+  "http://dist.schmorp.de/rxvt-unicode/$pkgbase-$pkgver.tar.bz2"
   'urxvt.desktop'
   'urxvtc.desktop'
   'urxvt-tabbed.desktop'
 )
-md5sums=('963ccc748fe5bca925e7b92c0404d68b'
-         'fec94dc986fa37ec380079d81de3e0b2'
-         'fac55f0a8404c86dad3e702146762332'
-         '8a5599197568c63720e282b9722a7990')
 
 build() {
   cd $pkgname-$pkgver
