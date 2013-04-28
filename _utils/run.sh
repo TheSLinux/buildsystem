@@ -368,8 +368,10 @@ _get_git_branch() {
 #   p_foobar@feature   foobar@feature
 #
 # Input
-#   => Working directory is a package directory
-#   => PACKAGE_BASE (env. var.) is set
+#   => Working directory is a package directory (a must)
+#   => PACKAGE_BASE (env. var.) is set (optional)
+#   => PACKAGE_REF_TAG (env. var.) is set (optional)
+#   => PACKAGE_RAG is set (optional)
 #
 _get_package_name() {
   local _wd="$(basename $PWD)"
