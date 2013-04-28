@@ -360,12 +360,14 @@ _get_git_branch() {
 # Conventions: A feature branch should start with `p_`, follow by the
 # package name, and the feature (if any). Example
 #
-#   p_foobar
-#   p_foobar+feature   foobar+feature
-#   p_foobar#feature   foobar#feature
-#   p_foobar=feature   foobar=feature
-#   p_foobar%feature   foobar%feature
-#   p_foobar@feature   foobar@feature
+#   FEATURE BARNCH     FEATURE BRANCH  |  FEATURE
+#   -----------------------------------+----------
+#   p_foobar                           |  patch
+#   p_foobar+feature   foobar+feature  |  feature
+#   p_foobar#feature   foobar#feature  |  feature
+#   p_foobar=feature   foobar=feature  |  feature
+#   p_foobar%feature   foobar%feature  |  feature
+#   p_foobar@feature   foobar@feature  |  feature
 #
 # Input
 #   => Working directory is a package directory (a must)
@@ -414,7 +416,9 @@ _get_package_name() {
     -e "_wd=\"$_wd\"" \
     -e "_feature=$_feature" \
     -e 'if gs = _br.match(%r{^(p_)?#{_wd}([@+#=%](.+))?$})
-          puts _feature == :name ? _wd : gs[3]
+          puts _feature == :name \
+            ? _wd \
+            : (gs[3] ? gs[3] : (gs[1] ? "patch" : ""))
           exit 0
         else
           STDERR.puts ":: Error: Branch \"#{_br}\" and directory \"#{_wd}\" do not match"
