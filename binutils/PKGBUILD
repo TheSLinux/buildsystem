@@ -1,11 +1,9 @@
-# $Id: PKGBUILD 180860 2013-03-27 12:36:17Z allan $
-# Maintainer: Allan McRae <allan@archlinux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Allan McRae <allan@archlinux.org>
 
 # toolchain build order: linux-api-headers->glibc->binutils->gcc->binutils->glibc
 
-pkgname=binutils
-pkgver=2.23.2
-pkgrel=1
 pkgdesc="A set of programs to assemble and manipulate binary and object files"
 arch=('i686' 'x86_64')
 url="http://www.gnu.org/software/binutils/"
@@ -17,10 +15,8 @@ options=('!libtool' '!distcc' '!ccache')
 install=binutils.install
 source=(ftp://ftp.gnu.org/gnu/binutils/binutils-${pkgver}.tar.bz2{,.sig}
         binutils-2.23.2-texinfo-5.0.patch)
-md5sums=('4f8fa651e35ef262edc01d60fb45702e'
-         'dfde4428f08d91f309cdcfe92bf28d08'
-         '34e439ce23213a91e2af872dfbb5094c')
 
+# FIXME: use HTTPS in Bugs' home page
 build() {
   cd ${srcdir}/binutils-${pkgver}
 
@@ -33,7 +29,7 @@ build() {
 
   ${srcdir}/binutils-${pkgver}/configure --prefix=/usr \
     --with-lib-path=/usr/lib:/usr/local/lib \
-    --with-bugurl=https://bugs.archlinux.org/ \
+    --with-bugurl=http://theslinux.org/bugs/ \
     --enable-ld=default --enable-gold \
     --enable-plugins --enable-threads \
     --with-pic --enable-shared \
@@ -47,7 +43,7 @@ build() {
 
 check() {
   cd ${srcdir}/binutils-build
-  
+
   # unset LDFLAGS as testsuite makes assumptions about which ones are active
   # do not abort on errors - manually check log files
   make LDFLAGS="" -k check || true
@@ -56,7 +52,7 @@ check() {
 package() {
   cd ${srcdir}/binutils-build
   make prefix=${pkgdir}/usr tooldir=${pkgdir}/usr install
-  
+
   # Add some useful headers
   install -m644 ${srcdir}/binutils-${pkgver}/include/libiberty.h ${pkgdir}/usr/include
   install -m644 ${srcdir}/binutils-${pkgver}/include/demangle.h ${pkgdir}/usr/include
