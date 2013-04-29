@@ -1,11 +1,9 @@
-# $Id: PKGBUILD 87735 2013-04-05 17:29:00Z alucryd $
-# Maintainer: Maxime Gauduin <alucryd@gmail.com>
-# Contributor: Morfeo <morfeo89@hotmail.it>
+#!/bin/bash
+# Maitainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Maxime Gauduin <alucryd@gmail.com>
+# Original Contributor: Morfeo <morfeo89@hotmail.it>
 
-pkgbase=lightdm
 pkgname=('lightdm' 'liblightdm-qt4')
-pkgver=1.4.1
-pkgrel=1
 epoch=1
 pkgdesc="A lightweight display manager"
 arch=('i686' 'x86_64')
@@ -23,15 +21,6 @@ source=("https://launchpad.net/lightdm/1.4/${pkgver}/+download/${pkgbase}-${pkgv
         'lightdm-default-config.patch'
         'lightdm-lock-screen-before-switch.patch'
         'xsession')
-sha256sums=('f9ca1c03c3330b6265d03048f1ebafda596c436f279b5382bda656ab3a619439'
-            '2e03423cbe88c9fdc3a9684d6d14221aa6e92d105f9d1d53b08747d966c45125'
-            'b29521fbd7a48a8f60b93ecca3b30c30bcb71560de8033c8d39b25c22c6f696f'
-            'e8c4c5fd3b801a390d201166fd1fb9730e78a5c62928768103b870b6bd980ea0'
-            '33e3c3d6e16c8d30756754ea3f31f5457c5be0343686aad287692be34958984a'
-            'a89566307e1c81c24f037d854cbd472d2f94f8a4b759877a01563a332319f7d6'
-            '6d5a754f41e9c7e52c51d2ff018b926ddaabb807e9a0b88c4a7bde1acffa3b1c'
-            '4793eaee5915f5c519f569a4cd9158822d4c57c8b6e405895d2eddf82fa00822'
-            '7fb85a1b54406032a922e8fd6f45d869fcfe5681df630e74e8e50c040b786ee4')
 
 prepare() {
   cd "${srcdir}"/${pkgbase}-${pkgver}
