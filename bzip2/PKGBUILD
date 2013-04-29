@@ -1,10 +1,8 @@
-# $Id: PKGBUILD 157764 2012-04-29 08:15:26Z allan $
-# Maintainer: Ronald van Haren <ronald.archlinux.org>
-# Contributor: Judd <jvinet@zeroflux.org> 
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Ronald van Haren <ronald.archlinux.org>
+# Original Contributor: Judd <jvinet@zeroflux.org>
 
-pkgname=bzip2
-pkgver=1.0.6
-pkgrel=4
 pkgdesc="A high-quality data compression program"
 arch=('i686' 'x86_64')
 license=('custom')
@@ -13,8 +11,6 @@ groups=('base')
 depends=('glibc')
 source=(http://www.bzip.org/$pkgver/bzip2-$pkgver.tar.gz
         bzip2-1.0.4-bzip2recover.patch)
-sha1sums=('3f89f861209ce81a6bab1fd1998c0ef311712002'
-          '85ce76fdb67f52f152bba368c1de81132dcdbdb5')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
