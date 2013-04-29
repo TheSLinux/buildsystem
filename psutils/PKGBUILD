@@ -1,11 +1,9 @@
-# $Id: PKGBUILD 176972 2013-02-03 07:11:03Z allan $
-# Maintainer: Ronald van Haren <ronald.archlinux.org>
-# Contributor: eric <eric@archlinux.org>
-# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
- 
-pkgname=psutils
-pkgver=1.17
-pkgrel=4
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Ronald van Haren <ronald.archlinux.org>
+# Original Contributor: eric <eric@archlinux.org>
+# Original Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+
 arch=('i686' 'x86_64')
 pkgdesc="A set of postscript utilities"
 url="http://knackered.org/angus/psutils/"
@@ -14,10 +12,8 @@ depends=('glibc' 'ghostscript')
 provides=('psutils-lprng')
 replaces=('psutils-lprng')
 options=('!makeflags')
-source=("ftp://ftp.archlinux.org/other/psutils/${pkgname}-${pkgver}.tar.gz"
+source=("ftp://ftp.archlinux.org/other/psutils/${pkgbase}-${pkgver}.tar.gz"
         'psutils-1.17.diff')
-md5sums=('b161522f3bd1507655326afa7db4a0ad'
-         '2b49e9e796000b42f42804d4b50a2be1')
 
 build() {
   cd "${srcdir}/${pkgname}"
