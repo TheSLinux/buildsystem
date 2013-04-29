@@ -1,10 +1,8 @@
-# $Id: PKGBUILD 157166 2012-04-25 07:52:38Z allan $
-# Maintainer: Allan McRae <allan@archlinux.org>
-# Contributor: Andreas Radke <andyrtr@archlinux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Allan McRae <allan@archlinux.org>
+# Original Contributor: Andreas Radke <andyrtr@archlinux.org>
 
-pkgname=autoconf
-pkgver=2.69
-pkgrel=1
 pkgdesc="A GNU tool for automatically configuring source code"
 arch=('any')
 license=('GPL2' 'GPL3' 'custom')
@@ -14,9 +12,7 @@ depends=('awk' 'm4' 'diffutils' 'bash')
 # for test-suite
 #makedepends=('gcc-fortran' 'erlang')
 install=autoconf.install
-source=(ftp://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz{,.sig})
-md5sums=('50f97f4159805e374639a73e2636f22e'
-         '2941e2fe687e05b3431eac6b714053bc')
+source=(ftp://ftp.gnu.org/pub/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.xz{,.sig})
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
