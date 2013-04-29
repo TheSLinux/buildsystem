@@ -1,12 +1,10 @@
-# $Id: PKGBUILD 178162 2013-02-17 14:25:57Z pierre $
-# Maintainer: Pierre Schmitz <pierre@archlinux.de>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Pierre Schmitz <pierre@archlinux.de>
 
-pkgname=openssl
-_ver=1.0.1e
-# use a pacman compatible version scheme
-pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
-#pkgver=$_ver
-pkgrel=3
+_pkgver="${pkgver%.*}$(awk -vnum=${pkgver##*.} 'BEGIN {print sprintf("%c", num)}')" \
+  || { error "Failed to get version string from pkgver = '$pkgver'"; exit 1; }
+
 pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security'
 arch=('i686' 'x86_64')
 url='https://www.openssl.org'
@@ -15,17 +13,13 @@ depends=('perl')
 optdepends=('ca-certificates')
 options=('!makeflags')
 backup=('etc/ssl/openssl.cnf')
-source=("https://www.openssl.org/source/${pkgname}-${_ver}.tar.gz"
-        "https://www.openssl.org/source/${pkgname}-${_ver}.tar.gz.asc"
+source=("https://www.openssl.org/source/${pkgbase}-${_pkgver}.tar.gz"
+        "https://www.openssl.org/source/${pkgbase}-${_pkgver}.tar.gz.asc"
         'no-rpath.patch'
         'ca-dir.patch')
-md5sums=('66bf6f10f060d561929de96f9dfe5b8c'
-         'e18847df48d39416f4ca5064887a2e28'
-         'dc78d3d06baffc16217519242ce92478'
-         '3bf51be3a1bbd262be46dc619f92aa90')
 
 build() {
-	cd $srcdir/$pkgname-$_ver
+	cd $srcdir/$pkgname-$_pkgver
 
 	if [ "${CARCH}" == 'x86_64' ]; then
 		openssltarget='linux-x86_64'
@@ -51,7 +45,7 @@ build() {
 }
 
 check() {
-	cd $srcdir/$pkgname-$_ver
+	cd $srcdir/$pkgname-$_pkgver
 	# the test fails due to missing write permissions in /etc/ssl
 	# revert this patch for make test
 	patch -p0 -R -i $srcdir/ca-dir.patch
@@ -60,7 +54,7 @@ check() {
 }
 
 package() {
-	cd $srcdir/$pkgname-$_ver
+	cd $srcdir/$pkgname-$_pkgver
 	make INSTALL_PREFIX=$pkgdir MANDIR=/usr/share/man MANSUFFIX=ssl install
 	install -D -m644 LICENSE $pkgdir/usr/share/licenses/$pkgname/LICENSE
 }
