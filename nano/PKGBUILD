@@ -1,10 +1,8 @@
-# $Id: PKGBUILD 141729 2011-11-02 16:17:49Z andyrtr $
-# Maintainer: Andreas Radke <andyrtr@archlinux.org>
-# Contributor: Judd <judd@archlinux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Andreas Radke <andyrtr@archlinux.org>
+# Original Contributor: Judd <judd@archlinux.org>
 
-pkgname=nano
-pkgver=2.2.6
-pkgrel=2
 pkgdesc="Pico editor clone with enhancements"
 arch=('i686' 'x86_64')
 license=('GPL')
@@ -13,8 +11,7 @@ groups=('base')
 depends=('ncurses' 'sh')
 backup=('etc/nanorc')
 install=nano.install
-source=(http://www.nano-editor.org/dist/v2.2/${pkgname}-${pkgver}.tar.gz)
-md5sums=('03233ae480689a008eb98feb1b599807')
+source=(http://www.nano-editor.org/dist/v2.2/${pkgbase}-${pkgver}.tar.gz)
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
