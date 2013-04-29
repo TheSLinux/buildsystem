@@ -1,17 +1,14 @@
-# $Id: PKGBUILD 173858 2012-12-25 23:59:28Z allan $
-# Maintainer: Allan McRae <allan@archlinux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Allan McRae <allan@archlinux.org>
 
-pkgname=cloog
-pkgver=0.18.0
-pkgrel=1
 pkgdesc="Library that generates loops for scanning polyhedra"
 arch=('i686' 'x86_64')
 url="http://www.bastoul.net/cloog/"
 license=('GPL')
 depends=('isl' 'gmp')
 options=('!libtool')
-source=(http://www.bastoul.net/cloog/pages/download/$pkgname-$pkgver.tar.gz)
-md5sums=('be78a47bd82523250eb3e91646db5b3d')
+source=(http://www.bastoul.net/cloog/pages/download/$pkgbase-$pkgver.tar.gz)
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
