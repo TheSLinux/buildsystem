@@ -1,10 +1,8 @@
-# $Id: PKGBUILD 174019 2013-01-01 14:05:11Z allan $
-# Maintainer: Allan McRae <allan@archlinux.org>
-# Contributor: judd <jvinet@zeroflux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Allan McRae <allan@archlinux.org>
+# Original Contributor: judd <jvinet@zeroflux.org>
 
-pkgname=automake
-pkgver=1.13.1
-pkgrel=1
 pkgdesc="A GNU tool for automatically creating Makefiles"
 arch=('any')
 license=('GPL')
@@ -13,9 +11,7 @@ groups=('base-devel')
 depends=('perl' 'bash')
 makedepends=('autoconf')
 install=automake.install
-source=(ftp://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz{,.sig})
-md5sums=('a60380ab11e1481376b7747d1b42ced2'
-         '272d0de0756252b1835234cca0ff2cfe')
+source=(ftp://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.xz{,.sig})
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
