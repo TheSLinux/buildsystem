@@ -1,17 +1,15 @@
-# $Id: PKGBUILD 181380 2013-04-04 01:40:25Z eric $
-# Maintainer: Eric Bélanger <eric@archlinux.org>
+#!/bin/bash
 
-pkgname=psmisc
-pkgver=22.20
-pkgrel=1
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Eric Bélanger <eric@archlinux.org>
+
 pkgdesc="Miscellaneous procfs tools"
 arch=('i686' 'x86_64')
 url="http://psmisc.sourceforge.net/index.html"
 license=('GPL')
 groups=('base')
 depends=('ncurses')
-source=(http://downloads.sourceforge.net/psmisc/${pkgname}-${pkgver}.tar.gz)
-sha1sums=('abdddc8d5c91251bba0f3190956ae9d05c058745')
+source=(http://downloads.sourceforge.net/psmisc/${pkgbase}-${pkgver}.tar.gz)
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
