@@ -1,10 +1,8 @@
-# $Id: PKGBUILD 173994 2012-12-31 13:02:33Z foutrelis $
-# Maintainer: Allan McRae <allan@archlinux.org>
-# Contributor: judd <jvinet@zeroflux.org>
+#!/bin/bash
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Allan McRae <allan@archlinux.org>
+# Original Contributor: judd <jvinet@zeroflux.org>
 
-pkgname=patch
-pkgver=2.7.1
-pkgrel=2
 pkgdesc="A utility to apply patch files to original sources"
 arch=('i686' 'x86_64')
 url="http://www.gnu.org/software/patch/patch.html"
@@ -13,11 +11,8 @@ groups=('base-devel')
 depends=('glibc')
 makedepends=('ed')
 optdepends=('ed: for patch -e functionality')
-source=(ftp://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz{,.sig}
+source=(ftp://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.xz{,.sig}
         patch-2.7.1-initialize-data-structures-early-enough.patch)
-md5sums=('e9ae5393426d3ad783a300a338c09b72'
-         'b12189e0de3cb2af25268441647ec517'
-         'dc6367a7cd49933d4006c246789e98da')
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
