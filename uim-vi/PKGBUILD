@@ -22,7 +22,7 @@ options=('!libtool')
 # FIXME: Using a dedicated `Makefile` from the original source
 source=("uim-vi.patch"
         "uim-vi-m17n-candidate-window.patch"
-        "uim-vi-generic-input-method-default-on.patch"
+        "uim-vi-generic_im_adjustable_default_state.patch"
         scim2uim.rb-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/scim2uim.rb"
         upcase.awk-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/upcase.awk"
         sort.rb-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/sort.rb"
@@ -65,7 +65,7 @@ build() {
   done
 
   patch -Np4 < "${srcdir}/uim-vi.patch"
-  patch -Np4 < "${srcdir}/uim-vi-generic-input-method-default-on.patch"
+  patch -Np4 < "${srcdir}/uim-vi-generic_im_adjustable_default_state.patch"
   patch -l -Np4 < "${srcdir}/uim-vi-m17n-candidate-window.patch"
 
   ./autogen.sh
