@@ -8,31 +8,18 @@ pkgdesc='Vietnamese input method library'
 url='http://code.google.com/p/uim/'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
-depends=('libxft' 'libedit' 'm17n-lib' 'm17n-db-vi')
-# FIXME: We need ruby to run some script. However, if we are using `rvm
-# FIXME: we have no way to tell the system to skip the dependency check
-# FIXME: We may add a new check in `makepkg to just ensure that some
-# FIXME: binary files do exist that makes sense
+depends=('libxft' 'libedit' 'm17n-lib' 'm17n-db-vi' 'uim-vi-xtelex')
 makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3' 'm17n-db-vi')
 optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
             'gtk3: immodules and helper applications')
 options=('!libtool')
 
-# FIXME: Using a dedicated `Makefile` from the original source
 source=("uim-vi.patch"
         "uim-vi-m17n-candidate-window.patch"
         "uim-vi-generic_im_adjustable_default_state.patch"
-        scim2uim.rb-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/scim2uim.rb"
-        upcase.awk-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/upcase.awk"
-        sort.rb-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/bin/sort.rb"
-        Telex.txt.in-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/src/Telex.txt.in"
-        VNI.txt.in-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/src/VNI.txt.in"
-        xtelex.png-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/icons/telex.png"
-        xtelex.svg-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/icons/telex.svg"
-        xvni.png-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/icons/vni.png"
-        xvni.svg-${pkgver}::"https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v${pkgver}/icons/vni.svg"
-        "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz")
+        "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz"
+        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.1.0/bin/scim2uim.awk")
 
 provides=('uim')
 conflicts=('uim')
@@ -43,25 +30,16 @@ install=install
 build() {
   cd "${srcdir}/uim-${pkgver}"
 
-  msg "Generating xtelex.scm..."
-  cat "${srcdir}/Telex.txt.in-${pkgver}" \
-    | awk -f "${srcdir}/upcase.awk-${pkgver}" \
-    | sort -u \
-    | ruby "${srcdir}/sort.rb-${pkgver}" \
-    | ruby "${srcdir}/scim2uim.rb-${pkgver}" --telex \
+  msg "Generating faked 'xtelex.scm'..."
+  echo 'A A' | awk -f "${srcdir}/scim2uim.awk" -vim=telex \
     > "./scm/xtelex.scm"
 
-  msg "Generating xvni.scm..."
-  cat "${srcdir}/VNI.txt.in-${pkgver}" \
-    | awk -f "${srcdir}/upcase.awk-${pkgver}" \
-    | sort -u \
-    | ruby "${srcdir}/sort.rb-${pkgver}" \
-    | ruby "${srcdir}/scim2uim.rb-${pkgver}" --vni \
+  msg "Generating faked 'xvni.scm'..."
+  echo 'A A' | awk -f "${srcdir}/scim2uim.awk" -vim=vni \
     > "./scm/xvni.scm"
 
   for _file in xtelex.png xtelex.svg xvni.png xvni.svg; do
-    [[ -f "./pixmaps/${_file}" ]] \
-    || ln -s "${srcdir}/${_file}-${pkgver}" "./pixmaps/${_file}"
+    touch "./pixmaps/${_file}"
   done
 
   patch -Np4 < "${srcdir}/uim-vi.patch"
@@ -94,6 +72,8 @@ package() {
   make DESTDIR="${pkgdir}" install
   rm "${pkgdir}"/usr/lib/libgcroots.a
   install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
+  rm -f "${pkgdir}/usr/share/uim/"{xtelex,xvni}.scm
+  rm -f "${pkgdir}/usr/share/uim/pixmaps/"{xtelex,xvni}.{svg,png}
   ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
   ln -s uim-toolbar-gtk-systray "${pkgdir}/usr/bin/uim-systray"
 }
