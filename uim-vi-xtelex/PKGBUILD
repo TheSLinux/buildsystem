@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Author: Anh K. Huynh <kyanh@theslinux.org>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+
+pkgdesc='Provide xtelex, xvni data for uim-vi'
+url='https://github.com/TheSLinux-forks/myquartz-scim2uim'
+license=('GPL')
+arch=('any')
+source=("https://github.com/TheSLinux-forks/myquartz-scim2uim/archive/v${pkgver}.tar.gz")
+
+build() {
+  cd "${srcdir}/myquartz-scim2uim-${pkgver}/src/"
+  make build
+}
+
+package() {
+  cd "${srcdir}/myquartz-scim2uim-${pkgver}/"
+  install -d -m755 "${pkgdir}/usr/share/uim/pixmaps/"
+  install -m644 ./src/{xtelex,xvni}.scm "${pkgdir}/usr/share/uim/"
+  for _file in {telex,vni}.{svg,png}; do
+    install -m644 ./icons/$_file "${pkgdir}/usr/share/uim/pixmaps/x${_file}"
+  done
+}
