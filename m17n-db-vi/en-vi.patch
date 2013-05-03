@@ -1,7 +1,79 @@
-From 0e482f3a4e290367bd24d6407412bcda7f53beeb Mon Sep 17 00:00:00 2001
+From 83542f185948c3d11b2dfd34519aec5c43f1fe1f Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Fri, 3 May 2013 13:47:55 +0700
+Subject: [PATCH 1/3] Backspace is :undo
+
+The default behavior of Backspace is :delete. Bc we will use
+the key Backspace to :undo, we will need to change the default
+value in vi-*.mim, bc. the uim setting will be overwritten
+by this value
+---
+ m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-tcvn.mim  | 2 +-
+ m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-telex.mim | 2 +-
+ m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-viqr.mim  | 2 +-
+ m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-vni.mim   | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-tcvn.mim b/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-tcvn.mim
+index 0a9c2f0..f7af940 100644
+--- a/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-tcvn.mim
++++ b/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-tcvn.mim
+@@ -45,7 +45,7 @@ If this variable is 0 (the default), Backspace key deletes the previous
+ character (e.g. \"q u a i s BS\" => \"quá\").
+ If the value is 1, Backspace key undoes the previous key
+ \(e.g. \"q u a i s BS\" => \"quai\").")
+-  0 0 1))
++  1 0 1))
+ 
+ (include (t nil vi-base) macro)
+ (include (t nil vi-base) map)
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-telex.mim b/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-telex.mim
+index 98307f3..b60bc83 100644
+--- a/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-telex.mim
++++ b/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-telex.mim
+@@ -45,7 +45,7 @@ If this variable is 0 (the default), Backspace key deletes the previous
+ character (e.g. \"q u a i s BS\" => \"quá\").
+ If the value is 1, Backspace key undoes the previous key
+ \(e.g. \"q u a i s BS\" => \"quai\").")
+-  0 0 1))
++  1 0 1))
+ 
+ (include (t nil vi-base) macro)
+ (include (t nil vi-base) map)
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-viqr.mim b/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-viqr.mim
+index de64f04..6d78763 100644
+--- a/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-viqr.mim
++++ b/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-viqr.mim
+@@ -45,7 +45,7 @@ If this variable is 0 (the default), Backspace key deletes the previous
+ character (e.g. \"q u a i s BS\" => \"quá\").
+ If the value is 1, Backspace key undoes the previous key
+ \(e.g. \"q u a i s BS\" => \"quai\").")
+-  0 0 1))
++  1 0 1))
+ 
+ (include (t nil vi-base) macro)
+ (include (t nil vi-base) map)
+diff --git a/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-vni.mim b/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-vni.mim
+index 0c5c333..d86385d 100644
+--- a/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-vni.mim
++++ b/m17n-db-vi/src/m17n-db-1.6.4/MIM/vi-vni.mim
+@@ -45,7 +45,7 @@ If this variable is 0 (the default), Backspace key deletes the previous
+ character (e.g. \"q u a i s BS\" => \"quá\").
+ If the value is 1, Backspace key undoes the previous key
+ \(e.g. \"q u a i s BS\" => \"quai\").")
+-  0 0 1))
++  1 0 1))
+ 
+ (include (t nil vi-base) macro)
+ (include (t nil vi-base) map)
+-- 
+1.8.2.1
+
+
+From c86e9103286f242fb7a5acdeb4da3bec93c4792d Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Sat, 6 Apr 2013 07:15:24 +0000
-Subject: [PATCH 1/2] Fix a minor bug in po/Makefile.in.in
+Subject: [PATCH 2/3] Fix a minor bug in po/Makefile.in.in
 
 ---
  m17n-db-vi/src/m17n-db-1.6.4/po/Makefile.in.in | 2 +-
@@ -24,10 +96,10 @@ index 2ed49e6..098e15b 100644
 1.8.2.1
 
 
-From 861781e1767f32cee64d6aac2b99b90f825d1b7e Mon Sep 17 00:00:00 2001
+From 782bce1222dfebcf9a137f1dd5b3a33a94d1ca63 Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Sat, 6 Apr 2013 07:15:59 +0000
-Subject: [PATCH 2/2] Disable unused language supports
+Subject: [PATCH 3/3] Disable unused language supports
 
 ---
  m17n-db-vi/src/m17n-db-1.6.4/FLT/Makefile.am      | 25 +-------
