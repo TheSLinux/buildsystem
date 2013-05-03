@@ -11,7 +11,7 @@ url='http://www.nongnu.org/m17n/'
 arch=('any')
 license=('GPL')
 depends=('glibc') # not because of compiling, but because of /usr/share/i18n/charmaps/ files that glibc provides
-source=("en-vi.patch"
+source=("en-vi.patch" "en-vi-add-ipa-files.patch"
   "http://download.savannah.gnu.org/releases/m17n/m17n-db-${pkgver}.tar.gz")
 sha1sums=()
 
@@ -22,6 +22,7 @@ conflicts=('m17n-db')
 build() {
   cd "${srcdir}/m17n-db-${pkgver}"
   patch -Np4 < "${srcdir}/en-vi.patch"
+  patch -Np4 < "${srcdir}/en-vi-add-ipa-files.patch"
   ./configure --prefix=/usr
   make
 }
@@ -29,4 +30,8 @@ build() {
 package() {
   cd "${srcdir}/m17n-db-${pkgver}"
   make DESTDIR="${pkgdir}" install
+  cd "${pkgdir}/usr/share/m17n/icons/"
+  for im in viqr tcvn telex vni; do
+    ln -s "vi-$im.png" "vi-$im-ipa.png"
+  done
 }
