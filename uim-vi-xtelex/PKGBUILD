@@ -11,7 +11,7 @@ source=("https://github.com/TheSLinux-forks/myquartz-scim2uim/archive/v${pkgver}
 
 build() {
   cd "${srcdir}/myquartz-scim2uim-${pkgver}/src/"
-  make build
+  make clean build
 }
 
 package() {
