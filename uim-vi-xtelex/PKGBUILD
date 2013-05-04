@@ -18,7 +18,7 @@ build() {
 package() {
   cd "${srcdir}/myquartz-scim2uim-${pkgver}/"
   install -d -m755 "${pkgdir}/usr/share/uim/pixmaps/"
-  install -m644 ./src/{xtelex,xvni}.scm "${pkgdir}/usr/share/uim/"
+  install -m644 ./src/{xtelex,xvni}{,-ipa}.scm "${pkgdir}/usr/share/uim/"
   for _file in {telex,vni}.{svg,png}; do
     install -m644 ./icons/$_file "${pkgdir}/usr/share/uim/pixmaps/x${_file}"
   done
