@@ -38,7 +38,17 @@ build() {
   echo 'A A' | awk -f "${srcdir}/scim2uim.awk" -vim=vni \
     > "./scm/xvni.scm"
 
-  for _file in xtelex.png xtelex.svg xvni.png xvni.svg; do
+  msg "Generating faked 'xtelex-ipa.scm'..."
+  cat "./scm/xtelex.scm" \
+    | sed -e 's/xtelex/xtelex-ipa/g' -e 's/Telex/Telex-IPA/g' \
+    > "./scm/xtelex-ipa.scm"
+
+  msg "Generating faked 'xvni-ipa.scm'..."
+  cat "./scm/xvni.scm" \
+    | sed -e 's/xvni/xvni-ipa/g' -e 's/VNI/VNI-IPA/g' \
+    > "./scm/xvni-ipa.scm"
+
+  for _file in x{telex,vni}{,-ipa}.{svg,png}; do
     touch "./pixmaps/${_file}"
   done
 
@@ -72,8 +82,8 @@ package() {
   make DESTDIR="${pkgdir}" install
   rm "${pkgdir}"/usr/lib/libgcroots.a
   install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
-  rm -f "${pkgdir}/usr/share/uim/"{xtelex,xvni}.scm
-  rm -f "${pkgdir}/usr/share/uim/pixmaps/"{xtelex,xvni}.{svg,png}
+  rm -f "${pkgdir}/usr/share/uim/"{xtelex,xvni}{,-ipa}.scm
+  rm -f "${pkgdir}/usr/share/uim/pixmaps/"{xtelex,xvni}{,-ipa}.{svg,png}
   ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
   ln -s uim-toolbar-gtk-systray "${pkgdir}/usr/bin/uim-systray"
 }
