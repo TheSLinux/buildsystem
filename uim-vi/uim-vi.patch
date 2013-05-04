@@ -1,15 +1,15 @@
 From 9d045097c5ed5a6d7c651582235b618028117956 Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Tue, 9 Apr 2013 17:46:51 +0000
-Subject: [PATCH 1/4] Clean up some non-vi modules/language supports
+Subject: [PATCH 1/5] Clean up some non-vi modules/language supports
 
 ---
  uim-vi/src/uim-1.8.5/byeoru-data/Makefile.am |  2 +-
  uim-vi/src/uim-1.8.5/pixmaps/Makefile.am     | 97 ++++------------------------
  uim-vi/src/uim-1.8.5/po/LINGUAS              |  1 -
  uim-vi/src/uim-1.8.5/scm/Makefile.am         | 81 ++---------------------
- uim-vi/src/uim-1.8.5/tables/Makefile.am      |  6 +-
- 5 files changed, 22 insertions(+), 165 deletions(-)
+ uim-vi/src/uim-1.8.5/tables/Makefile.am      |  4 +-
+ 5 files changed, 21 insertions(+), 164 deletions(-)
 
 diff --git a/uim-vi/src/uim-1.8.5/byeoru-data/Makefile.am b/uim-vi/src/uim-1.8.5/byeoru-data/Makefile.am
 index 7a0063d..26b9066 100644
@@ -277,7 +277,7 @@ diff --git a/uim-vi/src/uim-1.8.5/tables/Makefile.am b/uim-vi/src/uim-1.8.5/tabl
 index 33d95f9..73a5338 100644
 --- a/uim-vi/src/uim-1.8.5/tables/Makefile.am
 +++ b/uim-vi/src/uim-1.8.5/tables/Makefile.am
-@@ -1,9 +1,9 @@
+@@ -1,7 +1,7 @@
  tablesdir = $(pkgdatadir)/tables
  
 -SCMS = wb86.scm zm.scm
@@ -285,10 +285,7 @@ index 33d95f9..73a5338 100644
 +SCMS =
 +SCM_TABLES =
  
--NATIVE_TABLES = 
-+NATIVE_TABLES =
- 
- GENERATED_TABLES = $(SCM_TABLES)
+ NATIVE_TABLES =
  
 -- 
 1.8.2.1
@@ -297,7 +294,7 @@ index 33d95f9..73a5338 100644
 From df04775feb13d9eabe595c34bc6c33ed3c8ae9d1 Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Thu, 11 Apr 2013 13:43:38 +0000
-Subject: [PATCH 2/4] Add new module :xtelex
+Subject: [PATCH 2/5] Add new module :xtelex
 
 This module is a big table of predefined words for Telex users.
 Pls check details at https://github.com/icy/myquartz-scim2uim
@@ -353,7 +350,7 @@ index 331b219..636691f 100644
 From 2db90b14131b52f17615d812c3ac3bae6a150a09 Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Fri, 12 Apr 2013 08:05:41 +0000
-Subject: [PATCH 3/4] Add new module :xvni
+Subject: [PATCH 3/5] Add new module :xvni
 
 This module is a big table of predefined words for VNI users.
 It is genereated from https://github.com/icy/myquartz-scim2uim/ \
@@ -410,7 +407,7 @@ index 636691f..2256e1d 100644
 From cb0e841a0a3cba64df57eb09dc536277a0c1cc23 Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Fri, 12 Apr 2013 08:20:32 +0000
-Subject: [PATCH 4/4] Should use .png instead of .svg for vni
+Subject: [PATCH 4/5] Should use .png instead of .svg for vni
 
 ---
  uim-vi/src/uim-1.8.5/pixmaps/Makefile.am | 2 +-
@@ -429,6 +426,63 @@ index c3a2792..c363d2c 100644
  
  SVG_PNGS = unknown.png \
             direct.png \
+-- 
+1.8.2.1
+
+
+From 4623e44eafd196a84966f8bbfe6712811b4e98b9 Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Sat, 4 May 2013 10:06:41 +0700
+Subject: [PATCH 5/5] + IPA support xtelex-ipa, xvni-ipa
+
+---
+ uim-vi/src/uim-1.8.5/pixmaps/Makefile.am | 6 ++++--
+ uim-vi/src/uim-1.8.5/scm/Makefile.am     | 4 +++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/uim-vi/src/uim-1.8.5/pixmaps/Makefile.am b/uim-vi/src/uim-1.8.5/pixmaps/Makefile.am
+index c363d2c..4b92692 100644
+--- a/uim-vi/src/uim-1.8.5/pixmaps/Makefile.am
++++ b/uim-vi/src/uim-1.8.5/pixmaps/Makefile.am
+@@ -25,12 +25,14 @@ SVGS += direct_input_dark_background.svg \
+ SVGS += im_switcher.svg uim-dict.svg
+ 
+ # input method substitutions
+-IM_SUBST_SVGS = xvni.svg xtelex.svg viqr.svg ipa-x-sampa.svg scim.svg
++IM_SUBST_SVGS = xvni.svg xtelex.svg viqr.svg ipa-x-sampa.svg scim.svg \
++	xvni-ipa.svg xtelex-ipa.svg
+ 
+ GENERATED_SVGS = $(IM_SUBST_SVGS)
+ SVGS += im_subst.svg $(GENERATED_SVGS)
+ 
+-IM_SUBST_PNGS = xvni.png xtelex.png viqr.png ipa-x-sampa.png scim.png
++IM_SUBST_PNGS = xvni.png xtelex.png viqr.png ipa-x-sampa.png scim.png \
++	xvni-ipa.png xtelex-ipa.png
+ 
+ SVG_PNGS = unknown.png \
+            direct.png \
+diff --git a/uim-vi/src/uim-1.8.5/scm/Makefile.am b/uim-vi/src/uim-1.8.5/scm/Makefile.am
+index 2256e1d..0a18a3d 100644
+--- a/uim-vi/src/uim-1.8.5/scm/Makefile.am
++++ b/uim-vi/src/uim-1.8.5/scm/Makefile.am
+@@ -20,6 +20,8 @@ SCM_FILES = plugin.scm im.scm im-custom.scm lazy-load.scm init.scm \
+  viqr.scm \
+  xtelex.scm \
+  xvni.scm \
++ xtelex-ipa.scm \
++ xvni-ipa.scm \
+  ipa-x-sampa.scm \
+  m17nlib.scm m17nlib-custom.scm \
+  uim-module-manager.scm \
+@@ -46,7 +48,7 @@ EXTRA_DIST = $(OTHER_SCM_FILES)
+ 
+ ETAGS_ARGS=$(SCM_FILES) $(GENERATED_SCM_FILES)
+ 
+-module_names = "m17nlib" "viqr" "xvni" "xtelex" "ipa-x-sampa"
++module_names = "m17nlib" "viqr" "xvni" "xtelex" "ipa-x-sampa" "xtelex-ipa" "xvni-ipa"
+ 
+ UIM_MODULE_MANAGER = $(top_builddir)/uim/uim-module-manager
+ UIM_MODULE_MANAGER_ENV = \
 -- 
 1.8.2.1
 
