@@ -11,7 +11,8 @@ source=("https://github.com/TheSLinux-forks/myquartz-scim2uim/archive/v${pkgver}
 
 build() {
   cd "${srcdir}/myquartz-scim2uim-${pkgver}/src/"
-  make clean build
+  make clean
+  make build
 }
 
 package() {
@@ -20,5 +21,10 @@ package() {
   install -m644 ./src/{xtelex,xvni}.scm "${pkgdir}/usr/share/uim/"
   for _file in {telex,vni}.{svg,png}; do
     install -m644 ./icons/$_file "${pkgdir}/usr/share/uim/pixmaps/x${_file}"
+  done
+
+  cd "${pkgdir}/usr/share/uim/pixmaps/"
+  for _file in x{telex,vni}.{svg,png}; do
+    ln -s "$_file" "${_file%.*}-ipa.${_file##*.}"
   done
 }
