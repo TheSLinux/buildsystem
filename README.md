@@ -2,7 +2,7 @@ Hello, world.
 
 If you want to start new build instruction (aka new `PKGBUILD`), please
 discuss on the developer's list (aka `theslinux-hackers@theslinux.org`)
-and/or create a requeset on our [ticket system][tsys]. Or you just start
+and/or create a request on our [ticket system][tsys]. Or you just start
 from the branch `TheBigBang` or `TheSmallBang`.
 
 Don't forget to check out and read some guide lines on `TheBigBang`.
