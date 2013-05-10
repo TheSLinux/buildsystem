@@ -22,7 +22,11 @@ conflicts=('m17n-db')
 build() {
   cd "${srcdir}/m17n-db-${pkgver}"
   patch -Np4 < "${srcdir}/en-vi.patch"
+  # FIXME: You will have problem in the next run
   patch -Np4 < "${srcdir}/en-vi-add-ipa-files.patch"
+  aclocal
+  autoconf
+  automake
   ./configure --prefix=/usr
   make
 }
