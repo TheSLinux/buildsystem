@@ -10,5 +10,5 @@ You also need that branch locally to use our build system (`s-makepkg`).
 
 If you have any questions / suggestions, please discuss on our [mailing lists][lists].
 
-[tsys]: https://github.com/TheSLinux/gs
+[tsys]: https://github.com/TheSLinux/gs/issues
 [lists]: http://theslinux.org/lists/en/
