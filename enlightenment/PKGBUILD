@@ -1,0 +1,77 @@
+# Maintainer : NgoHuy <huynhok.uit@vnoss.org>
+# Original Maintainer: Doug Newgard <scimmia22 at outlook dot com>
+# Contributor: Ronald van Haren <ronald.archlinux.org>
+
+#FIXME : enable wayland support and pam by default
+
+pkgdesc="Enlightenment window manager (formerly e17) - Development version"
+arch=('i686' 'x86_64')
+url="http://www.enlightenment.org"
+license=('BSD')
+depends=('elementary' 'efl' 'xcb-util-keysyms' 'hicolor-icon-theme'
+         'desktop-file-utils' 'udisks' 'ttf-font')
+makedepends=('git')
+optdepends=('connman: network module')
+conflicts=('e' 'e-svn' 'enlightenment17-svn')
+provides=('e' 'e-svn' 'enlightenment17-svn'
+          'notification-daemon')
+backup=('etc/enlightenment/sysactions.conf'
+        'etc/xdg/menus/enlightenment.menu')
+options=('!libtool' '!strip')
+source=(e-applications.menu)
+sha1sums=('e08cc63cb8a188a06705b42d03e032b9fcfa7ee5')
+install=enlightenment17.install
+
+_gitroot="git://git.enlightenment.org/core/enlightenment.git"
+_gitname="enlightenment"
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [[ -d "$_gitname" ]]; then
+    cd "$_gitname" && git pull origin
+    msg "The local files are updated."
+  else
+    git clone "$_gitroot" "$_gitname"
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting build..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+  
+  
+# set suspend, hibernate, poweroff and reboot to use systemd
+  sed -e 's:@SUSPEND@:/usr/bin/systemctl suspend:g' \
+      -e 's:@HIBERNATE@:/usr/bin/systemctl hibernate:g' \
+      -e 's:@HALT@:/usr/bin/systemctl poweroff:g' \
+      -e 's:@REBOOT@:/usr/bin/systemctl reboot:g' \
+      -i "$srcdir/$_gitname-build/data/etc/sysactions.conf.in"
+
+  
+  
+  ./autogen.sh  --prefix=/usr \
+		--sysconfdir=/etc \
+		--enable-pam \
+		--enable-elementary \
+		--enable-emotion 
+
+  make -j4
+}
+
+package() {
+  cd "$srcdir/$_gitname-build"
+
+  make -j4 DESTDIR="$pkgdir" install
+
+# install license files
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+  install -Dm644 AUTHORS "$pkgdir/usr/share/licenses/$pkgname/AUTHORS"
+  install -Dm644 $srcdir/e-applications.menu \
+	  	$pkgdir/etc/xdg/menus/e-applications.menu
+# remove build directory
+  rm -r "$srcdir/$_gitname-build"
+}
