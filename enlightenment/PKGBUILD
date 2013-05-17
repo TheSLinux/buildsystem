@@ -21,6 +21,8 @@ provides=('e' 'e-svn' 'enlightenment17-svn'
 backup=('etc/enlightenment/sysactions.conf'
         'etc/xdg/menus/enlightenment.menu')
 options=('!libtool' '!strip')
+source=(e-applications.menu)
+sha1sums=('e08cc63cb8a188a06705b42d03e032b9fcfa7ee5')
 install=enlightenment17.install
 
 _gitroot="git://git.enlightenment.org/core/enlightenment.git"
@@ -43,19 +45,22 @@ build() {
   rm -rf "$srcdir/$_gitname-build"
   git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
   cd "$srcdir/$_gitname-build"
-
-# set suspend and hibernate to use systemd
+  
+  
+# set suspend, hibernate, poweroff and reboot to use systemd
   sed -e 's:@SUSPEND@:/usr/bin/systemctl suspend:g' \
       -e 's:@HIBERNATE@:/usr/bin/systemctl hibernate:g' \
+      -e 's:@HALT@:/usr/bin/systemctl poweroff:g' \
+      -e 's:@REBOOT@:/usr/bin/systemctl reboot:g' \
       -i "$srcdir/$_gitname-build/data/etc/sysactions.conf.in"
 
+  
+  
   ./autogen.sh  --prefix=/usr \
 		--sysconfdir=/etc \
 		--enable-pam \
 		--enable-elementary \
-		--enable-emotion \
-		--enable-wayland-clients \
-		--enable-wayland-egl 
+		--enable-emotion 
 
   make -j4
 }
@@ -68,7 +73,8 @@ package() {
 # install license files
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
   install -Dm644 AUTHORS "$pkgdir/usr/share/licenses/$pkgname/AUTHORS"
-
+  install -Dm644 $srcdir/e-applications.menu \
+	  	$pkgdir/etc/xdg/menus/e-applications.menu
 # remove build directory
   rm -r "$srcdir/$_gitname-build"
 }
