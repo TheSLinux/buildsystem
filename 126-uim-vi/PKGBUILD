@@ -19,6 +19,6 @@ package() {
 
   find "./uim.d/" -type f \
   | while read _file; do
-    install -D -m755 "$_file" "${pkgdir}/usr/share/theslinux/126/$_file"
+    install -D -m644 "$_file" "${pkgdir}/usr/share/theslinux/126/$_file"
   done
 }
