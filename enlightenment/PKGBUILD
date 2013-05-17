@@ -4,9 +4,6 @@
 
 #FIXME : enable wayland support and pam by default
 
-pkgname=enlightenment17
-pkgver=17
-pkgrel=1
 pkgdesc="Enlightenment window manager (formerly e17) - Development version"
 arch=('i686' 'x86_64')
 url="http://www.enlightenment.org"
