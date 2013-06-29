@@ -40,15 +40,15 @@ $ git checkout -b p_foobar@new-feature
 #
 # do what ever you want, commit your changes and create your patch
 #
-$ git format-patch --stdout foobar..p_foobar-new-feature \
-    > /path/to/foobar-new-feature.patch
+$ git format-patch --stdout foobar..p_foobar@new-feature \
+    > /path/to/foobar@new-feature.patch
 ````
 
-You can send your patch file `foobar-new-feature.patch` to some list
+You can send your patch file `foobar@new-feature.patch` to some list
 (please check `git-send-email`).
 
 If you are using `github`, thing is simple. You just need to push your
-feature branch `p_foobar-new-feature` to your fork on `github`, then
+feature branch `p_foobar@new-feature` to your fork on `github`, then
 create a pull request.
 
 ## How to patch package's source code
@@ -85,7 +85,7 @@ $ git checkout -b p_foobar@new-feature
 #
 # make changes, commits
 #
-$ git format-patch --stdout master > p_foobar-new-feature.patch
+$ git format-patch --stdout master > p_foobar@new-feature.patch
 #
 # Now the patch file is ready to be sent out
 #
