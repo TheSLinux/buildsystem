@@ -54,42 +54,130 @@ package() {
 }
 
 # Notify if there is new version
+#
 # * The latest stable version
 # * The latest patch for the current version
 # * The link to them (!?)
-# FIXME: Let us know if we are already up-to-date. That means that
-# FIXME: we also provide some special status in the following cases:
-# FIXME: - the current version == the lastest version
-# FIXME: - the current version == the current patch version
+#
+# Strategy
+#
+# * Get the current version (x.y.z.t) and the first patch (x.y.z)
+# * Fetch `sudo` homepage, and find the latest version started by `x.`
+# * If the latest version equals to the current version, print the
+#   update status, and exit (0)
+# * If the latest version is not the current version, this indicates
+#   that we have a new version to update. We provide the link to
+#   this update. There are two cases
+#   - It is on the same stream of the current version
+#       the latest stable version == a patch update
+#   - Otherwise,
+#       the latest stable version == a major update
+#       there is possibly new patch for the current version
+#
+# Output
+#   sudo:
+#     up-to-date: yes|nil
+#     latest: the latest version if any
+#     latest.link: link to the latest version information if any
+#     update: the latest update if any
+#     update.link: as `latest.link` but for `update`
+#     error: user.input|curl.format|curl.error|curl.format.version
+#
+# Note:
+#   1. The version string in the output is in TheSLinux format
+#   2. The link in `update` can be used for the next tag
+#
 get_update() {
   local _url="http://www.sudo.ws/sudo/stable.html"
 
   echo "${PACKAGE_BASE}:"
 
-  curl -sL "$_url" 2>/dev/null \
+  curl \
+    --connect-timeout "${CURL_TIMEOUT:-3}" \
+    -sL "$_url" 2>/dev/null \
   | ruby \
       -rnokogiri \
-      -e "FIRST_PATCH='${PACKAGE_VERSION%.*}'" \
-      -e "URL='${_url}'" \
+      -e "URL = '${_url}'" \
+      -e "current_version = '$_sudover'" \
       -e '
-        doc = Nokogiri::HTML(STDIN.read)
+        class String
+          # Convert the Sudo string format to TheSLinux version string
+          def new_format
+            if self.include?("p")
+              self.gsub("p", ".")
+            elsif self.split(".").size < 4
+              self + ".0"
+            else
+              self
+            end
+          end
 
-        ver = doc.xpath("//a[starts-with(@name, \"1.\")]").first
-        if ver.respond_to?(:attributes)
-          version = ver.attributes["name"].value
-          puts "  latest: #{version}"
-          puts "  latest.link: #{URL}##{version}"
-        end
-
-        ver = doc.xpath("//a[starts-with(@name, \"#{FIRST_PATCH}\")]").first
-        if ver.respond_to?(:attributes)
-          patch = ver.attributes["name"].value
-          unless patch == FIRST_PATCH
-            puts "  update: #{patch}"
-            puts "  update.link: #{URL}##{patch}"
+          def version_valid?
+            self.match(/^([0-9]+\.){2}[0-9]+(p[1-9]+)?$/)
           end
         end
+
+        doc = Nokogiri::HTML(STDIN.read)
+        ret = []
+        current_stream = current_version.split(/[^0-9]/).slice(0,3).join(".")
+        update_stream = ""
+        major_stream = current_version.split(".").first
+
+        # The current version information in format x.y.z.t
+        unless current_version and current_version.version_valid?
+          puts "  error: user.input"
+          exit 1
+        end
+
+        # Find the latest stable version
+        ver = doc.xpath("//a[starts-with(@name, \"#{major_stream}.\")]").first
+        unless ver.respond_to?(:attributes)
+          puts "  error: curl.format"
+          exit 1
+        end
+
+        version = ver.attributes["name"].value
+        unless version.version_valid?
+          puts "  error: curl.format.version"
+          exit 1
+        end
+
+        update_stream = version.split(/[^0-9]/).slice(0,3).join(".")
+        if version == current_version
+          puts "  up-to-date: yes"
+          exit 0
+        end
+
+        if update_stream == current_stream
+          ret << "  update: #{version.new_format}"
+          ret << "  update.link: #{URL}##{version}"
+          puts ret.join("\n")
+          exit 0
+        end
+
+        ret << "  latest: #{version.new_format}"
+        ret << "  latest.link: #{URL}##{version}"
+
+        ver = doc.xpath("//a[starts-with(@name, \"#{current_stream}\")]").first
+        if ver.respond_to?(:attributes)
+          patch = ver.attributes["name"].value
+          unless patch.version_valid?
+            puts "  error: curl.format.version"
+            exit 1
+          end
+          if patch == current_version
+            ret << "  up-to-date: yes"
+          else
+            ret << "  update: #{patch.new_format}"
+            ret << "  update.link: #{URL}##{patch}"
+          end
+        else
+          ret << "  error: curl.format" if error
+        end
+
+        puts ret.join("\n")
       '
 
-  [[ ${PIPESTATUS[0]} -eq 0 ]] || echo "  curl: 1"
+  [[ ${PIPESTATUS[0]} -eq 0 ]] \
+  || { echo "  error: curl.error"; exit 1; }
 }
