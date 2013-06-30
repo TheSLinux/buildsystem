@@ -10,8 +10,9 @@
 #   x.y.z == x.y.z.0 -> x.y.z     : the main release (aka patch = 0)
 #   x.y.z.t (t > 0)  -> x.y.z.pt  : the patches      (aka patch > 0)
 #
-_sudover="${pkgver%.*}"
-[[ "${pkgver##*.}" == "0" ]] || _sudover="${pkgver%.*}p${pkgver##*.}"
+_sudover="${PACKAGE_VERSION%.*}"
+[[ "${PACKAGE_VERSION##*.}" == "0" ]] \
+  || _sudover="${PACKAGE_VERSION%.*}p${PACKAGE_VERSION##*.}"
 
 pkgdesc="Give certain users the ability to run some commands as root"
 arch=('i686' 'x86_64')
