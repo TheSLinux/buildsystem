@@ -5,8 +5,6 @@
 # Original Contributor: Allan McRae <allan@archlinux.org>
 # Original Contributor: Tom Newsom <Jeepster@gmx.co.uk>
 
-# FIXME: patch the sample sudo configuration file
-
 # `sudo` has two different kinds of versions
 #
 #   x.y.z == x.y.z.0 -> x.y.z     : the main release (aka patch = 0)
@@ -54,4 +52,39 @@ package() {
   install -Dm644 doc/LICENSE "$pkgdir/usr/share/licenses/sudo/LICENSE"
 }
 
-# vim:set ts=2 sw=2 et:
+# Notify if there is new version
+# * The latest stable version
+# * The latest patch for the current version
+# * The link to them (!?)
+get_update() {
+  local _url="http://www.sudo.ws/sudo/stable.html"
+
+  echo "${PACKAGE_BASE}:"
+
+  curl -sL "$_url" 2>/dev/null \
+  | ruby \
+      -rnokogiri \
+      -e "FIRST_PATCH='${PACKAGE_VERSION%.*}'" \
+      -e "URL='${_url}'" \
+      -e '
+        doc = Nokogiri::HTML(STDIN.read)
+
+        ver = doc.xpath("//a[starts-with(@name, \"1.\")]").first
+        if ver.respond_to?(:attributes)
+          version = ver.attributes["name"].value
+          puts "  latest: #{version}"
+          puts "  latest.link: #{URL}##{version}"
+        end
+
+        ver = doc.xpath("//a[starts-with(@name, \"#{FIRST_PATCH}\")]").first
+        if ver.respond_to?(:attributes)
+          patch = ver.attributes["name"].value
+          unless patch == FIRST_PATCH
+            puts "  update: #{patch}"
+            puts "  update.link: #{URL}##{patch}"
+          end
+        end
+      '
+
+  [[ ${PIPESTATUS[0]} -eq 0 ]] || echo "  curl: 1"
+}
