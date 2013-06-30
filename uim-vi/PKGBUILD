@@ -87,3 +87,35 @@ package() {
   ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
   ln -s uim-toolbar-gtk-systray "${pkgdir}/usr/bin/uim-systray"
 }
+
+get_update() {
+  local _url="https://github.com/uim/uim/tags"
+
+  echo "${PACKAGE_BASE}:"
+
+  lynx -dump \
+    -connect_timeout="${CURL_TIMEOUT:-3}" \
+    "$_url" 2>/dev/null \
+  | grep -- "tree/uim-" \
+  | head -1 \
+  | awk '{print $NF}' \
+  | while read _line; do
+      _version="${_line##*/}"
+      _version="${_version##*-}"
+      if [[ "$_version" == "$PACKAGE_VERSION" ]]; then
+        echo "  up-to-date: yes"
+      else
+        echo "$_version" | grep -qE '^([0-9]+\.){2}[0-9]+$'
+        if [[ $? -eq 0 ]]; then
+          echo "  update: ${_version}"
+          echo "  update.link: ${_line}"
+        else
+          echo "  error: curl.format"
+          return 1
+        fi
+      fi
+    done
+
+  [[ ${PIPESTATUS[0]} -eq 0 ]] \
+  || { echo "  error: curl.error"; return 1; }
+}
