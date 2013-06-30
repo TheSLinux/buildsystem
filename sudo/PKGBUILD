@@ -56,6 +56,10 @@ package() {
 # * The latest stable version
 # * The latest patch for the current version
 # * The link to them (!?)
+# FIXME: Let us know if we are already up-to-date. That means that
+# FIXME: we also provide some special status in the following cases:
+# FIXME: - the current version == the lastest version
+# FIXME: - the current version == the current patch version
 get_update() {
   local _url="http://www.sudo.ws/sudo/stable.html"
 
