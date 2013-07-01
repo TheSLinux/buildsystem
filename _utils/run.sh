@@ -578,7 +578,6 @@ _get_git_tag_on_package_branch() {
   _err "Failed to get tag from package branch '$_br'"
 }
 
-
 # Return the package name/version/tag from a tag string
 # Input
 #   $1 => :version => get the version number
@@ -765,15 +764,50 @@ _fix_the_1st_tag_on_package_branch() {
 # some environment variables before invoking the real program `makepkg`.
 # Note: the dash (-) hides this function from Geany symbols listing
 #
-# `s-makepkg` will
+# Difference from the original `makepkg`
 #
-#   1. Detect the package name from working environment
-#   2. Get the latest tag on the package branch
-#   3. Find the next valid tag
-#   4. Retrieve the version number and release number for the tag
-#   5. Invoke the original `makepkg` with new environment
+# 1. Package information {name, version, release} can be provided
+#    externally (from the environment)
+# 2. `PKGBUILD` should provide metadata and build process, it doesn't
+#    contain any real data (version number, checksums,..)
+# 3. The default hash is `sha512` (this's part of `pacman` though)
+# 4. Can build any version of package quickly without modifying the
+#    `PKGBUILD`. However, some `PKGBUILD` may only work with a limit
+#    set of versions (if this is the case, we may split `PKGBUILD`
+#    into parts.)
+# 5. `Release number` is detected automatically
+# 6. `PKGBUILD` isn't independent and it can't be used with the original
+#    `makepkg` without some environment settings
+# 7. Doesn't support version string that only has one number. E.g,
+#    the package `xterm` or `less` only uses one number (patch number).
+#    This is possibly due to history reason. This number will be converted
+#    to two number forms by adding zero `0` to the original string. E.g,
+#    `xterm-291-1` should read `xterm-0.291-1`.
+# 8. `PACKAGE_BASE` (so `pkgbase`) is alway defined.
+# 9. `PACKAGE_FEATURE` helps to provide package name with any special
+#    feature, without creating "official branch". We just need to
+#    create a feature branch and `s-makepkg` will use the branch name
+#    as `PACKAGE_FEATURE`, and will append the string to name of the
+#    final output package. It also helps to modify the variables
+#    `conflicts`, `provides`,... on-the-fly.
 #
-# By default, `s-makepkg` uses the latest tag from the `package branch`.
+s-makepkg() {
+  _s_env || return 1
+  PACKAGE_BASE="$PACKAGE_BASE" \
+  PACKAGE_RELEASE="$PACKAGE_RELEASE" \
+  PACKAGE_VERSION="$PACKAGE_VERSION" \
+  PACKAGE_FEATURE="$PACKAGE_FEATURE" \
+  makepkg "$@"
+}
+
+# `_s_env` will
+#
+# 1. Detect the package name from working environment
+# 2. Get the latest tag on the package branch
+# 3. Find the next valid tag
+# 4. Retrieve the version number and release number for the tag
+#
+# By default, `_s_env` uses the latest tag from the `package branch`.
 # If you want to specify an exact tag, use `PACKAGE_[REF_]TAG` instead.
 # This tag `PACKAGE_REF_TAG` must exist in the git repository bc it is
 # used as reference. `PACKAGE_TAG` don't need to be exist.
@@ -784,36 +818,9 @@ _fix_the_1st_tag_on_package_branch() {
 #
 # The order of these variables
 #
-#   1. PACKAGE_TAG      (you are at your own risk)
-#   2. PACKAGE_REF_TAG  (start from the known point in the past)
-#   3. PACKAGE_BASE     (+ reference tag from the current branch)
-#
-# Difference from the original `makepkg`
-#
-#   1. Package information {name, version, release} can be provided
-#      externally (from the environment)
-#   2. `PKGBUILD` should provide metadata and build process, it doesn't
-#      contain any real data (version number, checksums,..)
-#   3. The default hash is `sha512` (this's part of `pacman` though)
-#   4. Can build any version of package quickly without modifying the
-#      `PKGBUILD`. However, some `PKGBUILD` may only work with a limit
-#      set of versions (if this is the case, we may split `PKGBUILD`
-#      into parts.)
-#   5. `Release number` is detected automatically
-#   6. `PKGBUILD` isn't independent and it can't be used with the original
-#      `makepkg` without some environment settings
-#   7. Doesn't support version string that only has one number. E.g,
-#      the package `xterm` or `less` only uses one number (patch number).
-#      This is possibly due to history reason. This number will be converted
-#      to two number forms by adding zero `0` to the original string. E.g,
-#      `xterm-291-1` should read `xterm-0.291-1`.
-#   8. `PACKAGE_BASE` (so `pkgbase`) is alway defined.
-#   9. `PACKAGE_FEATURE` helps to provide package name with any special
-#       feature, without creating "official branch". We just need to
-#       create a feature branch and `s-makepkg` will use the branch name
-#       as `PACKAGE_FEATURE`, and will append the string to name of the
-#       final output package. It also helps to modify the variables
-#       `conflicts`, `provides`,... on-the-fly.
+# 1. PACKAGE_TAG      (you are at your own risk)
+# 2. PACKAGE_REF_TAG  (start from the known point in the past)
+# 3. PACKAGE_BASE     (+ reference tag from the current branch)
 #
 # Input
 #      => PACKAGE_TAG      => the tag of new package
@@ -822,9 +829,17 @@ _fix_the_1st_tag_on_package_branch() {
 #      => PACKAGE_FEATURE  => special feature of the package
 #   $1 => --current-tag    => print current tag and exit
 #      => --next-tag       => print next tag and exit
-#   $@ => pass to original `makepkg`
 #
-s-makepkg() {
+# Output
+#   error || PACKAGE_{BASE, VERSION, RELEASE, FEATURE}
+#
+# History
+#
+# `_s_env` is taken from the original implementation of the `s-makepkg`
+#  function. Because the output of `_s_env` is useful and may be used
+# in different context, we move the first part to a this `_s_env`.
+#
+_s_env() {
   local _tag=
   local _ver=
   local _rel=
@@ -867,17 +882,15 @@ s-makepkg() {
   _ver="$(_get_version_from_tag $_tag)" || return 1
   _rel="$(_get_release_from_tag $_tag)" || return 1
 
-  :; \
-    PACKAGE_BASE="$_pkg" \
-    PACKAGE_RELEASE="$_rel" \
-    PACKAGE_VERSION="$_ver" \
-    PACKAGE_FEATURE="$_pkg_feature" \
-  makepkg "$@"
+  PACKAGE_BASE="$_pkg"
+  PACKAGE_RELEASE="$_rel"
+  PACKAGE_VERSION="$_ver"
+  PACKAGE_FEATURE="$_pkg_feature"
 }
 
 _func=""
 case "${0##*/}" in
-  "s-package-import") _func="import" ;;
+  "s-import-package") _func="import" ;;
   "s-makepkg")        _func="s-makepkg" ;;
 esac
 
