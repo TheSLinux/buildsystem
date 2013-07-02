@@ -5,7 +5,7 @@
 # Original script is maintained by Tom Gundersen <teg@jklm.no>
 # The script can be found on the Arch's ABS system.
 # KyAnh imported the package `filesytem` from Arch's ABS
-# and modify them to use in `TheSLinux`. The field `mainainer`
+# and modify them to use in `TheSLinux`. The field `maintainer`
 # of this file was modified to have it to work with `makepkg`.
 
 pkgdesc='Base filesystem'
