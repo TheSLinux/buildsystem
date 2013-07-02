@@ -141,3 +141,43 @@ package_systemd-sysvcompat() {
 
   ln -s '../usr/lib/systemd/systemd' "$pkgdir/sbin/init"
 }
+
+# Author : Anh K. Huynh
+# Date   : 2013 July 2nd
+# Purpose: Check if there is any new version from the remote
+get_update() {
+  local _url="http://www.freedesktop.org/software/systemd"
+  local _cgit_url="http://cgit.freedesktop.org/systemd/systemd"
+
+  echo "${PACKAGE_BASE}:"
+
+  lynx -dump \
+    -connect_timeout="${CURL_TIMEOUT:-3}" \
+    "$_url" 2>/dev/null \
+  | grep -E "software/systemd/systemd-[0-9]+\.tar\.xz$" \
+  | tail -1 \
+  | awk '{print $NF}' \
+  | while read _line; do
+      _version="${_line##*-}"
+      _version="${_version%%.*}"
+      if [[ "$_version" == "$_pkgver" ]]; then
+        echo "  up-to-date: yes"
+      else
+        echo "$_version" | grep -qE '^([0-9]+)$'
+        if [[ $? -eq 0 ]]; then
+          echo "  update: 0.${_version}"
+          echo "  update.link:"
+          echo "  - ${_line}"
+          echo "  - ${_cgit_url}/snapshot/systemd-${_version}.tar.gz"
+          echo "  - ${_cgit_url}/tree/?id=v${_version}"
+          echo "  news: ${_cgit_url}/tree/NEWS?id=v${_version}"
+        else
+          echo "  error: curl.format"
+          return 1
+        fi
+      fi
+    done
+
+  [[ ${PIPESTATUS[0]} -eq 0 ]] \
+  || { echo "  error: curl.error"; return 1; }
+}
