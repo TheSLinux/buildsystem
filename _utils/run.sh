@@ -888,6 +888,16 @@ _s_env() {
   PACKAGE_FEATURE="$_pkg_feature"
 }
 
+# Execute the `get_update` function from PKGBUILD. If the function
+# does not exist, an error will occur. Assume that we are in right
+# directory (this is true if `_s_env` runs  well) that has PKGBUILD
+s-get_update() {
+  _s_env || return 1
+  unset "get_update"
+  source "PKGBUILD" || return 127
+  get_update
+}
+
 _func=""
 case "${0##*/}" in
   "s-import-package") _func="import" ;;
