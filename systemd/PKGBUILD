@@ -2,7 +2,7 @@
 # Maintainer: Tom Gundersen <teg@jklm.no>
 
 pkgname=('systemd' 'systemd-sysvcompat')
-_pkgver="${pkgver#*.}"
+_pkgver="${PACKAGE_VERSION#*.}"
 arch=('i686' 'x86_64')
 url="http://www.freedesktop.org/wiki/Software/systemd"
 license=('GPL2' 'LGPL2.1' 'MIT')
@@ -141,5 +141,3 @@ package_systemd-sysvcompat() {
 
   ln -s '../usr/lib/systemd/systemd' "$pkgdir/sbin/init"
 }
-
-# vim: ft=sh syn=sh et
