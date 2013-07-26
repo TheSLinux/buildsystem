@@ -438,8 +438,8 @@ _get_package_feature() {
   _get_package_name ":feature"
 }
 
-# Return the number of commits between two points. This will actually
-# return number of commits that are on the `dest` and not on the `source`.
+# Return a list of commits between two points.
+# The starting point will not be listed in the output.
 #
 #  ---*---o--------*----*----*----- thebigbang
 #         \--*---*----*----*----*-- package branch
@@ -460,18 +460,11 @@ _get_git_commits_between_two_points() {
   local _from="$1"; shift
   local _to="${1:-HEAD}"; shift
 
-  git log --pretty="format:%H" "$_from".."$_to" "$@" \
-    | grep -E "^[a-f0-9]{40}$"
-
-  # The 2nd `grep` is to filter output. If there is nothing found
-  # we still consider that is an valid.
-  [[ "${PIPESTATUS[0]}" -ge 1 || "${PIPESTATUS[1]}" -ge 2 ]] \
-  || return 0
-
-  _err "Failed to get commits between two points '$_from' and '$_to'"
+  git rev-list "$_from".."$_to" "$@" \
+  || _err "Failed to get commits between two points '$_from' and '$_to', opts => $@"
 }
 
-# See also (_get_git_commits_between_two_points)
+# Return the number of items from (_get_git_commits_between_two_points)
 # Input
 #   $1 => The starting point (a branch name)
 #   $2 => The end point (a branch name)
