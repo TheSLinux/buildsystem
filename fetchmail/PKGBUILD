@@ -13,8 +13,8 @@ optdepends=('tk: for using fetchmailconf'
             'python2: for using fetchmailconf')
 options=('!makeflags')
 install='fetchmail.install'
-source=("http://download.berlios.de/$pkgname/${pkgname}-${pkgver}.tar.xz"
-        "http://download.berlios.de/$pkgname/${pkgname}-${pkgver}.tar.xz.asc"
+source=("http://download.berlios.de/$pkgbase/${pkgbase}-${pkgver}.tar.xz"
+        "http://download.berlios.de/$pkgbase/${pkgbase}-${pkgver}.tar.xz.asc"
         'fetchmail.tmpfiles' 'fetchmail.service')
 
 build() {
