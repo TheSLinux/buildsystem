@@ -106,7 +106,7 @@ _import_package() {
 
   # We nee to be on the master before creating new branch
   git co master \
-  && git co -b "$_pkg" "TheBigBang" \
+  && git co -b "$_pkg" "TheSmallBang" \
   || {
     _err "Failed to switch to 'master' or to create new branch $_pkg"
     return 1
@@ -227,7 +227,7 @@ convert() {
   local _subject=     # subject of a commit
   local _blacklist=" linux-g1 m17n-db m17n-db-vi "
                       # some special packages as mentioned above
-  local _bigbang="TheBigBang"
+  local _bigbang="TheSmallBang"
                       # This is where we create new branch for new package
                       # Using a branch name is better here.
   local _f_tmp=       # a temporary patch file. This won't hurt!
@@ -359,7 +359,7 @@ _get_git_branch() {
 
 # Get the package name/feature from the working directory / branch.
 #
-# The common rules (TheBigBang) says that the package branch would be
+# The common rules (TheSmallBang) says that the package branch would be
 # the package name, and it's the same as the working directory. The work-
 # ing directory will play the main role. It is used to test if the branch
 # is the package branch or a feature branch of the package.
@@ -500,7 +500,7 @@ _get_number_of_git_commits_between_two_points() {
 #
 # Note, on the branch `PACKAGE_BASE` we may have different kinds of tags:
 # temporary tag, release tag,...; we will list all tags and get one. To
-# do that, we will (1) list all commits since `TheBigBang`, and (2) get
+# do that, we will (1) list all commits since `TheSmallBang`, and (2) get
 # every tags associcated with those commit, and (3) find the good tag.
 #
 # The `good tag` matches the pattern `PACKAGE_BASE-x.y.z(-release)?`
@@ -576,7 +576,7 @@ _get_git_tag_on_package_branch() {
       )"
     [[ -z "$_tag" ]] || { echo "$_tag"; return 0 ; }
   done < \
-    <(_get_git_commits_between_two_points "TheBigBang" "$_br" --until="$_ref_time")
+    <(_get_git_commits_between_two_points "TheSmallBang" "$_br" --until="$_ref_time")
 
   _err "Failed to get tag from package branch '$_br'"
 }
@@ -735,13 +735,13 @@ _fix_the_1st_tag_on_package_branch() {
     return 1
   }
   _commit="$( \
-      git log --pretty="format:%H" "TheBigBang".."$_br" -- | tail -1 ;\
+      git log --pretty="format:%H" "TheSmallBang".."$_br" -- | tail -1 ;\
       [[ ${PIPESTATUS[0]} -eq 0 && ${PIPESTATUS[1]} -eq 0 ]] || exit 1 \
     )" \
   || return 1
 
   # Because the file `PKGBUILD` does exist in the branch, there is
-  # no way that `_commit` is empty (as `TheBigBang` and our branch
+  # no way that `_commit` is empty (as `TheSmallBang` and our branch
   # have a the same current commit.
 
   if _tag="$(git describe --tags --exact-match "$_commit" 2>/dev/null)"; then
