@@ -1,0 +1,27 @@
+From 38a86c845a5be0b9a13746681b3aa5dfef287f29 Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Sat, 20 Apr 2013 16:55:36 +0700
+Subject: [PATCH] Accept checksum (512) from environment
+
+---
+ pacman/src/pacman-4.1.0/scripts/makepkg.sh.in | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in b/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
+index 389dee7..b887819 100644
+--- a/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
++++ b/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
+@@ -2738,6 +2738,10 @@ pkgver="${PACKAGE_VERSION:-}"
+ pkgrel="${PACKAGE_RELEASE:-}"
+ pkgbase="${PACKAGE_BASE:-}"
+ 
++if [[ -n "${PACKAGE_SHA512SUMS}" ]]; then
++	sha512sums=("${PACKAGE_SHA512SUMS[@]}")
++fi
++
+ BUILDFILE=${BUILDFILE:-$BUILDSCRIPT}
+ if [[ ! -f $BUILDFILE ]]; then
+ 	if [[ -t 0 ]]; then
+-- 
+1.8.3
+
