@@ -107,58 +107,57 @@ _import_package() {
   # We nee to be on the master before creating new branch
   git co master \
   && git co -b "$_pkg" "TheBigBang" \
-  && {
-    cp -r "$_ds/" "$_dd/"
-
-    # Generate the README.md
-    [[ -f "$_f_readme" ]] \
-    || {
-      pushd "$PWD"
-
-      cd "$_ds/" \
-      && {
-        # Test if svn return any error
-        svn info >/dev/null 2>&1 \
-        || {
-          _err "svn info failed to run in $_ds"
-          popd; return 1
-        }
-
-        svn update >/dev/null 2>&1 \
-        || {
-          _err "svn update failed to run in $_ds"
-          popd; return 1
-        }
-
-        # Get the revision information
-        _rev="$(svn info | grep ^Revision: | head -1 | awk '{print $NF}')"
-
-        # Readmin contents
-        {
-          echo "Import from ArchLinux's ABS"
-          echo ""
-          svn info \
-            | grep -E "^(URL|Revision):"
-        } \
-          > "$_f_readme"
-      }
-
-      popd
-    }
-
-    # Genereate git commit
-    git add "$_dd" \
-    && git commit "$_pkg/" -m"$_pkg: Import from ABS @ $_rev" \
-    && git push origin "$_pkg" \
-    && git branch --set-upstream-to="origin/$_pkg" \
-    && git co master \
-    && _fix_the_1st_tag_on_package_branch "$_pkg" \
-    || { _err "Something wrong with git repository"; return 1; }
-  } \
   || {
     _err "Failed to switch to 'master' or to create new branch $_pkg"
     return 1
   }
+
+  cp -r "$_ds/" "$_dd/"
+
+  # Generate the README.md
+  [[ -f "$_f_readme" ]] \
+  || {
+    pushd "$PWD"
+
+    cd "$_ds/" \
+    && {
+      # Test if svn return any error
+      svn info >/dev/null 2>&1 \
+      || {
+        _err "svn info failed to run in $_ds"
+        popd; return 1
+      }
+
+      svn update >/dev/null 2>&1 \
+      || {
+        _err "svn update failed to run in $_ds"
+        popd; return 1
+      }
+
+      # Get the revision information
+      _rev="$(svn info | grep ^Revision: | head -1 | awk '{print $NF}')"
+
+      # Readmin contents
+      {
+        echo "Import from ArchLinux's ABS"
+        echo ""
+        svn info \
+          | grep -E "^(URL|Revision):"
+      } \
+        > "$_f_readme"
+    }
+
+    popd
+  }
+
+  # Genereate git commit
+  git add "$_dd" \
+  && git commit "$_pkg/" -m"$_pkg: Import from ABS @ $_rev" \
+  && git push origin "$_pkg" \
+  && git branch --set-upstream-to="origin/$_pkg" \
+  && git co master \
+  && _fix_the_1st_tag_on_package_branch "$_pkg" \
+  || { _err "Something wrong with git repository"; return 1; }
 }
 
 # Import all packages provided in the arguments
