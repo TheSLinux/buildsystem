@@ -34,7 +34,12 @@ _linecount() {
 
 # Date   : 2013 March 30th
 # Purpose: Import a package from ABS to current repository
-# Usage  : $0 <package_name>
+# Usage  : $0 <package_name> .
+#
+# The script to find the package from a list of ABS directories,
+# import ABS if there is no local branch for the package.
+#
+# Directories:
 #
 #   a/   : Where to store ABS packages in the structure
 #             <package-1>/trunk/
