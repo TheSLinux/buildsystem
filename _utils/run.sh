@@ -42,11 +42,21 @@ _linecount() {
 #          This is because ABS is in SVN structure, and the most
 #          development stuff is in the directory `/trunk/`
 #
-#   ./   : where to import new package
+#   b/   : Similar to `a/`, but for :community packages
 #
-
-_D_ABS="${ABS:-$PWD/a/ $PWD/b/}"    # where to store ABS system
-
+#   ./   : where to import new package; this is often the root
+#          directory of the :builssystem.
+#
+# If you are new to our buildsystem, please try as below
+#
+#   $ git clone https://github.com/TheSLinux/buildsystem.git
+#   $ cd buildsystem
+#   $ svn checkout --depth=empty svn://svn.archlinux.org/community b
+#   $ svn checkout --depth=empty svn://svn.archlinux.org/packages  a
+#
+# You may use the "ABS" environment to specify list of directories
+# where our script looks up for the Arch packages information.
+#
 _import_package() {
   local _pkg="$1"                     # package name
   local _ds=""                        # path to package/trunk
@@ -54,6 +64,7 @@ _import_package() {
   local _rev=                         # package revision (SVN)
   local _f_readme="$_dd/README.md"    # the reade file
   local _pkgver=
+  local _D_ABS="${ABS:-$PWD/a/ $PWD/b/}"
 
   _msg ">> Trying to import package $_pkg <<"
 
