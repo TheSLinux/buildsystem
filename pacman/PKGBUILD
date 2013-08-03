@@ -30,11 +30,19 @@ source=("ftp://ftp.archlinux.org/other/pacman/$pkgbase-$pkgver.tar.gz"{,.sig}
         pacman.conf.i686
         pacman.conf.x86_64
         makepkg.conf
-        theslinux-makepkg.patch)
+        0001-Allow-some-package-information-to-be-fetched-externa.patch
+        0002-Accept-checksum-512-from-environment.patch
+        0003-pkgbase-will-define-the-behavior.patch
+        0004-makepkg-accepts-PACKAGE_FEATURE.patch
+        0005-Add-PACKAGE_FEATURE-to-some-output-message.patch
+        0006-Feature-string-will-start-with.patch
+        )
 
 build() {
   cd $srcdir/$pkgname-$pkgver
-  patch -Np4 < "${srcdir}/theslinux-makepkg.patch"
+  for _f_patch in ${srcdir}/00[0-9]*.patch; do
+    patch -Np4 < "$_f_patch"
+  done
 
   ./configure --prefix=/usr --sysconfdir=/etc \
     --localstatedir=/var --enable-doc \
