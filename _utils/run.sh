@@ -803,6 +803,15 @@ s-makepkg() {
   makepkg "$@"
 }
 
+# Check out The{Small,Big}Bang to local working directory
+# that is required to start and build new packages
+#
+# NOTE: TheBigBang should not be used for new package -- 2013 Aug 3rd
+_git_bang_bang() {
+  { git branch | grep -q 'TheSmallBang' ; } \
+  || git branch "TheSmallBang" "origin/TheSmallBang"
+}
+
 # `_s_env` will
 #
 # 1. Detect the package name from working environment
@@ -850,6 +859,7 @@ _s_env() {
   local _pkg_feature=
   local _type="--reference"
 
+  _git_bang_bang || return 1
   _pkg="$(_get_package_name)" || return 1
   _pkg_feature="$(_get_package_feature)" || return 1
 
