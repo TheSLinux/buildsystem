@@ -34,10 +34,18 @@ _linecount() {
 
 # Date   : 2013 March 30th
 # Purpose: Import a package from ABS to current repository
-# Usage  : $0 <package_name> .
+# Usage  : $0 <package> <package> <package:arch-package-name>
+#
+# To import a package "foobar" in the buildsystem and use a new
+# package name, you can use specify the alias as this example
+#
+#   $0  my-theslinux-package:archlinux-package
+#   $0  special-systemd:systemd
 #
 # The script to find the package from a list of ABS directories,
-# import ABS if there is no local branch for the package.
+# import ABS if there is no local branch for the package, create the
+# very first tag for `s-makepkg` if possible. New package will start
+# from `TheSmallBang` branch.
 #
 # Directories:
 #
@@ -63,22 +71,28 @@ _linecount() {
 # where our script looks up for the Arch packages information.
 #
 _import_package() {
-  local _pkg="$1"                     # package name
-  local _ds=""                        # path to package/trunk
-  local _dd="$PWD/$_pkg/"             # path to desntination
+  local _pkg="$1:"                    # package name + :
+  local _apkg=":$1"                   # : + (arch) package name
+  local _ds=""                        # path to Arch package/trunk
+  local _dd=""                        # destination on our buildsystem
   local _rev=                         # package revision (SVN)
-  local _f_readme="$_dd/README.md"    # the reade file
+  local _f_readme=""                  # our README file
   local _pkgver=
   local _D_ABS="${ABS:-$PWD/a/ $PWD/b/}"
 
-  _msg ">> Trying to import package $_pkg <<"
+  _pkg="${_pkg%%:*}"                  # the first part, splitted by :
+  _apkg="${_apkg##*:}"                # the last part, splitted by :
+  _apkg="${_apkg:-$_pkg}"             # by default, _pkg  == _apkg
+  _dd="$PWD/$_pkg/"
+
+  _msg ">> Trying to import package $_pkg (from Arch '$_apkg' package) <<"
 
   [[ ! -d "$_dd/" ]] \
   || { _err "Directory does exist $_dd"; return 1; }
 
-  # Find the first ABS source that contains `$_pkg`
+  # Find the first ABS source that contains `$_apkg`
   for _ds in $_D_ABS; do
-    [[ ! -d "$_ds/$_pkg/trunk/" ]] || break
+    [[ ! -d "$_ds/$_apkg/trunk/" ]] || break
   done
 
   # If we don't find any $_pkg in current list of sources
@@ -86,24 +100,24 @@ _import_package() {
   # the command `svn update non-existent-package` will return 0 even if
   # the package doesn't exist in the ArchLinux's ABS system. There is
   # two ways to check if there is a package: `svn ls` and `svn update`.
-  if [[ ! -d "$_ds/$_pkg/trunk/" ]]; then
+  if [[ ! -d "$_ds/$_apkg/trunk/" ]]; then
     for _ds in $_D_ABS; do
       pushd "$_ds/"
-      _msg "Invoking svn update in $_ds/"
-      svn update "$_pkg"
+      _msg "Invoking 'svn update $_apkg' in $_ds/"
+      svn update "$_apkg"
       # After invoking `svn update` we need to check if the directory
-      # for our package `$_pkg` does exist.
-      [[ ! -d "$_ds/$_pkg/trunk" ]] || { popd; break; }
+      # for our package `$_apkg` does exist.
+      [[ ! -d "$_ds/$_apkg/trunk" ]] || { popd; break; }
       popd
     done
   fi
 
-  # We scan all ABS sources again to see if there is `$_pkg`
+  # We scan all ABS sources again to see if there is `$_apkg`
   for _ds in $_D_ABS; do
-    [[ ! -d "$_ds/$_pkg/trunk/" ]] || break
+    [[ ! -d "$_ds/$_apkg/trunk/" ]] || break
   done
 
-  _ds="$_ds/$_pkg/trunk/"
+  _ds="$_ds/$_apkg/trunk/"
 
   # If we don't find it at all, return with error
   [[ -d "$_ds/" ]] \
@@ -144,7 +158,7 @@ _import_package() {
 
       # Readmin contents
       {
-        echo "Import from ArchLinux's ABS"
+        echo "Import from ArchLinux's ABS package '$_apkg'"
         echo ""
         svn info \
           | grep -E "^(URL|Revision):"
@@ -157,7 +171,7 @@ _import_package() {
 
   # Genereate git commit
   git add "$_dd" \
-  && git commit "$_pkg/" -m"$_pkg: Import from ABS @ $_rev" \
+  && git commit "$_pkg/" -m"$_pkg: Import from ABS $_apkg @ $_rev" \
   && git co master \
   && _fix_the_1st_tag_on_package_branch "$_pkg" \
   || { _err "Something wrong with git repository"; return 1; }
