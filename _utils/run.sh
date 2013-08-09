@@ -774,6 +774,54 @@ _get_update() {
   get_update
 }
 
+_pkgbuild_to_yaml() {
+  _s_env || return 1
+
+  # Copied from `makepkg`
+  # FIXME: We should not mirror code like this. Need another way to
+  # FIXME: patch `makepkg` and make code clean.
+  unset pkgname pkgbase pkgver pkgrel epoch pkgdesc url license groups provides
+  unset md5sums replaces depends conflicts backup source install changelog build
+  unset makedepends optdepends options noextract
+
+  pkgver="${PACKAGE_VERSION:-}"
+  pkgrel="${PACKAGE_RELEASE:-}"
+  pkgbase="${PACKAGE_BASE:-}"
+
+  [[ ! -z "$pkgname" ]] || pkgname="$pkgbase"
+
+  if [[ -n "$PACKAGE_FEATURE" ]]; then
+    conflicts=("${conflicts[@]}" "$pkgname")
+    provides=("${provides[@]}" "$pkgname")
+    replaces=("${replaces[@]}" "$pkgname")
+  fi
+  # /Copied from `makepkg`
+
+  source "PKGBUILD" || return 127
+  cat <<EOF
+---
+$PACKAGE_BASE:
+  version: $PACKAGE_VERSION
+  description: $pkgdesc
+  install: $install
+  feature: $PACKAGE_FEATURE
+  url: $url
+  license: "${license[@]}"
+  packages:
+$(for _u in "${pkgname[@]}"; do echo "  - $_u";done)
+  sources:
+$(for _u in "${source[@]}"; do echo "  - $_u";done)
+  conflicts:
+$(for _u in "${conflicts[@]}"; do echo "  - $_u";done)
+  provides:
+$(for _u in "${provides[@]}"; do echo "  - $_u";done)
+  replaces:
+$(for _u in "${replaces[@]}"; do echo "  - $_u";done)
+  makedepends:
+$(for _u in "${makedepends[@]}"; do echo "  - $_u";done)
+EOF
+}
+
 _func=""
 case "${0##*/}" in
   "s-import-package") _func="_import_packages" ;;
