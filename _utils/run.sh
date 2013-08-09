@@ -767,7 +767,7 @@ _s_env() {
 # Execute the `get_update` function from PKGBUILD. If the function
 # does not exist, an error will occur. Assume that we are in right
 # directory (this is true if `_s_env` runs  well) that has PKGBUILD
-s-get_update() {
+_get_update() {
   _s_env || return 1
   unset "get_update"
   source "PKGBUILD" || return 127
