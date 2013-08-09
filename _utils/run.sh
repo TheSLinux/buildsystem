@@ -193,7 +193,7 @@ _import_package() {
 }
 
 # Import all packages provided in the arguments
-import() {
+_import_packages() {
   while (( $# )); do
     _import_package $1
     shift
@@ -945,7 +945,7 @@ s-get_update() {
 
 _func=""
 case "${0##*/}" in
-  "s-import-package") _func="import" ;;
+  "s-import-package") _func="_import_packages" ;;
   "s-makepkg")        _func="s-makepkg" ;;
 esac
 
