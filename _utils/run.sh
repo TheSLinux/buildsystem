@@ -774,6 +774,12 @@ _get_update() {
   get_update
 }
 
+# This script will read the PKGBUILD from the current build environment
+# and print YAML contents that describe some basic information of the
+# package. The primary purpose is to gather information from packages
+# quicly and simple. We also build our own hierachy of dependencies.
+#
+# TODO: embeded some bash script into YAML output
 _pkgbuild_to_yaml() {
   _s_env || return 1
 
