@@ -59,7 +59,7 @@ _linecount() {
 #
 # The script to find the package from a list of ABS directories,
 # import ABS if there is no local branch for the package, create the
-# very first tag for `s-makepkg` if possible. New package will start
+# very first tag for `_makepkg` if possible. New package will start
 # from `TheSmallBang` branch.
 #
 # Directories:
@@ -738,7 +738,7 @@ _get_version_from_old_PKGBUILD() {
 }
 
 # Check if there is a tag that indicates time when package is imported
-# from the ABS. This first tag is important bc it helps `s-makepkg`.
+# from the ABS. This first tag is important bc it helps `_makepkg`.
 #
 # Strategy
 #
@@ -821,12 +821,12 @@ _fix_the_1st_tag_on_package_branch() {
 # 8. `PACKAGE_BASE` (so `pkgbase`) is alway defined.
 # 9. `PACKAGE_FEATURE` helps to provide package name with any special
 #    feature, without creating "official branch". We just need to
-#    create a feature branch and `s-makepkg` will use the branch name
+#    create a feature branch and `_makepkg` will use the branch name
 #    as `PACKAGE_FEATURE`, and will append the string to name of the
 #    final output package. It also helps to modify the variables
 #    `conflicts`, `provides`,... on-the-fly.
 #
-s-makepkg() {
+_makepkg() {
   _s_env || return 1
   PACKAGE_BASE="$PACKAGE_BASE" \
   PACKAGE_RELEASE="$PACKAGE_RELEASE" \
@@ -879,7 +879,7 @@ _git_bang_bang() {
 #
 # History
 #
-# `_s_env` is taken from the original implementation of the `s-makepkg`
+# `_s_env` is taken from the original implementation of the `_makepkg`
 #  function. Because the output of `_s_env` is useful and may be used
 # in different context, we move the first part to a this `_s_env`.
 #
@@ -946,7 +946,7 @@ s-get_update() {
 _func=""
 case "${0##*/}" in
   "s-import-package") _func="_import_packages" ;;
-  "s-makepkg")        _func="s-makepkg" ;;
+  "s-makepkg")        _func="_makepkg" ;;
 esac
 
 [[ -n "$_func" ]] || (( $# )) || _die "Missing arguments"
