@@ -883,7 +883,10 @@ _pkgbuild_to_yaml_with_check() {
   | ruby -ryaml -e "puts YAML.dump(YAML.load(STDIN))"
 }
 
-_func=""
+# main routine #########################################################
+
+unset _func || _die "Unable to update '_func' variable"
+
 case "${0##*/}" in
   "s-import-package") _func="_import_packages" ;;
   "s-makepkg")        _func="_makepkg" ;;
