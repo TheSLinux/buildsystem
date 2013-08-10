@@ -5,6 +5,7 @@
 # License: GPL v2 (http://www.gnu.org/licenses/gpl-2.0.html)
 # Date   : 2013 March 30th
 # Home   : https://github.com/TheSLinux/buildsystem/tree/_utils
+# FIXME  : Split this huge Bash script into parts (libraries)
 #
 # Copyright (c) 2013 Anh K. Huynh <kyanh@theslinux.org>
 #
