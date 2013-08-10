@@ -779,7 +779,13 @@ _get_update() {
 # package. The primary purpose is to gather information from packages
 # quicly and simple. We also build our own hierachy of dependencies.
 #
-# TODO: embeded some bash script into YAML output
+# Input
+#   Current build environment that's detected by `_s_env`
+#
+# Output
+#   YAML string should be checked by a 3rd party method
+#   Always return 0. See also `_pkgbuild_to_yaml_with_check`
+#
 _pkgbuild_to_yaml() {
   _s_env || return 1
 
@@ -804,28 +810,77 @@ _pkgbuild_to_yaml() {
   # /Copied from `makepkg`
 
   source "PKGBUILD" || return 127
+
   cat <<EOF
 ---
 $PACKAGE_BASE:
-  version: $PACKAGE_VERSION
-  description: $pkgdesc
-  install: $install
-  feature: $PACKAGE_FEATURE
-  url: $url
+  version: "$PACKAGE_VERSION"
+  description: "$pkgdesc"
+  feature: "$PACKAGE_FEATURE"
+  url: "$url"
   license: "${license[@]}"
-  packages:
-$(for _u in "${pkgname[@]}"; do echo "  - $_u";done)
-  sources:
-$(for _u in "${source[@]}"; do echo "  - $_u";done)
-  conflicts:
-$(for _u in "${conflicts[@]}"; do echo "  - $_u";done)
-  provides:
-$(for _u in "${provides[@]}"; do echo "  - $_u";done)
-  replaces:
-$(for _u in "${replaces[@]}"; do echo "  - $_u";done)
-  makedepends:
-$(for _u in "${makedepends[@]}"; do echo "  - $_u";done)
 EOF
+
+  [[ -z "${pkgname}" ]] \
+    && echo "  packages:" \
+    && for _u in "${pkgname[@]}"; do echo "  - $_u"; done
+
+  [[ -n "${sources}" ]] \
+    && echo "  sources:" \
+    && for _u in "${source[@]}"; do echo "  - $_u"; done
+
+  [[ -n "${conflicts}" ]] \
+    && echo "  conflicts:" \
+    && for _u in "${conflicts[@]}"; do echo "  - $_u"; done
+
+  [[ -n "${provides}" ]] \
+    && echo "  provides:" \
+    && for _u in "${provides[@]}"; do echo "  - $_u"; done
+
+  [[ -n "${replaces}" ]] \
+    && echo "  replaces:" \
+    && for _u in "${replaces[@]}"; do echo "  - $_u"; done
+
+  [[ -n "${makedepends}" ]] \
+    && echo "  makedepends:" \
+    && for _u in "${makedepends[@]}"; do echo "  - $_u"; done
+
+  [[ ! -f "$install" ]] \
+    && [[ -f "${PACKAGE_BASE}.install" ]] \
+    && install="${PACKAGE_BASE}.install" \
+    || install=""
+
+  # The contents of `install` script will be shipped with the package
+  # FIXME: If a sub-package provides its own `install` script we can not
+  # FIXME: detect the script here. Should find another way.
+  [[ -z "$install" ]] \
+  || {
+    echo "  install: |"
+    cat "$install" | awk '{printf("    %s\n", $0)}'
+  }
+
+  : 'This function often returns successfully'
+}
+
+# Check the output of `_pkgbuild_to_yaml` with Ruby/YAML
+# The output of this command is often more compact that the original
+# output of `_pkgbuild_to_yaml`.
+#
+# Input
+#   As same as `_pkgbuild_to_yaml`
+#
+# Output
+#   error || Valid YAML file
+#
+# FIXME: A valid PKGBUILD should containn some basic fields like
+# FIXME: package name, version, build script,... The check should know
+# FIXME: this and return error if there is any missing field
+#
+# FIXME: What happends if we have 10,000 packages to check!?
+#
+_pkgbuild_to_yaml_with_check() {
+  _pkgbuild_to_yaml "$@" \
+  | ruby -ryaml -e "puts YAML.dump(YAML.load(STDIN))"
 }
 
 _func=""
