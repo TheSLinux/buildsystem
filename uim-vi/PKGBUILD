@@ -96,7 +96,7 @@ get_update() {
   lynx -dump \
     -connect_timeout="${CURL_TIMEOUT:-3}" \
     "$_url" 2>/dev/null \
-  | grep -- "tree/uim-" \
+  | grep -- "releases/tag/" \
   | head -1 \
   | awk '{print $NF}' \
   | while read _line; do
