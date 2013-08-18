@@ -1,0 +1,56 @@
+From 4623e44eafd196a84966f8bbfe6712811b4e98b9 Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Sat, 4 May 2013 10:06:41 +0700
+Subject: [PATCH] + IPA support xtelex-ipa, xvni-ipa
+
+---
+ uim-vi/src/uim-1.8.5/pixmaps/Makefile.am | 6 ++++--
+ uim-vi/src/uim-1.8.5/scm/Makefile.am     | 4 +++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/uim-vi/src/uim-1.8.5/pixmaps/Makefile.am b/uim-vi/src/uim-1.8.5/pixmaps/Makefile.am
+index c363d2c..4b92692 100644
+--- a/uim-vi/src/uim-1.8.5/pixmaps/Makefile.am
++++ b/uim-vi/src/uim-1.8.5/pixmaps/Makefile.am
+@@ -25,12 +25,14 @@ SVGS += direct_input_dark_background.svg \
+ SVGS += im_switcher.svg uim-dict.svg
+ 
+ # input method substitutions
+-IM_SUBST_SVGS = xvni.svg xtelex.svg viqr.svg ipa-x-sampa.svg scim.svg
++IM_SUBST_SVGS = xvni.svg xtelex.svg viqr.svg ipa-x-sampa.svg scim.svg \
++	xvni-ipa.svg xtelex-ipa.svg
+ 
+ GENERATED_SVGS = $(IM_SUBST_SVGS)
+ SVGS += im_subst.svg $(GENERATED_SVGS)
+ 
+-IM_SUBST_PNGS = xvni.png xtelex.png viqr.png ipa-x-sampa.png scim.png
++IM_SUBST_PNGS = xvni.png xtelex.png viqr.png ipa-x-sampa.png scim.png \
++	xvni-ipa.png xtelex-ipa.png
+ 
+ SVG_PNGS = unknown.png \
+            direct.png \
+diff --git a/uim-vi/src/uim-1.8.5/scm/Makefile.am b/uim-vi/src/uim-1.8.5/scm/Makefile.am
+index 2256e1d..0a18a3d 100644
+--- a/uim-vi/src/uim-1.8.5/scm/Makefile.am
++++ b/uim-vi/src/uim-1.8.5/scm/Makefile.am
+@@ -20,6 +20,8 @@ SCM_FILES = plugin.scm im.scm im-custom.scm lazy-load.scm init.scm \
+  viqr.scm \
+  xtelex.scm \
+  xvni.scm \
++ xtelex-ipa.scm \
++ xvni-ipa.scm \
+  ipa-x-sampa.scm \
+  m17nlib.scm m17nlib-custom.scm \
+  uim-module-manager.scm \
+@@ -46,7 +48,7 @@ EXTRA_DIST = $(OTHER_SCM_FILES)
+ 
+ ETAGS_ARGS=$(SCM_FILES) $(GENERATED_SCM_FILES)
+ 
+-module_names = "m17nlib" "viqr" "xvni" "xtelex" "ipa-x-sampa"
++module_names = "m17nlib" "viqr" "xvni" "xtelex" "ipa-x-sampa" "xtelex-ipa" "xvni-ipa"
+ 
+ UIM_MODULE_MANAGER = $(top_builddir)/uim/uim-module-manager
+ UIM_MODULE_MANAGER_ENV = \
+-- 
+1.8.3
+
