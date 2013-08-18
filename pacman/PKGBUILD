@@ -40,7 +40,7 @@ source=("ftp://ftp.archlinux.org/other/pacman/$pkgbase-$pkgver.tar.gz"{,.sig}
 
 build() {
   cd $srcdir/$pkgname-$pkgver
-  for _f_patch in ${srcdir}/00[0-9]*.patch; do
+  for _f_patch in ${srcdir}/000[1-6]*.patch; do
     patch -Np4 < "$_f_patch"
   done
 
