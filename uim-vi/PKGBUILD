@@ -21,8 +21,8 @@ source=(
         "0003-Add-new-module-xvni.patch"
         "0004-Should-use-.png-instead-of-.svg-for-vni.patch"
         "0005-IPA-support-xtelex-ipa-xvni-ipa.patch"
+        "1001-config.-to-set-default-mode-for-generic-IM.patch"
         "uim-vi-m17n-candidate-window.patch"
-        "uim-vi-generic_im_adjustable_default_state.patch"
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz"
         "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.1.0/bin/scim2uim.awk")
 
@@ -57,10 +57,11 @@ build() {
     touch "./pixmaps/${_file}"
   done
 
-  for _f_patch in ${srcdir}/000[1-5]*.patch; do
+  for _f_patch in ${srcdir}/000[1-5]*.patch \
+                  ${srcdir}/1001-*.patch \
+  ; do
     patch -Np4 < "$_f_patch"
   done
-  patch -Np4 < "${srcdir}/uim-vi-generic_im_adjustable_default_state.patch"
   patch -l -Np4 < "${srcdir}/uim-vi-m17n-candidate-window.patch"
 
   ./autogen.sh
