@@ -22,7 +22,8 @@ source=(
         "0004-Should-use-.png-instead-of-.svg-for-vni.patch"
         "0005-IPA-support-xtelex-ipa-xvni-ipa.patch"
         "1001-config.-to-set-default-mode-for-generic-IM.patch"
-        "uim-vi-m17n-candidate-window.patch"
+        "2001-Hide-show-candidate-window-via-generic-option.patch"
+        "2002-m17nlib-now-requires-generic-custom.patch"
         "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz"
         "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.1.0/bin/scim2uim.awk")
 
@@ -59,10 +60,10 @@ build() {
 
   for _f_patch in ${srcdir}/000[1-5]*.patch \
                   ${srcdir}/1001-*.patch \
+                  ${srcdir}/200[1-2]-*.patch \
   ; do
     patch -Np4 < "$_f_patch"
   done
-  patch -l -Np4 < "${srcdir}/uim-vi-m17n-candidate-window.patch"
 
   ./autogen.sh
   ./configure \

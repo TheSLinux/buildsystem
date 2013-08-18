@@ -1,7 +1,7 @@
 From fef061382e7ddb9332b3244db260b33b7ff37824 Mon Sep 17 00:00:00 2001
 From: Ky-Anh Huynh <kyanh@theslinux.org>
 Date: Sat, 27 Apr 2013 03:59:01 +0700
-Subject: [PATCH 1/2] Hide/show candidate window via generic option
+Subject: [PATCH 2001/2002] Hide/show candidate window via generic option
 
 Adding a new option to "m17nlib.scm" to add new option is
 still possible, however we just need to use the known option.
@@ -31,35 +31,5 @@ index 3f413db..7dba894 100644
  	    candidates-changed?
  	    (and
 -- 
-1.8.2.1
-
-
-From 11f77051bf016a9a79bf650ca0ffe1d86df63eaf Mon Sep 17 00:00:00 2001
-From: Ky-Anh Huynh <kyanh@theslinux.org>
-Date: Sat, 4 May 2013 10:52:04 +0700
-Subject: [PATCH 2/2] m17nlib now requires :generic-custom
-
-This is bc we want to use :generic-use-candidate-window?
--- that variable is defined in "generic-custom".
-
-A dicussion on this topic can be found on Github
-  https://github.com/uim/uim/pull/25
----
- uim-vi/src/uim-1.8.5/scm/m17nlib.scm | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/uim-vi/src/uim-1.8.5/scm/m17nlib.scm b/uim-vi/src/uim-1.8.5/scm/m17nlib.scm
-index 7dba894..09d5c7d 100644
---- a/uim-vi/src/uim-1.8.5/scm/m17nlib.scm
-+++ b/uim-vi/src/uim-1.8.5/scm/m17nlib.scm
-@@ -30,6 +30,7 @@
- 
- (require-custom "generic-key-custom.scm")
- (require-custom "m17nlib-custom.scm")
-+(require-custom "generic-custom.scm")
- 
- ;;; user configs
- 
--- 
-1.8.2.1
+1.8.3
 
