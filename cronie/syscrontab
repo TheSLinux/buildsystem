@@ -1,0 +1,6 @@
+
+# Default system crontab
+17 * * * * root nice run_parts /etc/cron.hourly
+25 4 * * * root nice run_parts /etc/cron.daily
+47 4 * * 7 root nice run_parts /etc/cron.weekly
+52 4 1 * * root nice run_parts /etc/cron.monthly

@@ -15,11 +15,11 @@ source=(
   "https://fedorahosted.org/releases/c/r/${pkgbase}/${pkgbase}-${pkgver}.tar.gz"
   'service'
   'pam.d'
+  'syscrontab'
   'deny')
 
 backup=('etc/cron.deny'
   'etc/pam.d/crond'
-  'etc/cron.d/0hourly'
   'etc/crontab')
 
 conflicts=('cron')
@@ -47,16 +47,14 @@ package() {
   make DESTDIR="${pkgdir}" install
 
   chmod u+s "${pkgdir}"/usr/bin/crontab
-  install -d "${pkgdir}"/var/spool/{ana,}cron
+  install -d "${pkgdir}"/var/spool/cron
   install -d "${pkgdir}"/etc/cron.{d,hourly,daily,weekly,monthly}
 
   install -Dm644 ../deny "${pkgdir}"/etc/cron.deny
   install -Dm644 ../pam.d "${pkgdir}"/etc/pam.d/crond
   install -Dm644 ../service "${pkgdir}"/usr/lib/systemd/system/cronie.service
 
-  install -Dm644 contrib/anacrontab "${pkgdir}"/etc/anacrontab
-  install -Dm644 contrib/0hourly "${pkgdir}"/etc/cron.d/0hourly
-  install -Dm755 contrib/0anacron "${pkgdir}"/etc/cron.hourly/0anacron
+  install -Dm644 ../syscrontab "${pkgdir}"/etc/crontab
 
   install -Dm644 COPYING "${pkgdir}"/usr/share/licenses/cronie/COPYING
 }
