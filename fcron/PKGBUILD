@@ -19,7 +19,7 @@ conflicts=('dcron')
 backup=(etc/fcron/fcron.conf etc/fcron/fcron.allow etc/fcron/fcron.deny \
         var/spool/fcron/systab var/spool/fcron/systab.orig)
 options=('emptydirs' '!makeflags')
-source=(http://fcron.free.fr/archives/$pkgname-$pkgver.src.tar.gz \
+source=(http://fcron.free.fr/archives/$pkgbase-$pkgver.src.tar.gz \
         systab systab.orig run-cron)
 md5sums=()
 
