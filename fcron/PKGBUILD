@@ -29,8 +29,8 @@ build() {
               --sysconfdir=/etc/fcron \
               --with-answer-all=no \
               --with-boot-install=no \
-              --with-username=root \
-              --with-groupname=root \
+              --with-username=fcron \
+              --with-groupname=fcron \
               --datarootdir=/usr/share \
               --datadir=/usr/share \
               --with-docdir=/usr/share/doc \
@@ -41,8 +41,9 @@ build() {
               --with-sendmail=/usr/sbin/sendmail
   make
 
+  # The old version 3.0.6 doesn't have the file for `systemd`
   # Temporary bugfix make install expects the file in the files directory.
-  cp script/fcron.init.systemd files
+  [[ ! -f script/fcron.init.systemd ]] || cp script/fcron.init.systemd files
 }
 
 package() {
