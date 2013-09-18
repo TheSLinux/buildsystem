@@ -172,7 +172,7 @@ _import_package() {
       # Get the revision information
       _rev="$(svn info | grep ^Revision: | head -1 | awk '{print $NF}')"
 
-      # Readmin contents
+      # README contents
       {
         echo "Import from ArchLinux's ABS package '$_apkg'"
         echo ""
@@ -185,7 +185,8 @@ _import_package() {
     popd
   }
 
-  # Genereate git commit
+  # Generate git commit. Please note that the commit messge contains
+  # the revision number that will be used in the future.
   git add "$_dd" \
   && git commit "$_pkg/" -m"$_pkg: Import from ABS $_apkg @ $_rev" \
   && git co master \
