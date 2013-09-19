@@ -871,6 +871,15 @@ EOF
   : 'This function often returns successfully'
 }
 
+# Return the SVN revision number at the time the package is imported.
+# When a package is imported, the commit message is of the form
+#   Import from ABS @ <number>
+# This is the first commit of the package on the package branch.
+_get_svn_revision_from_the_1st_commit() {
+  git log | grep 'Import from ABS @' | awk '{print $NF}'
+  _is_good_pipe
+}
+
 # Check the output of `_pkgbuild_to_yaml` with Ruby/YAML
 # The output of this command is often more compact that the original
 # output of `_pkgbuild_to_yaml`.
