@@ -1,19 +1,14 @@
-# $Id: PKGBUILD 149603 2012-02-08 19:37:41Z pierre $
-# Maintainer:
-# Contributor: dorphell <dorphell@archlinux.org>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Contributor: dorphell <dorphell@archlinux.org>
 
-pkgname=zip
-pkgver=3.0
-_pkgver=30
-pkgrel=3
+_pkgver="${PACKAGE_VERSION/./}"
 pkgdesc="Creates PKZIP-compatible .zip files"
 arch=('i686' 'x86_64')
 url="http://www.info-zip.org/Zip.html"
 license=('BSD')
 depends=('bzip2')
 options=('!makeflags')
-source=("ftp://ftp.info-zip.org/pub/infozip/src/${pkgname}${_pkgver}.zip")
-md5sums=('e88492c8abd68fa9cfba72bc08757dba')
+source=("ftp://ftp.info-zip.org/pub/infozip/src/${PACKAGE_BASE}${_pkgver}.zip")
 
 build() {
    cd "${srcdir}/${pkgname}${_pkgver}"
