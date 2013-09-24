@@ -3,16 +3,17 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Original Contributor: Alexander Baldeck <alexander@archlinux.org>
 
+_pkgver="${PACKAGE_VERSION##*.}"
 pkgdesc="X Terminal Emulator"
 arch=('i686' 'x86_64')
 url="http://invisible-island.net/xterm/"
 license=('custom')
 depends=('libxft' 'libxaw' 'ncurses' 'xorg-luit' 'xbitmaps' 'libutempter')
-source=(ftp://invisible-island.net/${pkgbase}/${pkgbase}-${pkgver}.tgz
+source=(ftp://invisible-island.net/${PACKAGE_BASE}/${PACKAGE_BASE}-${_pkgver}.tgz
         LICENSE)
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_pkgver}"
   ./configure --prefix=/usr \
       --libdir=/etc \
       --mandir=/usr/share/man \
@@ -44,7 +45,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${_pkgver}"
   make DESTDIR="${pkgdir}" install
   chmod 0755 "${pkgdir}/usr/bin/xterm"
 
@@ -52,5 +53,5 @@ package() {
   install -m644 "${srcdir}/LICENSE" \
       "${pkgdir}/usr/share/licenses/${pkgname}/"
   install -m755 -d ${pkgdir}/usr/share/applications
-  install -m644 ${srcdir}/${pkgname}-${pkgver}/{xterm,uxterm}.desktop ${pkgdir}/usr/share/applications/
+  install -m644 ${srcdir}/${pkgname}-${_pkgver}/{xterm,uxterm}.desktop ${pkgdir}/usr/share/applications/
 }
