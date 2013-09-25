@@ -17,7 +17,7 @@ backup=('etc/ca-certificates.conf')
 # FIXME: For some reason, the base directory in 2013.09.06 version
 # FIXME: is `certificate`, not `certificate-20130906`. This is from
 # FIXME: Debian repository, and may need more persitent way.
-vercmp "${PACKAGE_VERSION}" "2013.09.06"
+vercmp "${PACKAGE_VERSION}" "2013.09.06" >/dev/null
 if [[ $? -ge 0 ]]; then
   _srcdir_fixed="${pkgbase}"
 else
