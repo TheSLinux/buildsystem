@@ -15,13 +15,11 @@ depends=('krb5' 'openssl' 'libedit' 'ldns')
 optdepends=('xorg-xauth: X11 forwarding'
             'x11-ssh-askpass: input passphrase in X')
 source=("ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/${pkgbase}-${_pkgver}.tar.gz"
-        'sshd.close-sessions'
         'sshdgenkeys.service'
         'sshd@.service'
         'sshd.service'
         'sshd.socket'
-        'sshd.pam'
-        'sshd')
+        'sshd.pam')
 
 backup=('etc/ssh/ssh_config' 'etc/ssh/sshd_config' 'etc/pam.d/sshd' 'etc/conf.d/sshd')
 
@@ -69,9 +67,9 @@ package() {
 	install -Dm644 ../sshd.service "${pkgdir}"/usr/lib/systemd/system/sshd.service
 	install -Dm644 ../sshd.socket "${pkgdir}"/usr/lib/systemd/system/sshd.socket
 
-	install -Dm755 ../sshd.close-sessions "${pkgdir}/etc/rc.d/functions.d/sshd-close-sessions" # FS#17389
 	install -Dm644 ../sshd.pam "${pkgdir}"/etc/pam.d/sshd
-	install -Dm755 ../sshd "${pkgdir}"/etc/rc.d/sshd
+	# install -Dm755 ../sshd.close-sessions "${pkgdir}/etc/rc.d/functions.d/sshd-close-sessions" # FS#17389
+	# install -Dm755 ../sshd "${pkgdir}"/etc/rc.d/sshd
 
 	install -Dm755 contrib/findssl.sh "${pkgdir}"/usr/bin/findssl.sh
 	install -Dm755 contrib/ssh-copy-id "${pkgdir}"/usr/bin/ssh-copy-id
