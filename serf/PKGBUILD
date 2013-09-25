@@ -1,10 +1,7 @@
-# $Id: PKGBUILD 193617 2013-08-26 07:41:28Z angvp $
-# Maintainer: Angel Velasquez <angvp@archlinux.org> 
-# Contributor: Stéphane Gaudreault <stephane@archlinux.org>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Angel Velasquez <angvp@archlinux.org>
+# Original Contributor: Stéphane Gaudreault <stephane@archlinux.org>
 
-pkgname=serf
-pkgver=1.3.1
-pkgrel=1
 pkgdesc="High-performance asynchronous HTTP client library"
 arch=('i686' 'x86_64')
 url="http://code.google.com/p/serf/"
@@ -12,8 +9,7 @@ license=('Apache')
 depends=('apr-util')
 makedepends=('scons')
 options=('!libtool' '!staticlibs')
-source=(http://serf.googlecode.com/files/${pkgname}-${pkgver}.tar.bz2)
-md5sums=('da5aca0cad19fd9c19129c3f8f7393dd')
+source=(http://serf.googlecode.com/files/${PACKAGE_BASE}-${PACKAGE_VERSION}.tar.bz2)
 
 build() {
   cd ${pkgname}-${pkgver}
