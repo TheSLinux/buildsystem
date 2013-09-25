@@ -1,11 +1,8 @@
-# $Id: PKGBUILD 171056 2012-11-16 02:22:07Z bisson $
-# Maintainer: Gaetan Bisson <bisson@archlinux.org>
-# Contributor: mathieui <mathieui@mathieui.net>
-# Contributor: jiribb <jiribb@gmail.com>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Original Contributor: mathieui <mathieui@mathieui.net>
+# Original Contributor: jiribb <jiribb@gmail.com>
 
-pkgname=ldns
-pkgver=1.6.16
-pkgrel=1
 pkgdesc='Fast DNS library supporting recent RFCs'
 url='http://www.nlnetlabs.nl/projects/ldns/'
 license=('custom:BSD')
@@ -14,12 +11,10 @@ options=('!libtool')
 depends=('openssl' 'dnssec-anchors')
 optdepends=('libpcap: ldns-dpa tool')
 makedepends=('libpcap')
-source=("http://www.nlnetlabs.nl/downloads/${pkgname}/${pkgname}-${pkgver}.tar.gz")
-sha1sums=('5b4fc6c5c3078cd061905c47178478cb1015c62a')
+source=("http://www.nlnetlabs.nl/downloads/${pkgbase}/${pkgbase}-${pkgver}.tar.gz")
 
 build() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
-
+	cd "${pkgname}-${pkgver}"
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -27,15 +22,13 @@ build() {
 		--enable-static=no \
 		--disable-rpath \
 		--with-drill \
-		--with-examples \
-
+		--without-pyldnsx \
+		--without-examples
 	make
 }
 
 package() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
-
+	cd "${pkgname}-${pkgver}"
 	make DESTDIR="${pkgdir}" install
-
 	install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
