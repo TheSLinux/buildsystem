@@ -12,7 +12,7 @@ license=('APACHE')
 source=(http://www.apache.org/dist/apr/apr-${PACKAGE_VERSION}.tar.bz2)
 
 build() {
-  cd "${srcdir}/apr-${pkgver}"
+  cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr --includedir=/usr/include/apr-1 \
     --with-installbuilddir=/usr/share/apr-1/build \
     --enable-nonportable-atomics \
@@ -22,11 +22,11 @@ build() {
 }
 
 check() {
-  cd "${srcdir}/apr-${pkgver}"
+  cd "${pkgname}-${pkgver}"
   make -j1 check
 }
 
 package() {
-  cd "${srcdir}/apr-${pkgver}"
+  cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 }
