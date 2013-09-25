@@ -1,42 +1,27 @@
-# $Id: PKGBUILD 192444 2013-08-12 05:07:14Z angvp $
-# Maintainer: Angel Velasquez <angvp@archlinux.org> 
-# Contributor: Stéphane Gaudreault <stephane@archlinux.org>
-# Contributor: Paul Mattal <paul@archlinux.org>
-# Contributor: Jason Chu <jason@archlinux.org>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
 
-pkgname=subversion
-pkgver=1.8.1
-pkgrel=2
+# Original Maintainer: Angel Velasquez <angvp@archlinux.org>
+# Original Contributor: Stéphane Gaudreault <stephane@archlinux.org>
+# Original Contributor: Paul Mattal <paul@archlinux.org>
+# Original Contributor: Jason Chu <jason@archlinux.org>
+
 pkgdesc="A Modern Concurrent Version Control System"
 arch=('i686' 'x86_64')
 url="http://subversion.apache.org/"
 license=('APACHE')
-depends=('sqlite' 'file' 'serf' 'systemd')
-makedepends=('apache' 'python2' 'perl' 'swig' 'java-runtime' 'java-environment'
-             'libgnome-keyring' 'kdelibs' 'ruby')
+depends=('sqlite' 'file' 'serf')
+makedepends=('perl' 'libgnome-keyring' 'kdelibs')
 optdepends=('libgnome-keyring: for GNOME Keyring for auth credentials'
             'kdeutils-kwallet: for KWallet for auth credentials'
             'bash-completion: for svn bash completion'
             'python2: for some hook scripts'
-        'java-environment: for Java support'
-        'ruby: for some hook scripts')
+            'ruby: for some hook scripts')
 provides=('svn')
-backup=('etc/xinetd.d/svn' 'etc/conf.d/svnserve')
+#backup=('etc/xinetd.d/svn' 'etc/conf.d/svnserve')
 options=('!makeflags' '!libtool' '!emptydirs')
-install=${pkgname}.install
-source=(http://www.apache.org/dist/subversion/subversion-1.8.1.tar.bz2{,.asc}
-        svn
-        svnserve.conf
-        svnserve.tmpfiles
-        svnserve.service
+install=subversion.install
+source=(http://www.apache.org/dist/subversion/subversion-${PACKAGE_VERSION}.tar.bz2{,.asc}
         subversion.rpath.fix.patch)
-md5sums=('f2ee0471b8a560f5efa0f2349d9c9ab9'
-         'SKIP'
-         'a0db6dd43af33952739b6ec089852630'
-         'c459e299192552f61578f3438abf0664'
-         'bb2857eceafcfac35dde39dcffad2314'
-         'e8020c7a1d1a0c47091b5fdd034f81c5'
-         '6b4340ba9d8845cd8497e013ae01be3f')
 
 prepare() {
    cd ${pkgname}-${pkgver}
@@ -47,23 +32,32 @@ prepare() {
 build() {
    cd ${pkgname}-${pkgver}
    export PYTHON=/usr/bin/python2
-   ./configure --prefix=/usr --with-apr=/usr --with-apr-util=/usr \
-               --with-zlib=/usr --with-serf=/usr --with-apxs \
-               --with-sqlite=/usr --with-berkeley-db=:/usr/include/:/usr/lib:db-5.3 \
-               --enable-javahl --with-gnome-keyring --with-kwallet \
-               --with-apache-libexecdir=/usr/lib/httpd/modules \
-               --with-ruby-sitedir=/usr/lib/ruby/vendor_ruby \
-               --disable-static
+   # NOTE: if you are using rvm, this will really help.
+   export RUBY=/usr/bin/ruby
+   ./configure \
+      --prefix=/usr \
+      --with-apr=/usr \
+      --with-apr-util=/usr \
+      --with-zlib=/usr \
+      --with-sqlite=/usr \
+      --without-serf \
+      --with-berkeley-db=:/usr/include/:/usr/lib:db-5.3 \
+      --with-gnome-keyring \
+      --with-kwallet \
+      --disable-static \
+      --disable-keychain \
+      --disable-plaintext-password-storage \
 
    make LT_LDFLAGS="-L$Fdestdir/usr/lib"
-   make swig_pydir=/usr/lib/python2.7/site-packages/libsvn \
-     swig_pydir_extra=/usr/lib/python2.7/site-packages/svn swig-py swig-pl javahl swig-rb
+   #make swig_pydir=/usr/lib/python2.7/site-packages/libsvn \
+   #  swig_pydir_extra=/usr/lib/python2.7/site-packages/svn swig-py swig-pl javahl swig-rb
 }
 
 check() {
    cd ${pkgname}-${pkgver}
    export LANG=C LC_ALL=C
-   make check check-swig-pl check-swig-py check-swig-rb CLEANUP=yes # check-javahl
+   #make check check-swig-pl check-swig-py check-swig-rb CLEANUP=yes # check-javahl
+   make check CLEANUP=yes
 }
 
 package() {
@@ -71,9 +65,7 @@ package() {
 
    export LD_LIBRARY_PATH="${pkgdir}"/usr/lib:${LD_LIBRARY_PATH}
    make DESTDIR="${pkgdir}" INSTALLDIRS=vendor \
-     swig_pydir=/usr/lib/python2.7/site-packages/libsvn \
-     swig_pydir_extra=/usr/lib/python2.7/site-packages/svn \
-     install install-swig-py install-swig-pl install-javahl install-swig-rb
+     install
 
    install -dm755 "${pkgdir}"/usr/share/subversion
    cp -a tools/hook-scripts "${pkgdir}"/usr/share/subversion/
@@ -82,14 +74,14 @@ package() {
    ## svnserve ...
 
    # xinetd
-   install -D -m 644 "${srcdir}"/svn "${pkgdir}"/etc/xinetd.d/svn
+   #install -D -m 644 "${srcdir}"/svn "${pkgdir}"/etc/xinetd.d/svn
 
    # ... systemd
-   install -D -m 644 "${srcdir}"/svnserve.service  "${pkgdir}"/usr/lib/systemd/system/svnserve.service
-   install -D -m 644 "${srcdir}"/svnserve.tmpfiles "${pkgdir}"/usr/lib/tmpfiles.d/svnserve.conf
+   #install -D -m 644 "${srcdir}"/svnserve.service  "${pkgdir}"/usr/lib/systemd/system/svnserve.service
+   #install -D -m 644 "${srcdir}"/svnserve.tmpfiles "${pkgdir}"/usr/lib/tmpfiles.d/svnserve.conf
 
    # ... common config
-   install -D -m 644 "${srcdir}"/svnserve.conf "${pkgdir}"/etc/conf.d/svnserve
+   #install -D -m 644 "${srcdir}"/svnserve.conf "${pkgdir}"/etc/conf.d/svnserve
 
    install -Dm 644 tools/client-side/bash_completion \
      "${pkgdir}"/usr/share/bash-completion/completions/subversion
