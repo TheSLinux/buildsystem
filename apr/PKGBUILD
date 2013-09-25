@@ -21,6 +21,7 @@ build() {
   make
 }
 
+# FIXME: Failed test: testsockets.c
 check() {
   cd "${pkgname}-${pkgver}"
   make -j1 check
