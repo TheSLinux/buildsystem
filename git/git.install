@@ -1,9 +1,11 @@
 post_install() {
+  return 0
+
   if ! getent group git >/dev/null; then
-    groupadd --system git 
+    groupadd --system git
   fi
   if ! getent passwd git >/dev/null; then
-    useradd --system -c 'git daemon user' -g git -d / -s /bin/bash git 
+    useradd --system -c 'git daemon user' -g git -d / -s /bin/bash git
   fi
 }
 
@@ -12,6 +14,8 @@ post_upgrade() {
 }
 
 post_remove() {
+  return 0
+
   if getent passwd git >/dev/null; then
     userdel git
   fi

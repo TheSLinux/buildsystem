@@ -24,7 +24,6 @@ backup=('etc/conf.d/git-daemon.conf')
 install=git.install
 source=("http://git-core.googlecode.com/files/git-$pkgver.tar.gz"
         "http://git-core.googlecode.com/files/git-manpages-$pkgver.tar.gz"
-        git-daemon@.service
         git-daemon.socket)
 
 build() {
@@ -104,6 +103,6 @@ package() {
   rm -rf "$pkgdir"/usr/lib/perl5
 
   # git-daemon via systemd socket activation
-  install -D -m 644 "$srcdir"/git-daemon@.service "$pkgdir"/usr/lib/systemd/system/git-daemon@.service
-  install -D -m 644 "$srcdir"/git-daemon.socket "$pkgdir"/usr/lib/systemd/system/git-daemon.socket
+  # install -D -m 644 "$srcdir"/git-daemon@.service "$pkgdir"/usr/lib/systemd/system/git-daemon@.service
+  # install -D -m 644 "$srcdir"/git-daemon.socket "$pkgdir"/usr/lib/systemd/system/git-daemon.socket
 }
