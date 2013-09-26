@@ -18,6 +18,7 @@ backup=('etc/ssl/openssl.cnf')
 source=("https://www.openssl.org/source/${pkgbase}-${_pkgver}.tar.gz"
         "https://www.openssl.org/source/${pkgbase}-${_pkgver}.tar.gz.asc"
         'no-rpath.patch'
+        'openssl-1.0.1e-fix_pod_syntax-1.patch'
         'ca-dir.patch')
 
 build() {
@@ -35,6 +36,12 @@ build() {
 	patch -p0 -i $srcdir/no-rpath.patch
 	# set ca dir to /etc/ssl by default
 	patch -p0 -i $srcdir/ca-dir.patch
+
+	# ABS revision 195040
+	# Fixes install with perl-5.18. The patch provides update for
+	# documentation system, for example,
+	#   openssl-1.0.1e.orig/doc/ssl/SSL_clear.pod
+	patch -p1 -i $srcdir/openssl-1.0.1e-fix_pod_syntax-1.patch
 
 	# mark stack as non-executable: http://bugs.archlinux.org/task/12434
 	./Configure --prefix=/usr --openssldir=/etc/ssl --libdir=lib \
