@@ -13,6 +13,9 @@ source=( \
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
+  # Fix paths of binaries in /etc/request-key.conf.
+  # The purpose is to replace `/bin/foobar` by `/usr/bin/foobar`.
+  # I wonder when Redhat guys can support this in their own source
   patch -Np0 -i ../request-key.conf.patch
 }
 
