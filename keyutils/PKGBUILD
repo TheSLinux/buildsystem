@@ -1,17 +1,20 @@
-# $Id: PKGBUILD 162209 2012-06-23 16:27:48Z tpowa $
-# Maintainer: Stéphane Gaudreault <stephane@archlinux.org>
-# Contributor: Tobias Powalowski <tpowa@archlinux.org>
-pkgname=keyutils
-pkgver=1.5.5
-pkgrel=3
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Stéphane Gaudreault <stephane@archlinux.org>
+# Original Contributor: Tobias Powalowski <tpowa@archlinux.org>
 pkgdesc="Linux Key Management Utilities"
 arch=(i686 x86_64)
 url="http://www.kernel.org"
 license=('GPL2' 'LGPL2.1')
 depends=('glibc' 'sh')
 backup=(etc/request-key.conf)
-source=(http://people.redhat.com/~dhowells/${pkgname}/${pkgname}-${pkgver}.tar.bz2)
-md5sums=('d759680b2f23c99af95938f5026f25fb')
+source=( \
+  request-key.conf.patch \
+  http://people.redhat.com/~dhowells/${pkgbase}/${pkgbase}-${pkgver}.tar.bz2)
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  patch -Np0 -i ../request-key.conf.patch
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
