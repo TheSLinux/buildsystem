@@ -2,6 +2,8 @@
 # Maintainer: Anh K. Huynh <kyanh@theslinux.org>
 # Original Maintainer: Pierre Schmitz <pierre@archlinux.de>
 
+# The awk script is to convert the fix bug number to ascii character.
+# For example, the version 1.0.1.101 becomes 1.0.1e
 _pkgver="${pkgver%.*}$(awk -vnum=${pkgver##*.} 'BEGIN {print sprintf("%c", num)}')" \
   || { error "Failed to get version string from pkgver = '$pkgver'"; exit 1; }
 
