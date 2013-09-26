@@ -3,6 +3,11 @@
 # Original Maintainer: Allan McRae <allan@archlinux.org>
 # Original Contributor: Eric Belanger <eric@archlinux.org>
 
+# FIXME: New versio bison-3.0 will cause issue with
+# FIXME: some packages. For example, krb5-1.11.{1,3}
+# FIXME: are unable to be built with new bison..
+# FIXME: So we now stay with bison-2.7...
+
 pkgdesc="The GNU general-purpose parser generator"
 arch=('i686' 'x86_64')
 license=('GPL3')
