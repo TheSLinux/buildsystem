@@ -1,18 +1,26 @@
-#$Id: PKGBUILD 157477 2012-04-28 19:41:37Z tomegun $
+#$Id: PKGBUILD 185418 2013-05-14 03:46:45Z allan $
 # Maintainer: Allan McRae <allan@archlinux.org>
 # Contributor: Hugo Doria <hugo@archlinux.org>
 
 pkgname=libcap
 pkgver=2.22
-pkgrel=3
+pkgrel=5
 pkgdesc="POSIX 1003.1e capabilities"
 arch=('i686' 'x86_64')
 url="http://sites.google.com/site/fullycapable/"
 license=('GPL2')
 depends=('glibc' 'attr')
+options=('!staticlibs')
 source=(ftp://ftp.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.tar.gz{,.asc})
 md5sums=('b4896816b626bea445f0b3849bdd4077'
          '9d0983e25e5a251d098507f9561d2b27')
+
+prepare() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  # install into /usr/bin
+  sed -i "/SBINDIR/s#sbin#bin#" Make.Rules
+}
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
@@ -21,10 +29,7 @@ build() {
 
 package() {
   cd ${srcdir}/${pkgname}-${pkgver}
-  make prefix=/usr DESTDIR=${pkgdir} RAISE_SETFCAP=no install
-  
-  chmod 755 ${pkgdir}/usr/lib/libcap.so.${pkgver}
-  rm ${pkgdir}/usr/lib/libcap.a
+  make prefix=/usr lib=/lib DESTDIR=${pkgdir} RAISE_SETFCAP=no install
   
   install -Dm644 pam_cap/capability.conf \
     $pkgdir/usr/share/doc/$pkgname/capability.conf.example
