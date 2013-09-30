@@ -1,37 +1,34 @@
-# $Id: PKGBUILD 168470 2012-10-12 09:18:35Z tpowa $
-# Maintainer: Tobias Powalowski <tpowa@archlinux.org>
-# Contributor: judd <jvinet@zeroflux.org>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Tobias Powalowski <tpowa@archlinux.org>
+# Original Contributor: judd <jvinet@zeroflux.org>
 
-pkgname=pam
-pkgver=1.1.6
-pkgrel=1
 pkgdesc="PAM (Pluggable Authentication Modules) library"
 arch=('i686' 'x86_64')
 license=('GPL2')
 url="http://www.kernel.org/pub/linux/libs/pam/"
 depends=('glibc' 'db' 'cracklib' 'libtirpc' 'pambase')
 makedepends=('flex' 'w3m' 'docbook-xml>=4.4' 'docbook-xsl')
-backup=(etc/security/{access.conf,group.conf,limits.conf,namespace.conf,namespace.init,pam_env.conf,time.conf} etc/default/passwd etc/environment)
+backup=( \
+  etc/security/{access.conf,group.conf,limits.conf}
+  etc/security/{namespace.conf,namespace.init,pam_env.conf,time.conf}
+  etc/default/passwd etc/environment)
 source=(https://fedorahosted.org/releases/l/i/linux-pam/Linux-PAM-$pkgver.tar.bz2
         #http://www.kernel.org/pub/linux/libs/pam/library/Linux-PAM-$pkgver.tar.bz2
         ftp://ftp.archlinux.org/other/pam_unix2/pam_unix2-2.9.1.tar.bz2
         pam_unix2-glibc216.patch
         pam_namespace-build-1.1.6.patch)
 options=('!libtool' '!emptydirs')
-md5sums=('7b73e58b7ce79ffa321d408de06db2c4'
-         'da6a46e5f8cd3eaa7cbc4fc3a7e2b555'
-         'dac109f68e04a4df37575fda6001ea17'
-         '440a510164ba5eb69bf41e129746ff44')
 
 build() {
   cd $srcdir/Linux-PAM-$pkgver
-  ./configure --libdir=/usr/lib
+  ./configure --libdir=/usr/lib --sbindir=/usr/bin
+  # NOTE: this patch require w3m. Without w3m the patch will fail
   patch -Np0 -i ../pam_namespace-build-1.1.6.patch
   make
 
   cd $srcdir/pam_unix2-2.9.1
   patch -Np1 -i ../pam_unix2-glibc216.patch
-  ./configure --libdir=/usr/lib
+  ./configure --libdir=/usr/lib --sbindir=/usr/bin
   make
 }
 
@@ -62,5 +59,5 @@ _EOT
   ln -s pam_unix.so pam_unix_session.so
 
   # set unix_chkpwd uid
-  chmod +s $pkgdir/sbin/unix_chkpwd
+  chmod +s $pkgdir/usr/bin/unix_chkpwd
 }
