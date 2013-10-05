@@ -783,19 +783,7 @@ _get_update() {
   get_update
 }
 
-# This script will read the PKGBUILD from the current build environment
-# and print YAML contents that describe some basic information of the
-# package. The primary purpose is to gather information from packages
-# quicly and simple. We also build our own hierachy of dependencies.
-#
-# Input
-#   Current build environment that's detected by `_s_env`
-#
-# Output
-#   YAML string should be checked by a 3rd party method
-#   Always return 0. See also `_pkgbuild_to_yaml_with_check`
-#
-_pkgbuild_to_yaml() {
+_pkgbuild_load() {
   _s_env || return 1
 
   # Copied from `makepkg`
@@ -819,6 +807,22 @@ _pkgbuild_to_yaml() {
   # /Copied from `makepkg`
 
   source "PKGBUILD" || return 127
+}
+
+# This script will read the PKGBUILD from the current build environment
+# and print YAML contents that describe some basic information of the
+# package. The primary purpose is to gather information from packages
+# quicly and simple. We also build our own hierachy of dependencies.
+#
+# Input
+#   Current build environment that's detected by `_s_env`
+#
+# Output
+#   YAML string should be checked by a 3rd party method
+#   Always return 0. See also `_pkgbuild_to_yaml_with_check`
+#
+_pkgbuild_to_yaml() {
+  _pkgbuild_load || return
 
   cat <<EOF
 ---
