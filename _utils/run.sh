@@ -783,6 +783,15 @@ _get_update() {
   get_update
 }
 
+# Reset some environments' variables and load the PKGBUILD file in
+# the current working directory, or return error (127).
+#
+# Input
+#   _s_env
+#
+# Output
+#   New working environment
+#
 _pkgbuild_load() {
   _s_env || return 1
 
