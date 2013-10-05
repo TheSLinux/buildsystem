@@ -818,6 +818,14 @@ _pkgbuild_load() {
   source "PKGBUILD" || return 127
 }
 
+# Print list of source files required by PKGBUILD
+_pkgbuild_sources() {
+  _pkgbuild_load || return
+  for __ in "${source[@]}"; do
+    echo "${__}"
+  done
+}
+
 # This script will read the PKGBUILD from the current build environment
 # and print YAML contents that describe some basic information of the
 # package. The primary purpose is to gather information from packages
