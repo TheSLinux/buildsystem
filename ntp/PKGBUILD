@@ -1,11 +1,11 @@
-# $Id: PKGBUILD 191878 2013-08-01 03:30:58Z bisson $
-# Maintainer: Gaetan Bisson <bisson@archlinux.org>
-# Contributor: kevin <kevin@archlinux.org>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Original Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Original Contributor: kevin <kevin@archlinux.org>
 
-pkgname=ntp
-pkgver=4.2.6.p5
-_realver=4.2.6p5
-pkgrel=17
+# theslinux version number  => ntp version
+#     4.2.6.5                    4.2.6p5
+_ntpver="${PACKAGE_VERSION%.*}p${PACKAGE_VERSION##*.}"
+
 pkgdesc='Network Time Protocol reference implementation'
 url='http://www.ntp.org/'
 license=('custom')
@@ -13,20 +13,15 @@ arch=('i686' 'x86_64')
 makedepends=('perl-html-parser')
 depends=('openssl' 'libcap' 'libedit')
 backup=('etc/ntp.conf')
-source=("http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${_realver}.tar.gz"
+source=("http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${_ntpver}.tar.gz"
         'ntp.conf'
         'ntpd.service'
         'ntpdate.service')
-sha1sums=('4a5353a4791b6f4315a66c28d504ec6c7926b192'
-          'd3496dbeb7d531dd6ab071dbce3262c3c9618d8b'
-          'ff8370719f003f184563b7d6068c03086678482f'
-          'e1c48cba549b7d21501aadf513926e463884c090'
-)
 
 install=install
 
 build() {
-	cd "${srcdir}/${pkgname}-${_realver}"
+	cd "${srcdir}/${pkgname}-${_ntpver}"
 
 	./configure \
 		--prefix=/usr \
@@ -38,7 +33,7 @@ build() {
 }
 
 package() {
-	cd "${srcdir}/${pkgname}-${_realver}"
+	cd "${srcdir}/${pkgname}-${_ntpver}"
 
 	make DESTDIR="${pkgdir}" install
 
@@ -48,7 +43,7 @@ package() {
 	install -Dm644 ../ntpd.service "${pkgdir}"/usr/lib/systemd/system/ntpd.service
 	install -Dm644 ../ntpdate.service "${pkgdir}"/usr/lib/systemd/system/ntpdate.service
 	install -Dm644 COPYRIGHT "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-	
+
 	cd html
 	../scripts/html2man
 	install -d "${pkgdir}"/usr/share/man
