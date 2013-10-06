@@ -5,6 +5,8 @@
 # theslinux version number  => ntp version
 #     4.2.6.5                    4.2.6p5
 _ntpver="${PACKAGE_VERSION%.*}p${PACKAGE_VERSION##*.}"
+_ntpbranch="${PACKAGE_VERSION%.*}"
+_ntpbranch="${_ntpbranch%.*}"
 
 pkgdesc='Network Time Protocol reference implementation'
 url='http://www.ntp.org/'
@@ -13,7 +15,7 @@ arch=('i686' 'x86_64')
 makedepends=('perl-html-parser')
 depends=('openssl' 'libcap' 'libedit')
 backup=('etc/ntp.conf')
-source=("http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${_ntpver}.tar.gz"
+source=("http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-${_ntpbranch}/ntp-${_ntpver}.tar.gz"
         'ntp.conf'
         'ntpd.service'
         'ntpdate.service')
