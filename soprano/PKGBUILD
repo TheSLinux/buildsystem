@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 189902 2013-07-11 07:11:08Z andrea $
+# Maintainer: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Tobias Powalowski <tpowa@archlinux.org>
+
+pkgname=soprano
+pkgver=2.9.3
+pkgrel=1
+pkgdesc='A library which provides a highly usable object-oriented C++/Qt4 framework for RDF data'
+arch=('i686' 'x86_64')
+url='http://soprano.sourceforge.net/'
+license=('GPL' 'LGPL')
+depends=('qt4' 'libiodbc' 'virtuoso-base' 'redland')
+makedepends=('cmake' 'java-environment' 'doxygen')
+source=("http://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+md5sums=('714a729809943efd4b536ed15cd66aca')
+
+prepare() {
+  mkdir build
+}
+
+build() {
+  cd build
+  # we need the rpath
+  cmake ../${pkgname}-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_SKIP_RPATH=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DSOPRANO_DISABLE_CLUCENE_INDEX=ON
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}
