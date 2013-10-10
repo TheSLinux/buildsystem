@@ -1,0 +1,26 @@
+# $Id: PKGBUILD 165416 2012-08-18 18:30:01Z schiv $
+# Maintainer: Giovanni Scafora <giovanni@archlinux.org>
+
+pkgname=liblrdf
+pkgver=0.5.0
+pkgrel=1
+pkgdesc="A library for the manipulation of RDF file in LADSPA plugins"
+arch=('i686' 'x86_64')
+url="https://github.com/swh/LRDF"
+depends=('raptor' 'ladspa')
+license=('GPL')
+options=('!libtool')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/swh/LRDF/tarball/${pkgver})
+md5sums=('005ea24152620da7f2ee80a78e17f784')
+
+build() {
+  cd "${srcdir}"/swh-LRDF-*
+  autoreconf -vfi
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}"/swh-LRDF-*
+  make DESTDIR="${pkgdir}" install
+}
