@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 194033 2013-09-10 12:51:41Z andrea $
+# Maintainer: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kactivities
+pkgver=4.11.1
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc='API for using and interacting with the Activity Manager'
+url='https://projects.kde.org/projects/kde/kdelibs/kactivities'
+license=('GPL' 'FDL')
+depends=('nepomuk-core')
+makedepends=('cmake' 'automoc4' 'mesa')
+source=("http://download.kde.org/stable/${pkgver}/src/${pkgname}-${pkgver}.tar.xz")
+sha1sums=('3f0ca0c366ba377075ba36c2417497ad0829cf1a')
+
+build() {
+  cd "${srcdir}"
+  mkdir build
+  cd build
+  cmake ../${pkgname}-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE4_BUILD_TESTS=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd $srcdir/build
+  make DESTDIR=$pkgdir install
+}
