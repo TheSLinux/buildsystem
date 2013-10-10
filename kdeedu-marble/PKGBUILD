@@ -1,0 +1,32 @@
+# $Id: PKGBUILD 194033 2013-09-10 12:51:41Z andrea $
+# Maintainer: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdeedu-marble
+pkgver=4.11.1
+pkgrel=1
+pkgdesc="Desktop Globe"
+url="http://kde.org/applications/education/marble/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+groups=('kde' 'kdeedu')
+depends=('kdebase-runtime')
+makedepends=('cmake' 'automoc4' 'gpsd')
+optdepends=('gpsd: gps support')
+install=${pkgname}.install
+source=("http://download.kde.org/stable/${pkgver}/src/marble-${pkgver}.tar.xz")
+sha1sums=('d4842516fd6fedbf24da2770bc12dec794107141')
+
+build() {
+  mkdir build
+  cd build
+  cmake ../marble-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE4_BUILD_TESTS=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}
