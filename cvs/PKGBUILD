@@ -1,0 +1,47 @@
+# $Id: PKGBUILD 185414 2013-05-14 01:34:52Z dan $
+# Contributor: dorphell <dorphell@archlinux.org>
+# Maintainer: Dan McGee <dan@archlinux.org>
+
+pkgname=cvs
+pkgver=1.11.23
+pkgrel=9
+pkgdesc="Concurrent Versions System - a source control system"
+arch=(i686 x86_64)
+url="http://cvs.nongnu.org/"
+license=('GPL')
+depends=('krb5' 'zlib')
+makedepends=('vim')
+optdepends=('openssh: for using cvs over ssh'
+            'inetutils: for using cvs over rsh')
+install=cvs.install
+source=(ftp://ftp.gnu.org/non-gnu/cvs/source/stable/${pkgver}/${pkgname}-${pkgver}.tar.bz2
+        cvs-1.11.19-extzlib.patch
+        cvs-1.11.23-getline64.patch
+        cvs-1.11.23-cve-2010-3846.patch)
+sha256sums=('400f51b59d85116e79b844f2d5dbbad4759442a789b401a94aa5052c3d7a4aa9'
+            '0587ac3753d1257fa6d22557fa077178ee1ec004178c0a0348720e8171b1e942'
+            '9126d7992ace943980ad8a10d5a09aeb6f1eeeb9b921fc796fe31de7b1c220cf'
+            'c6506d0a5efc7b0cab6415f26e070ec214fb9781fac8d295506f4d0825431a8f')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  unset EDITOR VISUAL
+
+  patch -Np1 < ../cvs-1.11.19-extzlib.patch
+  patch -Np1 < ../cvs-1.11.23-getline64.patch
+  # CVE-2010-3864, https://www.redhat.com/security/data/cve/CVE-2010-3846.html
+  patch -Np1 < ../cvs-1.11.23-cve-2010-3846.patch
+
+  sed -i -e 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' configure.in
+  find . -name Makefile.am | xargs sed -i -e 's/^INCLUDES/AM_CPPFLAGS/'
+  AUTOMAKE='automake --add-missing' autoreconf
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+  rm "${pkgdir}"/usr/share/info/dir
+}
