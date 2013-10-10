@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 193924 2013-09-06 07:21:09Z eric $
+# Maintainer: 
+
+pkgname=perl-date-manip
+pkgver=6.41
+pkgrel=1
+pkgdesc="Date::Manip - date manipulation routines"
+arch=('any')
+license=('PerlArtistic')
+url="http://search.cpan.org/dist/Date-Manip/"
+depends=('perl')
+options=('!emptydirs')
+source=(http://search.cpan.org/CPAN/authors/id/S/SB/SBECK/Date-Manip-${pkgver}.tar.gz)
+md5sums=('5fd8ba69642db5fc87a99eab6376c0ac')
+
+build() {
+  cd Date-Manip-${pkgver}
+  perl Build.PL installdirs=vendor
+  perl Build
+}
+
+package() {
+  cd Date-Manip-${pkgver}
+  perl Build destdir="${pkgdir}" install
+}
