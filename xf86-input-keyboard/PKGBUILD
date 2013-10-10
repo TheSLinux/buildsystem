@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 180908 2013-03-27 23:09:36Z andyrtr $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=xf86-input-keyboard
+pkgver=1.7.0
+pkgrel=1
+pkgdesc="X.Org keyboard input driver"
+arch=(i686 x86_64)
+license=('custom')
+url="http://xorg.freedesktop.org/"
+depends=('glibc')
+makedepends=('xorg-server-devel' 'X-ABI-XINPUT_VERSION=19' 'resourceproto' 'scrnsaverproto')
+conflicts=('xorg-server<1.14.0' 'X-ABI-XINPUT_VERSION<19' 'X-ABI-XINPUT_VERSION>=20')
+options=('!libtool')
+groups=('xorg-drivers' 'xorg')
+source=(${url}/releases/individual/driver/${pkgname}-${pkgver}.tar.bz2)
+sha256sums=('0cd5e2845149c7f0e19ec830c6914b7f3d154bff134ce84519e39f16ce65523c')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -m755 -d "${pkgdir}/usr/share/licenses/${pkgname}"
+  install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/"
+}
