@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 193160 2013-08-17 10:45:18Z bisson $
+# Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Contributor: Angel Velasquez <angvp@archlinux.org>
+# Contributor: Hugo Doria <hugo@archlinux.org>
+
+pkgname=nmap
+pkgver=6.40
+pkgrel=1
+pkgdesc='Utility for network discovery and security auditing'
+url='http://nmap.org/'
+arch=('i686' 'x86_64')
+license=('GPL2')
+makedepends=('pygtk')
+optdepends=('pygtk: zenmap'
+            'sudo: privilege escalation for zenmap'
+            'xterm: privilege escalation for zenmap'
+            'kdebase-runtime: privilege escalation for zenmap'
+            'gksu: privilege escalation for zenmap')
+depends=('pcre' 'openssl' 'libpcap' 'lua')
+source=("http://nmap.org/dist/${pkgname}-${pkgver}.tar.bz2")
+sha1sums=('ee1bec1bb62045c7c1fc69ff183b2ae9b97bd0eb')
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	export PYTHON=python2
+	./configure \
+		--prefix=/usr \
+		--libexecdir=/usr/lib \
+		--mandir=/usr/share/man \
+
+	make
+}
+
+package() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make DESTDIR="${pkgdir}" install
+	rm "${pkgdir}"/usr/bin/uninstall_zenmap
+	install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
