@@ -1,0 +1,18 @@
+# $Id: PKGBUILD 176868 2013-02-02 03:21:10Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=pulseaudio-alsa
+pkgver=2
+pkgrel=2
+pkgdesc="ALSA Configuration for PulseAudio"
+arch=(any)
+url="http://www.pulseaudio.org"
+license=(GPL)
+depends=("alsa-plugins>=1.0.25" pulseaudio)
+backup=(etc/asound.conf)
+source=(asound.conf)
+md5sums=('4703dc0019932e442486942adb6c90a4')
+
+package() {
+  install -Dm644 asound.conf "$pkgdir/etc/asound.conf"
+}
