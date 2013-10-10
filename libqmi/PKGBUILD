@@ -1,0 +1,32 @@
+# $Id: PKGBUILD 191186 2013-07-19 11:52:46Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=libqmi
+pkgver=1.4.0
+pkgrel=2
+pkgdesc="QMI modem protocol helper library"
+arch=(i686 x86_64)
+url="http://www.freedesktop.org/wiki/Software/libqmi/"
+license=(GPL2)
+depends=(glib2 bash)
+makedepends=(gtk-doc python)
+options=('!libtool')
+source=(http://www.freedesktop.org/software/$pkgname/$pkgname-$pkgver.tar.xz)
+sha256sums=('812515c36fd77c5f7eb9d52804e9666c4341e8c7dd3d932ca1e607b467831af3')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+    --disable-static --with-tests
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  make check
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}
