@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 190125 2013-07-16 03:23:06Z eric $
+# Maintainer:
+# Contributor: xduugu
+# Contributor: Elis Hughes <elishughes@googlemail.com>
+
+pkgname=rtmpdump
+pkgver=20121230
+pkgrel=2
+pkgdesc="A tool to download rtmp streams"
+arch=('i686' 'x86_64')
+url="http://rtmpdump.mplayerhq.hu/"
+license=('GPL2' 'LGPL2.1')
+depends=('openssl')
+options=('!makeflags')
+#git://git.ffmpeg.org/rtmpdump 
+source=(ftp://ftp.archlinux.org/other/packages/$pkgname/$pkgname-git-$pkgver.tar.xz)
+sha256sums=('2612ccbc041281c90d1fa59d20aec783fa3ef29de952323d8d89699fc3d5c4d2')
+
+build() {
+  cd $pkgname-$pkgver
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make prefix=/usr sbindir=/usr/bin mandir=/usr/share/man DESTDIR="$pkgdir" install
+}
