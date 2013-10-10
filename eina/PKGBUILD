@@ -1,0 +1,51 @@
+# $Id: PKGBUILD 193651 2013-08-26 17:41:12Z ronald $
+# Maintainer: Ronald van Haren <ronald.archlinux.org>
+# Contributor: Ronald van Haren <ronald.archlinux.org>
+
+pkgname=eina
+pkgver=1.7.8
+pkgrel=1
+pkgdesc="A core data structure and common utility library"
+arch=('i686' 'x86_64')
+url="http://www.enlightenment.org"
+license=('LGPL2.1')
+depends=('glibc')
+options=('!libtool' '!emptydirs')
+source=(http://download.enlightenment.org/releases/$pkgname-$pkgver.tar.gz)
+sha1sums=('f655b2691d3976fdc2cfe116166e790c1b8bc90d')
+
+build() {
+   cd $srcdir/$pkgname-$pkgver
+
+  export CFLAGS="-fvisibility=hidden -ffunction-sections -fdata-sections ${CFLAGS}"
+  export CXXFLAGS="-fvisibility=hidden -ffunction-sections -fdata-sections ${CXXFLAGS}"
+  export LDFLAGS="-fvisibility=hidden -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed  ${LDFLAGS}"
+
+  ./configure --prefix=/usr --enable-amalgamation \
+	--with-internal-maximum-log-level=3 \
+	--disable-static \
+	--disable-benchmark \
+	--disable-install-examples \
+	--disable-build-examples \
+	--disable-doc \
+	--disable-tests \
+	--enable-default-mempool \
+	--enable-mempool-chained-pool \
+	--enable-mempool-pass-through \
+	--disable-mempool-buddy \
+	--disable-mempool-ememoa-fixed \
+	--disable-mempool-ememoa-unknown \
+	--disable-mempool-fixed-bitmap \
+	--disable-assert \
+	--disable-ememoa 
+
+#	--disable-mempool-one-big ## this option causes a segfault in 1.7.2
+
+  make
+}
+
+package(){
+  cd $srcdir/$pkgname-$pkgver
+  make DESTDIR=$pkgdir install
+}
+
