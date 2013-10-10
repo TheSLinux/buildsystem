@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 186471 2013-05-27 06:47:14Z bisson $
+# Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Contributor: Juergen Hoetzel <juergen@archlinux.org>
+# Contributor: John Proctor <jproctor@prium.net>
+
+pkgname=socat
+pkgver=1.7.2.2
+pkgrel=1
+pkgdesc='Multipurpose relay'
+url='http://www.dest-unreach.org/socat/'
+license=('GPL2')
+arch=('i686' 'x86_64')
+depends=('readline' 'openssl')
+source=("http://www.dest-unreach.org/socat/download/${pkgname}-${pkgver}.tar.gz")
+sha1sums=('588294c17373d52a8ac877dcd599ef26f14b110b')
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	./configure \
+		--prefix=/usr \
+		--mandir=/usr/share/man \
+
+	make
+}
+
+package() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make DESTDIR="${pkgdir}" install
+}
