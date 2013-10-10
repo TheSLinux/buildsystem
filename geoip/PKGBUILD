@@ -1,0 +1,50 @@
+# $Id: PKGBUILD 194735 2013-09-23 12:28:26Z jgc $
+# Maintainer: Dan McGee <dan@archlinux.org>
+# Contributor: Manolis Tzanidakis <manolis@archlinux.org>
+
+pkgname=geoip
+pkgver=1.5.1
+pkgrel=1
+pkgdesc="Non-DNS IP-to-country resolver C library & utils"
+arch=('i686' 'x86_64')
+url="http://www.maxmind.com/app/c"
+license=('GPL')
+depends=('zlib' 'geoip-database')
+backup=('etc/geoip/GeoIP.conf')
+options=('!libtool' '!emptydirs')
+source=(http://www.maxmind.com/download/geoip/api/c/GeoIP-$pkgver.tar.gz 
+        pkgconfig.patch)
+sha256sums=('ec35ee73fcc54c493f4252565d1c81d022b398dd16de3af1522c8cab016f8731'
+            '64a6a608beabdc553019237d7da808dc234f760c21040036b2f589eaebba5d10')
+
+prepare() {
+  cd GeoIP-$pkgver
+  patch -Np1 -i ../pkgconfig.patch
+}
+
+build() {
+  cd GeoIP-$pkgver
+
+  autoreconf -vi
+  ./configure \
+    --prefix=/usr \
+    --mandir=/usr/share/man \
+    --sysconfdir=/etc/geoip
+  make
+}
+
+check() {
+  cd GeoIP-$pkgver
+  make check
+}
+
+package() {
+  cd GeoIP-$pkgver
+
+  make DESTDIR="$pkgdir" install
+
+  # country database is provided by geoip-database
+  rm "$pkgdir/usr/share/GeoIP/GeoIP.dat"
+}
+
+# vim:set ts=2 sw=2 et:
