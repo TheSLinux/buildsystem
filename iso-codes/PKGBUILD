@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 191820 2013-07-31 08:25:22Z jgc $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=iso-codes
+pkgver=3.44
+pkgrel=1
+pkgdesc="Lists of the country, language, and currency names"
+arch=('any')
+url="http://pkg-isocodes.alioth.debian.org/"
+license=('LGPL')
+source=(http://pkg-isocodes.alioth.debian.org/downloads/$pkgname-$pkgver.tar.xz{,.sig})
+md5sums=('be772ec57321b92e62d962def26ce2aa'
+         'SKIP')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" pkgconfigdir=/usr/lib/pkgconfig install
+}
+
