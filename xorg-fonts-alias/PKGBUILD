@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 185757 2013-05-18 10:59:09Z andyrtr $
+# Maintainer: Andreas Radke <andyrtr@archlinux.org>
+#Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=xorg-fonts-alias
+pkgver=1.0.3
+pkgrel=1
+pkgdesc="X.org font alias files"
+arch=('any')
+url="http://xorg.freedesktop.org/"
+license=('custom')
+source=("${url}/releases/individual/font/font-alias-${pkgver}.tar.bz2"
+        'LICENSE')
+md5sums=('6d25f64796fef34b53b439c2e9efa562'
+         'ff91ae6d96d76130482d04653e7a836a')
+
+build() {
+  cd "${srcdir}/font-alias-${pkgver}"
+  ./configure --prefix=/usr --with-fontrootdir=/usr/share/fonts
+  make
+}
+
+package() {
+  cd "${srcdir}/font-alias-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -Dm644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
