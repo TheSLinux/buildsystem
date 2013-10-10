@@ -1,0 +1,41 @@
+# $Id: PKGBUILD 193638 2013-08-26 17:33:39Z ronald $
+# Maintainer: Ronald van Haren <ronald.archlinux.org>
+# Contributor: Ronald van Haren <ronald.archlinux.org>
+
+pkgname=eet
+pkgver=1.7.8
+pkgrel=1
+pkgdesc="A data storage and compression library"
+arch=('i686' 'x86_64')
+url="http://www.enlightenment.org"
+license=('BSD')
+depends=('libjpeg>=7' 'openssl' 'eina')
+options=(!libtool)
+source=(http://download.enlightenment.org/releases/$pkgname-$pkgver.tar.gz)
+sha1sums=('d68e17fb155954c7d524cdba98244c09ae511513')
+
+build() {
+   cd $srcdir/$pkgname-$pkgver
+
+  export CFLAGS="-fvisibility=hidden -ffunction-sections -fdata-sections ${CFLAGS}"
+  export CXXFLAGS="-fvisibility=hidden -ffunction-sections -fdata-sections ${CXXFLAGS}"
+  export LDFLAGS="-fvisibility=hidden -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed  ${LDFLAGS}"
+
+  ./configure --prefix=/usr --enable-openssl --disable-gnutls \
+	--disable-build-examples \
+	--disable-doc --disable-install-examples \
+	--disable-old-eet-file-format --disable-tests \
+	--disable-static
+  make
+}
+
+package(){
+  cd $srcdir/$pkgname-$pkgver
+  make DESTDIR=$pkgdir install 
+
+  # install license files
+  install -Dm644 $srcdir/$pkgname-$pkgver/COPYING \
+        $pkgdir/usr/share/licenses/$pkgname/COPYING
+}
+
+
