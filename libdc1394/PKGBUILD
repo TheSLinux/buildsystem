@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 180143 2013-03-18 09:10:12Z jgc $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=libdc1394
+pkgver=2.2.1
+pkgrel=1
+pkgdesc="High level programming interface to control IEEE 1394 based cameras"
+arch=('i686' 'x86_64')
+license=('LGPL')
+url="http://sourceforge.net/projects/libdc1394/"
+depends=('libraw1394' 'libusb')
+options=('!libtool' '!emptydirs')
+source=(http://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.gz)
+md5sums=('5c4b78bb8265d6dc971433ec1da381ab')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
