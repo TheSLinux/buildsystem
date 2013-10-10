@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 168433 2012-10-11 16:11:06Z andyrtr $
+# Maintainer: AndyRTR <andyrtr@archlinux.org>
+# Contributor: SpepS <dreamspepser at yahoo dot it>
+
+pkgname=mtdev
+pkgver=1.1.3
+pkgrel=1
+pkgdesc="A stand-alone library which transforms all variants of kernel MT events to the slotted type B protocol"
+arch=('i686' 'x86_64')
+url="http://bitmath.org/code/mtdev/"
+license=('custom:MIT')
+depends=('glibc')
+options=('!libtool')
+source=("$url$pkgname-$pkgver.tar.bz2")
+md5sums=('8a236569ad3dd79eaeed45f1935359be')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+check() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make -k check
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make DESTDIR="$pkgdir/" install
+
+  # license
+  install -Dm644 COPYING \
+    "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
