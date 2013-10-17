@@ -242,22 +242,24 @@ _get_git_branch() {
 # Conventions: A feature branch should start with `p_`, follow by the
 # package name, and the feature (if any). Example
 #
-#   FEATURE BARNCH     FEATURE BRANCH  |  FEATURE
-#   -----------------------------------+----------
-#   p_foobar                           |  patch
-#   p_foobar+feature   foobar+feature  |  feature
-#   p_foobar#feature   foobar#feature  |  feature
-#   p_foobar=feature   foobar=feature  |  feature
-#   p_foobar%feature   foobar%feature  |  feature
-#   p_foobar@feature   foobar@feature  |  feature
+#   FEATURE BRANCH   | FEATURE BRANCH | FEATURE | CONFLICT
+#   -----------------+----------------+----------+---------
+#   p_foobar         |                | patch   | yes
+#   p_foobar+feature | foobar+feature | feature | ?
+#   p_foobar#feature | foobar#feature | feature | ?
+#   p_foobar=feature | foobar=feature | feature | (noop)
+#   p_foobar%feature | foobar%feature | feature | no
+#   p_foobar@feature | foobar@feature | feature | yes
 #
 # Input
 #   => Working directory is a package directory (a must)
 #   => PACKAGE_BASE (env. var.) is set (optional)
 #   => PACKAGE_REF_TAG (env. var.) is set (optional)
 #   => PACKAGE_RAG is set (optional)
+#   => PACKAGE_FEATURE is set (optional)
 #
 #   $1 => :feature => return the feature string from the branch name
+#                     (prefixed by a modifier @, %, =, # or +)
 #   $1 => :name    => return the package name
 #   $1 => <empty>  => as :name
 #
@@ -279,7 +281,11 @@ _get_package_name() {
   _tag="${_tag:-$PACKAGE_REF_TAG}"
 
   if [[ "$_feature" == ":feature" && -n "$PACKAGE_FEATURE" ]]; then
-    echo "$PACKAGE_FEATURE"
+    case "${PACKAGE_FEATURE:0:1}" in
+      "@"|"="|"#"|"+"|"%")
+          echo  "$PACKAGE_FEATURE" ;;
+      *)  echo "@$PACKAGE_FEATURE" ;;
+    esac
     return 0
   fi
 
@@ -297,14 +303,16 @@ _get_package_name() {
     -e "_br=\"$_br\"" \
     -e "_wd=\"$_wd\"" \
     -e "_feature=$_feature" \
-    -e 'if gs = _br.match(%r{^(p_)?#{_wd}([@+#=%](.+))?$})
-          puts _feature == :name \
-            ? _wd \
-            : (gs[3] ? gs[3] : (gs[1] ? "patch" : ""))
-          exit 0
-        else
+    -e 'gs = _br.match(%r{^(p_)?#{_wd}([@+#=%](.+))?$})
+        unless gs
           STDERR.puts ":: Error: Branch \"#{_br}\" and directory \"#{_wd}\" do not match"
           exit 1
+        end
+        puts \
+        case _feature
+          when :name then _wd
+          when :feature then
+            gs[2] ? gs[2] : (gs[1] ? "@patch" : "=")
         end
       ' \
   || return 1
@@ -665,6 +673,8 @@ _fix_the_1st_tag_on_package_branch() {
 #    as `PACKAGE_FEATURE`, and will append the string to name of the
 #    final output package. It also helps to modify the variables
 #    `conflicts`, `provides`,... on-the-fly.
+#    `PACKAGE_FEATURE` must be prefixed with an modifier ([@%=+#]).
+#    See `_get_package_name` for details.
 #
 _makepkg() {
   _s_env || return 1
@@ -672,6 +682,7 @@ _makepkg() {
   PACKAGE_RELEASE="$PACKAGE_RELEASE" \
   PACKAGE_VERSION="$PACKAGE_VERSION" \
   PACKAGE_FEATURE="$PACKAGE_FEATURE" \
+  PACKAGE_CONFLICT_TYPE="$PACKAGE_CONFLICT_TYPE" \
   makepkg "$@"
 }
 
@@ -713,9 +724,10 @@ _git_bang_bang() {
 #      => PACKAGE_FEATURE  => special feature of the package
 #   $1 => --current-tag    => print current tag and exit
 #      => --next-tag       => print next tag and exit
+#      => --dump           => print results to STDERR
 #
 # Output
-#   error || PACKAGE_{BASE, VERSION, RELEASE, FEATURE}
+#   error || PACKAGE_{BASE, VERSION, RELEASE, FEATURE, CONFLICT_TYPE}
 #
 # History
 #
@@ -729,11 +741,14 @@ _s_env() {
   local _rel=
   local _pkg=
   local _pkg_feature=
+  local _pkg_conflict_type=
   local _type="--reference"
 
   _git_bang_bang || return 1
   _pkg="$(_get_package_name)" || return 1
   _pkg_feature="$(_get_package_feature)" || return 1
+  _pkg_conflict_type="${_pkg_feature:0:1}"
+  _pkg_feature="${_pkg_feature:1}"
 
   # If package tag is provided
   if [[ -n "$PACKAGE_TAG" ]]; then
@@ -767,10 +782,21 @@ _s_env() {
   _ver="$(_get_version_from_tag $_tag)" || return 1
   _rel="$(_get_release_from_tag $_tag)" || return 1
 
+  if [[ "$1" == "--dump" ]]; then
+  cat >&2 <<EOF
+PACKAGE_BASE="$_pkg"
+PACKAGE_RELEASE="$_rel"
+PACKAGE_VERSION="$_ver"
+PACKAGE_FEATURE="$_pkg_feature"
+PACKAGE_CONFLICT_TYPE="$_pkg_conflict_type"
+EOF
+  fi
+
   PACKAGE_BASE="$_pkg"
   PACKAGE_RELEASE="$_rel"
   PACKAGE_VERSION="$_ver"
   PACKAGE_FEATURE="$_pkg_feature"
+  PACKAGE_CONFLICT_TYPE="$_pkg_conflict_type"
 }
 
 # Execute the `get_update` function from PKGBUILD. If the function
