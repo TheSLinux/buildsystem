@@ -818,6 +818,8 @@ _get_update() {
 # Output
 #   New working environment
 #
+# FIXME: Add PACKAGE_CONFLICT_TYPE support
+#
 _pkgbuild_load() {
   _s_env || return 1
 
@@ -863,6 +865,8 @@ _pkgbuild_sources() {
 # Output
 #   YAML string should be checked by a 3rd party method
 #   Always return 0. See also `_pkgbuild_to_yaml_with_check`
+#
+# FIXME: Add PACKAGE_CONFLICT_TYPE support
 #
 _pkgbuild_to_yaml() {
   _pkgbuild_load || return
