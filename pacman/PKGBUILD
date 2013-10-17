@@ -36,11 +36,12 @@ source=("ftp://ftp.archlinux.org/other/pacman/$pkgbase-$pkgver.tar.gz"{,.sig}
         0004-makepkg-accepts-PACKAGE_FEATURE.patch
         0005-Add-PACKAGE_FEATURE-to-some-output-message.patch
         0006-Feature-string-will-start-with.patch
+        0007-Use-the-original-PACKAGE_CONFLICT_TYPE-in-_FEATURE_S.patch
         )
 
 build() {
   cd $srcdir/$pkgname-$pkgver
-  for _f_patch in ${srcdir}/000[1-6]*.patch; do
+  for _f_patch in ${srcdir}/000[1-7]*.patch; do
     patch -Np4 < "$_f_patch"
   done
 
