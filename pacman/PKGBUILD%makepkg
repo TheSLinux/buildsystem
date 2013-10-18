@@ -3,7 +3,7 @@
 # Date   : 2013 Oct 18th
 # License: MIT
 
-pkgdesc="Generate :makepkg script from pacman source tree"
+pkgdesc="This package only contains :makepkg script from :pacman"
 
 unset check
 unset provides
