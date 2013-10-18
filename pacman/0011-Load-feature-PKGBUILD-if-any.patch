@@ -1,0 +1,35 @@
+From acd81aae2d2cd17b52951834600e8f038b0f9c30 Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Fri, 18 Oct 2013 14:13:16 +0700
+Subject: [PATCH] Load feature PKGBUILD if any
+
+For the original package, PGKBUILD is used by default.
+If there is a feature, e.g, @foobar, we will check if
+there is a file PKGBUILD@foobar, and load that file.
+This way we do not need to edit the original file, bc.
+everything can be overwritten in the feature file.
+
+Is that good?
+---
+ pacman/src/pacman-4.1.0/scripts/makepkg.sh.in | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in b/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
+index 1ec521d..e75a4d2 100644
+--- a/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
++++ b/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
+@@ -2775,6 +2775,11 @@ else
+ 	source_safe "$BUILDFILE"
+ fi
+ 
++# Load the feature PKGBUILD if any
++if [[ -n "${_FEATURE_STRING}" && -f "${BUILDFILE}${_FEATURE_STRING}" ]]; then
++	source_safe "${BUILDFILE}${_FEATURE_STRING}"
++fi
++
+ # There are some cases
+ #   PACKAGE_BASE is unset:
+ #     `pkgname`, `pkgbase` will be from `PKGBUILD`
+-- 
+1.8.4
+
