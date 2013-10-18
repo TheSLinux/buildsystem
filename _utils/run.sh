@@ -817,7 +817,12 @@ _get_update() {
 _pkgbuild_load() {
   _s_env || return 1
 
-  # Copied from `makepkg`
+  if [[ -z "${PACKAGE_FEATURE}" || -z "${PACKAGE_FEATURE:1}" ]]; then
+    _FEATURE_STRING=""
+  else
+    _FEATURE_STRING="${PACKAGE_FEATURE}"
+  fi
+
   # FIXME: We should not mirror code like this. Need another way to
   # FIXME: patch `makepkg` and make code clean.
   unset pkgname pkgbase pkgver pkgrel epoch pkgdesc url license groups provides
@@ -830,14 +835,17 @@ _pkgbuild_load() {
 
   [[ ! -z "$pkgname" ]] || pkgname="$pkgbase"
 
-  if [[ -n "$PACKAGE_FEATURE" ]]; then
+  shopt -u extglob # FIXME: why?
+  source "PKGBUILD" || return
+  if [[ -n "${_FEATURE_STRING}" && -f "PKGBUILD${_FEATURE_STRING}" ]]; then
+    source "PKGBUILD${_FEATURE_STRING}" || return
+  fi
+  shopt -s extglob # FIXME: why?
+
+  if [[ "${PACKAGE_FEATURE:0:1}" == "@" ]]; then
     conflicts=("${conflicts[@]}" "$pkgname")
     provides=("${provides[@]}" "$pkgname")
-    replaces=("${replaces[@]}" "$pkgname")
   fi
-  # /Copied from `makepkg`
-
-  source "PKGBUILD" || return 127
 }
 
 # Print list of source files required by PKGBUILD
