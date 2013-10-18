@@ -682,7 +682,6 @@ _makepkg() {
   PACKAGE_RELEASE="$PACKAGE_RELEASE" \
   PACKAGE_VERSION="$PACKAGE_VERSION" \
   PACKAGE_FEATURE="$PACKAGE_FEATURE" \
-  PACKAGE_CONFLICT_TYPE="$PACKAGE_CONFLICT_TYPE" \
   makepkg "$@"
 }
 
@@ -727,7 +726,7 @@ _git_bang_bang() {
 #      => --dump           => print results to STDERR
 #
 # Output
-#   error || PACKAGE_{BASE, VERSION, RELEASE, FEATURE, CONFLICT_TYPE}
+#   error || PACKAGE_{BASE, VERSION, RELEASE, FEATURE}
 #
 # History
 #
@@ -741,14 +740,11 @@ _s_env() {
   local _rel=
   local _pkg=
   local _pkg_feature=
-  local _pkg_conflict_type=
   local _type="--reference"
 
   _git_bang_bang || return 1
   _pkg="$(_get_package_name)" || return 1
   _pkg_feature="$(_get_package_feature)" || return 1
-  _pkg_conflict_type="${_pkg_feature:0:1}"
-  _pkg_feature="${_pkg_feature:1}"
 
   # If package tag is provided
   if [[ -n "$PACKAGE_TAG" ]]; then
@@ -788,7 +784,6 @@ PACKAGE_BASE="$_pkg"
 PACKAGE_RELEASE="$_rel"
 PACKAGE_VERSION="$_ver"
 PACKAGE_FEATURE="$_pkg_feature"
-PACKAGE_CONFLICT_TYPE="$_pkg_conflict_type"
 EOF
   fi
 
@@ -796,7 +791,6 @@ EOF
   PACKAGE_RELEASE="$_rel"
   PACKAGE_VERSION="$_ver"
   PACKAGE_FEATURE="$_pkg_feature"
-  PACKAGE_CONFLICT_TYPE="$_pkg_conflict_type"
 }
 
 # Execute the `get_update` function from PKGBUILD. If the function
