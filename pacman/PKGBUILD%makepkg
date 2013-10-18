@@ -1,0 +1,36 @@
+#!/bin/bash
+# Author : Anh K. Huynh
+# Date   : 2013 Oct 18th
+# License: MIT
+
+pkgdesc="Generate :makepkg script from pacman source tree"
+
+unset check
+unset provides
+unset conflicts
+unset replaces
+unset backup
+unset install
+
+depends=('pacman')
+
+build() {
+  cd $srcdir/$pkgname-$pkgver
+  for _f_patch in ${srcdir}/000[1-9]*.patch ${srcdir}/001[01]*.patch; do
+    patch -Np4 < "$_f_patch"
+  done
+
+  ./configure --prefix=/usr --sysconfdir=/etc \
+    --localstatedir=/var --enable-doc \
+    --with-scriptlet-shell=/usr/bin/bash \
+    --with-ldconfig=/usr/bin/ldconfig
+
+  cd "$srcdir/$pkgname-$pkgver/scripts"
+  make
+}
+
+package() {
+  cd $srcdir/$pkgname-$pkgver
+  install -dm755 $pkgdir/usr/bin/
+  install -m755 "scripts/makepkg" $pkgdir/usr/bin
+}
