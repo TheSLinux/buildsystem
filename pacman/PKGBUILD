@@ -39,11 +39,12 @@ source=("ftp://ftp.archlinux.org/other/pacman/$pkgbase-$pkgver.tar.gz"{,.sig}
         0007-Use-the-original-PACKAGE_CONFLICT_TYPE-in-_FEATURE_S.patch
         0008-PACKAGE_FEATURE-will-only-alter-conflicts.patch
         0009-Not-as-said-in-cff343f-we-need-to-keep-provides-vari.patch
+        0010-Do-not-use-PACKAGE_CONFLICT_TYPE-to-get-conflict-typ.patch
         )
 
 build() {
   cd $srcdir/$pkgname-$pkgver
-  for _f_patch in ${srcdir}/000[1-9]*.patch; do
+  for _f_patch in ${srcdir}/000[1-9]*.patch ${srcdir}/0010*.patch; do
     patch -Np4 < "$_f_patch"
   done
 
