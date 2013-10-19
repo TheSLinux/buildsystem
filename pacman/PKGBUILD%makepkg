@@ -15,16 +15,7 @@ unset install
 depends=('pacman')
 
 build() {
-  cd $srcdir/$pkgname-$pkgver
-  for _f_patch in ${srcdir}/000[1-9]*.patch ${srcdir}/001[0-2]*.patch; do
-    patch -Np4 < "$_f_patch"
-  done
-
-  ./configure --prefix=/usr --sysconfdir=/etc \
-    --localstatedir=/var --enable-doc \
-    --with-scriptlet-shell=/usr/bin/bash \
-    --with-ldconfig=/usr/bin/ldconfig
-
+  _patch_and_config
   cd "$srcdir/$pkgname-$pkgver/scripts"
   make
 }
