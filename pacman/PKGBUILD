@@ -42,11 +42,12 @@ source=("ftp://ftp.archlinux.org/other/pacman/$pkgbase-$pkgver.tar.gz"{,.sig}
         0010-Do-not-use-PACKAGE_CONFLICT_TYPE-to-get-conflict-typ.patch
         0011-Load-feature-PKGBUILD-if-any.patch
         0012-Use-TheSLinux-source-mirror-by-default.patch
+        0013-Skip-checksums-by-default.patch
         )
 
 _patch_and_config() {
   cd $srcdir/$pkgname-$pkgver/
-  for _f_patch in ${srcdir}/000[1-9]*.patch ${srcdir}/001[0-2]*.patch; do
+  for _f_patch in ${srcdir}/000[1-9]*.patch ${srcdir}/001[0-3]*.patch; do
     patch -Np4 < "$_f_patch"
   done
 

@@ -1,0 +1,25 @@
+From 17b7f03f1da4a4156988e51efa40317e24a20ea8 Mon Sep 17 00:00:00 2001
+From: Ky-Anh Huynh <kyanh@theslinux.org>
+Date: Sat, 19 Oct 2013 14:57:13 +0700
+Subject: [PATCH] Skip checksums by default
+
+---
+ pacman/src/pacman-4.1.0/scripts/makepkg.sh.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in b/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
+index 66a3049..caade54 100644
+--- a/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
++++ b/pacman/src/pacman-4.1.0/scripts/makepkg.sh.in
+@@ -64,7 +64,7 @@ FORCE=0
+ INFAKEROOT=0
+ GENINTEG=0
+ HOLDVER=0
+-SKIPCHECKSUMS=0
++SKIPCHECKSUMS=1
+ SKIPPGPCHECK=0
+ INSTALL=0
+ NOBUILD=0
+-- 
+1.8.4
+
