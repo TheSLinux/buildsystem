@@ -833,7 +833,7 @@ _pkgbuild_load() {
   pkgrel="${PACKAGE_RELEASE:-}"
   pkgbase="${PACKAGE_BASE:-}"
 
-  [[ ! -z "$pkgname" ]] || pkgname="$pkgbase"
+  pkgname="${pkgname:-$pkgbase}"
 
   shopt -u extglob # FIXME: why?
   source "PKGBUILD" || return
