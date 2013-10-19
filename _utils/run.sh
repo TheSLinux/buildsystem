@@ -863,7 +863,7 @@ _pkgbuild_s_sources() {
   local _basename=
   local _uri=
 
-  [[ -n "${PACKAGE_BASE}" ]] || _pkgbuild_load || return
+  _pkgbuild_load || return
 
   for __ in "${source[@]}"; do
     echo "${__}" | grep -q '://' || continue
