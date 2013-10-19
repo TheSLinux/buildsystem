@@ -866,7 +866,11 @@ _pkgbuild_s_sources() {
   _pkgbuild_load || return
 
   for __ in "${source[@]}"; do
-    echo "${__}" | grep -q '://' || continue
+    echo "${__}" | grep -q '://' \
+    || {
+      _sources+=("${__}")
+      continue
+    }
     echo "${__}" | grep -Eq '\.sig$' && continue
     echo "${__}" | grep -Eq '\.asc$' && continue
     echo "${__}" | grep -q '::' \
