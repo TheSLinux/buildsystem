@@ -195,6 +195,10 @@ _import_package() {
 
   # Generate git commit. Please note that the commit messge contains
   # the revision number that will be used in the future.
+  # FIXME: This commit message is not perfect. Because the revision
+  # FIXME: number is not correctly true. We need also use the repo-
+  # FIXME: sitory name, e.g, core/extra/packages. This full information
+  # FIXME: should contain in the README.md file.
   git add "$_dd" \
   && git commit "$_pkg/" -m"$_pkg: Import from ABS $_apkg @ $_rev" \
   && git co master \
