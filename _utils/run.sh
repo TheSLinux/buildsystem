@@ -440,7 +440,7 @@ _get_number_of_git_commits_between_two_points() {
   _num="$( \
       _get_git_commits_between_two_points $_from $_to "$@" \
         | _linecount ; \
-      _is_good_pipe || exit 1 ; \
+      _is_good_pipe ; \
     )" \
   && echo "$_num" \
   || _err "Unable to get number of commits between '$_from' and '$_to'"
@@ -688,7 +688,7 @@ _fix_the_1st_tag_on_package_branch() {
   }
   _commit="$( \
       git log --pretty="format:%H" "TheSmallBang".."$_br" -- | tail -1 ;\
-      _is_good_pipe || exit 1 \
+      _is_good_pipe ; \
     )" \
   || return 1
 
@@ -706,7 +706,7 @@ _fix_the_1st_tag_on_package_branch() {
   _pkgver="$(
       git show "$_commit":$_br/PKGBUILD \
         | _get_version_from_old_PKGBUILD ; \
-      _is_good_pipe || exit 1 \
+      _is_good_pipe ; \
     )" \
   || return 1
 
