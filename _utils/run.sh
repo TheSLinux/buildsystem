@@ -206,6 +206,73 @@ _import_package() {
   || { _err "Something wrong with git repository"; return 1; }
 }
 
+# Date   : 2013 Nov 04th
+# Purpose: Add missing README.md due to a bug
+#         See _utils , commit b72c4cba9454285c17e409d96c119e387f1f56e8
+# Usage  : This function accepts only one parameter (a package name)
+#
+_import_package_add_missing_readme() {
+  local _pkg="$1"
+  local _ds=""
+  local _D_ABS="${ABS:-$PWD/a/ $PWD/b/}"
+  local _f_readme=""
+  local _svn_uri=""
+  local _svn_rev=""
+
+  [[ -n "$1" ]] || return 0
+
+  git checkout "$_pkg" >/dev/null 2>&1 || return 1
+  git show "$_pkg/README.md" >/dev/null 2>&1 && return 0
+  _msg "Adding missing README.md for '$_pkg' package"
+
+  # We scan all ABS sources again to see if there is `$_apkg`
+  for _ds in $_D_ABS; do
+    [[ ! -d "$_ds/$_pkg/trunk/" ]] || break
+  done
+
+  if [[ ! -d "$_ds/$_pkg/trunk/" ]]; then
+    _err "Unable to find source tree '$_ds/$_pkg/trunk/'"
+    return 1
+  fi
+
+  _f_readme="$PWD/$_pkg/README.md"
+  pushd "$PWD" >/dev/null
+  cd "$_ds/$_pkg/trunk" \
+  && {
+    _svn_uri="$(svn info | grep -E "^URL:")"
+  }
+  popd >/dev/null
+
+  [[ -n "$_svn_uri" ]] \
+  || {
+    _err "Unable to get URI information from svn tree '$_ds/$_pkg/trunk'"
+    return 1
+  }
+
+  _svn_rev="$( \
+      git log --format="%H %s" -- \
+      | grep "Import from ABS $_pkg @ " \
+      | awk '{print $NF}' ; \
+      _is_good_pipe ; \
+    )" \
+  || {
+    _err "Unable to detect import information from git log"
+    return 1
+  }
+
+  _msg "README.md contents saved in '$_f_readme'"
+  {
+    echo "Import from ArchLinux's ABS package '$_pkg'"
+    echo ""
+    echo "$_svn_uri"
+    echo "Revision: $_svn_rev"
+  } \
+    > "$_f_readme"
+  git add "$_pkg/README.md"
+  git ci -am'Add README.md (See b72c4cba9454285c17e409d96c119e387f1f56e8)'
+}
+
+
 # Import all packages provided in the arguments
 _import_packages() {
   while (( $# )); do
