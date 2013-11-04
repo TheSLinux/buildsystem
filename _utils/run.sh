@@ -157,6 +157,7 @@ _import_package() {
   cp -r "$_ds/" "$_dd/"
 
   # Generate the README.md
+  _f_readme="$_dd/README.md"
   [[ -f "$_f_readme" ]] \
   || {
     pushd "$PWD"
