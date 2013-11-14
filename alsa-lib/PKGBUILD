@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 189841 2013-07-09 13:01:33Z tpowa $
-# Maintainer: judd <jvinet@zeroflux.org>
+# Maintainer: Severus <severus@theslinux.org>
+# Origin Maitainer: judd <jvinet@zeroflux.org>
 
-pkgname=alsa-lib
-pkgver=1.0.27.2
-pkgrel=1
 pkgdesc="An alternative implementation of Linux sound support"
 arch=('i686' 'x86_64')
 url="http://www.alsa-project.org"
@@ -12,16 +9,15 @@ optdepends=('python2: for python smixer plugin')
 makedepends=('python2')
 license=('GPL')
 options=(!libtool)
-source=(ftp://ftp.alsa-project.org/pub/lib/$pkgname-$pkgver.tar.bz2)
+source=(ftp://ftp.alsa-project.org/pub/lib/$pkgbase-$pkgver.tar.bz2)
 
 build() {
-  cd "$srcdir/$pkgname-$pkgver"
+  cd "$srcdir/$pkgbase-$pkgver"
   ./configure --prefix=/usr --with-pythonlibs="-lpthread -lm -ldl -lpython2.7" --with-pythonincludes=-I/usr/include/python2.7
   make
 }
 
 package() {
-  cd "$srcdir/$pkgname-$pkgver"
+  cd "$srcdir/$pkgbase-$pkgver"
   make DESTDIR="$pkgdir" install
 }
-md5sums=('69129a7c37697f81ac092335e9fa452b')
