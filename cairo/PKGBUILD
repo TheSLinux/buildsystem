@@ -1,10 +1,7 @@
-# $Id: PKGBUILD 193674 2013-08-27 14:03:11Z andyrtr $
-# Maintainer: Jan de Groot <jgc@archlinux.org>
-# Contributor: Brice Carpentier <brice@daknet.org>
+# Maintainer: Severus <severus@theslinux.org>
+# Origin Maitainer: Jan de Groot <jgc@archlinux.org>
+# Origin Contributor: Brice Carpentier <brice@daknet.org>
 
-pkgname=cairo
-pkgver=1.12.16
-pkgrel=1
 pkgdesc="Cairo vector graphics library"
 arch=(i686 x86_64)
 license=('LGPL' 'MPL')
@@ -17,11 +14,10 @@ makedepends=('mesa-libgl' 'librsvg' 'gtk2' 'poppler-glib' 'libspectre' 'gtk-doc'
 provides=('cairo-xcb')
 replaces=('cairo-xcb')
 options=('!libtool')
-source=(http://cairographics.org/releases/$pkgname-$pkgver.tar.xz)
-sha1sums=('4f6e337d5d3edd7ea79d1426f575331552b003ec')
+source=(http://cairographics.org/releases/$pkgbase-$pkgver.tar.xz)
 
 build() {
-  cd $pkgname-$pkgver
+  cd $pkgbase-$pkgver
 
   ./configure --prefix=/usr \
 	--sysconfdir=/etc \
@@ -44,7 +40,7 @@ build() {
 }
 
 check() {
-  cd $pkgname-$pkgver
+  cd $pkgbase-$pkgver
   make -k test || /bin/true
   
   # results:
@@ -55,6 +51,6 @@ check() {
 }
 
 package() {
-  cd $pkgname-$pkgver
+  cd $pkgbase-$pkgver
   make DESTDIR="$pkgdir" install
 }
