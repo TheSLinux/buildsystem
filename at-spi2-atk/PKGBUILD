@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 194906 2013-09-24 07:57:59Z jgc $
-# Maintainer: Ionut Biru <ibiru@archlinux.org>
+# Maintainer: Severus <severus@theslinux.org>
+# Origin Maitainer: Ionut Biru <ibiru@archlinux.org>
 
-pkgname=at-spi2-atk
-pkgver=2.10.0
-pkgrel=1
 pkgdesc="A GTK+ module that bridges ATK to D-Bus at-spi"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -11,11 +8,10 @@ license=('GPL2')
 depends=('at-spi2-core' 'libx11' 'atk')
 makedepends=('intltool')
 options=('!libtool')
-source=(http://download.gnome.org/sources/$pkgname/${pkgver%.*}/$pkgname-$pkgver.tar.xz)
-sha256sums=('dea7ff2f9bc9bbdb0351112616d738de718b55739cd2511afecac51604c31a94')
+source=(http://download.gnome.org/sources/$pkgbase/${pkgver%.*}/$pkgbase-$pkgver.tar.xz)
 
 build() {
-  cd $pkgname-$pkgver
+  cd $pkgbase-$pkgver
 
   sed -i -e '/AC_PATH_XTRA/d' configure.ac
   autoreconf --force --install
@@ -26,7 +22,7 @@ build() {
 }
 
 package() {
-  cd $pkgname-$pkgver
+  cd $pkgbase-$pkgver
   make DESTDIR="$pkgdir" install
 }
 
