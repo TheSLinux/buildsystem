@@ -1,10 +1,7 @@
-# $Id: PKGBUILD 185969 2013-05-19 22:47:12Z foutrelis $
-# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Maintainer: Severus <severus@theslinux.org>
+# Origin Maitainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=glade-perl
 _realname=Gtk2-GladeXML
-pkgver=1.007
-pkgrel=7
 pkgdesc="Gtk2-GladeXML perl bindings for glade 2.x"
 arch=(i686 x86_64)
 license=('LGPL')
@@ -13,7 +10,6 @@ makedepends=('perl-extutils-pkgconfig' 'perl-extutils-depends')
 depends=('libglade' 'gtk2-perl' 'perl')
 options=('!emptydirs')
 source=(http://downloads.sourceforge.net/sourceforge/gtk2-perl/${_realname}-${pkgver}.tar.gz)
-md5sums=('e6ca234e2a9f0221263acd2a593c583b')
 
 build() {
   cd "${srcdir}/${_realname}-${pkgver}"
