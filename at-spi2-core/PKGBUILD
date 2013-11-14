@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 194904 2013-09-24 07:55:30Z jgc $
-# Maintainer: Ionut Biru <ibiru@archlinux.org>
+# Maintainer: Severus <severus@theslinux.org>
+# Origin Maitainer: Ionut Biru <ibiru@archlinux.org>
 
-pkgname=at-spi2-core
-pkgver=2.10.0
-pkgrel=1
 pkgdesc="Protocol definitions and daemon for D-Bus at-spi"
 arch=('i686' 'x86_64')
 url="http://www.gnome.org"
@@ -11,11 +8,10 @@ license=('GPL2')
 depends=('dbus' 'glib2' 'libxtst')
 makedepends=('intltool' 'gobject-introspection')
 options=('!libtool')
-source=(http://download.gnome.org/sources/$pkgname/${pkgver%.*}/$pkgname-$pkgver.tar.xz)
-sha256sums=('964155c7574220a00e11e1c0d91f2d3017ed603920eb1333ff9cbdb6a22744db')
+source=(http://download.gnome.org/sources/$pkgbase/${pkgver%.*}/$pkgbase-$pkgver.tar.xz)
 
 build() {
-  cd $pkgname-$pkgver
+  cd $pkgbase-$pkgver
 
   sed -i -e '/AC_PATH_XTRA/d' configure.ac
   autoreconf --force --install
@@ -26,7 +22,7 @@ build() {
 }
 
 package() {
-  cd $pkgname-$pkgver
+  cd $pkgbase-$pkgver
   make DESTDIR="$pkgdir" install
 }
 
