@@ -1,6 +1,6 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Kevin <kevin@archlinux.org>
-# Origin Contributor: criminy <criminy@gmail.com>
+# Original Maitainer: Kevin <kevin@archlinux.org>
+# Original Contributor: criminy <criminy@gmail.com>
 
 pkgdesc="C++ bindings to Cairo vector graphics library"
 arch=('i686' 'x86_64')
