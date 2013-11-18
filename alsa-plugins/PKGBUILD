@@ -1,7 +1,7 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
-# Origin Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
-# Origin Contributor: Daniel Ehlers <danielehlers@mindeye.net>
+# Original Maitainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Original Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Original Contributor: Daniel Ehlers <danielehlers@mindeye.net>
 
 pkgdesc="Extra alsa plugins"
 arch=(i686 x86_64)
