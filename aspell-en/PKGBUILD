@@ -1,16 +1,11 @@
-# $Id: PKGBUILD 150482 2012-02-18 03:17:23Z allan $
+# Maintainer: Severus <severus@theslinux.org>
 
-pkgname=aspell-en
-pkgver=7.1
-pkgrel=2
 pkgdesc="English dictionary for aspell"
 arch=('i686' 'x86_64')
 url="http://aspell.net/"
 license=('custom')
 depends=('aspell')
 source=(ftp://ftp.gnu.org/gnu/aspell/dict/en/aspell6-en-$pkgver-0.tar.bz2)
-md5sums=('beba5e8f3afd3ed1644653bb685b2dfb')
-sha1sums=('d45ccda0c03e2a679c2936487ec851a1896b8150')
 
 build() {
   cd "$srcdir/aspell6-en-$pkgver-0"
@@ -22,5 +17,5 @@ package() {
   cd "$srcdir/aspell6-en-$pkgver-0"
   make DESTDIR="$pkgdir" install
 
-  install -D -m644 Copyright "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -D -m644 Copyright "$pkgdir/usr/share/licenses/$pkgbase/LICENSE"
 }
