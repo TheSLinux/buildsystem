@@ -1,6 +1,6 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Jan de Groot <jgc@archlinux.org>
-# Origin Contributor: Brice Carpentier <brice@daknet.org>
+# Original Maitainer: Jan de Groot <jgc@archlinux.org>
+# Original Contributor: Brice Carpentier <brice@daknet.org>
 
 pkgdesc="Cairo vector graphics library"
 arch=(i686 x86_64)
