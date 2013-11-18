@@ -1,6 +1,6 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer:
-# Origin Contributor: Alexander Fehr <pizzapunk gmail com>
+# Original Maitainer:
+# Original Contributor: Alexander Fehr <pizzapunk gmail com>
 
 pkgdesc="Compact Disc Digital Audio extraction tool"
 arch=('i686' 'x86_64')
