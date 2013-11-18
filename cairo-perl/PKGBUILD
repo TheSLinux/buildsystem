@@ -1,5 +1,5 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Jan de Groot <jgc@archlinux.org>
+# Original Maitainer: Jan de Groot <jgc@archlinux.org>
 
 pkgdesc="Perl wrappers for cairo"
 arch=(i686 x86_64)
