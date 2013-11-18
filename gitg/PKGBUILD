@@ -1,5 +1,5 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Eric Bélanger <eric@archlinux.org>
+# Original Maitainer: Eric Bélanger <eric@archlinux.org>
 
 pkgdesc='A GIT repository viewer based on GTK+'
 arch=('i686' 'x86_64')
