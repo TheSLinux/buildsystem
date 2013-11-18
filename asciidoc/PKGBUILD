@@ -1,11 +1,11 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Contributor: Chris Brannon <cmbrannon79@gmail.com>
-# Origin Contributor: Geoffroy Carrier <geoffroy@archlinux.org>
-# Origin Contributor: Dan McGee <dan@archlinux.org>
-# Origin Contributor: Jaroslaw Rosiek <philosoph@interia.pl>
-# Origin Contributor: Darwin Bautista <djclue917@gmail.com>
-# Origin Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
-# Origin Maitainer: Florian Pritz <flo@xinu.at>
+# Original Contributor: Chris Brannon <cmbrannon79@gmail.com>
+# Original Contributor: Geoffroy Carrier <geoffroy@archlinux.org>
+# Original Contributor: Dan McGee <dan@archlinux.org>
+# Original Contributor: Jaroslaw Rosiek <philosoph@interia.pl>
+# Original Contributor: Darwin Bautista <djclue917@gmail.com>
+# Original Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+# Original Maitainer: Florian Pritz <flo@xinu.at>
 
 pkgdesc='Text document format for short documents, articles, books and UNIX man pages.'
 arch=('any')
