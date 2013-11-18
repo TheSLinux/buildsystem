@@ -1,6 +1,6 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: tobias <tobias@archlinux.org>
-# Origin Contributor: Low Kian Seong <fastmail_low@speedymail.org>
+# Original Maitainer: tobias <tobias@archlinux.org>
+# Original Contributor: Low Kian Seong <fastmail_low@speedymail.org>
 
 pkgdesc="A fast Bayesian spam filtering tool"
 arch=('i686' 'x86_64')
