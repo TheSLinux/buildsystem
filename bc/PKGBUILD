@@ -1,5 +1,5 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: dorphell <dorphell@archlinux.org>
+# Original Maitainer: dorphell <dorphell@archlinux.org>
 
 pkgdesc="An arbitrary precision calculator language"
 arch=('i686' 'x86_64')
