@@ -1,5 +1,5 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Ionut Biru <ibiru@archlinux.org>
+# Original Maitainer: Ionut Biru <ibiru@archlinux.org>
 
 pkgdesc="A GTK+ module that bridges ATK to D-Bus at-spi"
 arch=('i686' 'x86_64')
