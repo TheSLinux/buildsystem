@@ -1,5 +1,5 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Jan de Groot <jgc@archlinux.org>
+# Original Maitainer: Jan de Groot <jgc@archlinux.org>
 
 _realname=Gtk2-GladeXML
 pkgdesc="Gtk2-GladeXML perl bindings for glade 2.x"
