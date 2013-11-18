@@ -1,5 +1,5 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Andrea Scarpino <andrea@archlinux.org>
+# Original Maitainer: Andrea Scarpino <andrea@archlinux.org>
 
 pkgdesc='A Qt library that implements the Open Collaboration Services API'
 arch=('i686' 'x86_64')
