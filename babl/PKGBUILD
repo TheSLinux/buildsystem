@@ -1,5 +1,5 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Eric Bélanger <eric@archlinux.org>
+# Original Maitainer: Eric Bélanger <eric@archlinux.org>
 
 pkgdesc="Dynamic, any to any, pixel format conversion library"
 arch=('i686' 'x86_64')
