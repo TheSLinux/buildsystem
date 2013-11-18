@@ -1,10 +1,7 @@
-# $Id: PKGBUILD 190828 2013-07-18 09:55:01Z bisson $
-# Contributor: Douglas Soares de Andrade <douglas@archlinux.org>
-# Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Maintainer: Severus <severus@theslinux.org>
+# Original Contributor: Douglas Soares de Andrade <douglas@archlinux.org>
+# Original Maitainer: Gaetan Bisson <bisson@archlinux.org>
 
-pkgname=avahi
-pkgver=0.6.31
-pkgrel=10
 pkgdesc='Multicast/unicast DNS-SD framework'
 url='http://www.avahi.org/'
 license=('LGPL')
@@ -29,7 +26,6 @@ backup=('etc/avahi/hosts'
         'usr/lib/avahi/service-types.db'
         'usr/share/avahi/service-types')
 source=("http://www.avahi.org/download/avahi-${pkgver}.tar.gz")
-sha1sums=('7e05bd78572c9088b03b1207a0ad5aba38490684')
 
 conflicts=('howl' 'mdnsresponder')
 provides=('howl' 'mdnsresponder')
@@ -37,14 +33,14 @@ provides=('howl' 'mdnsresponder')
 install=install
 
 prepare() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
+	cd "${srcdir}/${pkgbase}-${pkgver}"
 	sed '/^Libs:/s:$: -ldbus-1:' -i avahi-client.pc.in
 	sed 's:netdev:network:g' -i avahi-daemon/avahi-dbus.conf
 	sed 's:/sbin/resolvconf:/usr/sbin/resolvconf:g' -i */*.action
 }
 
 build() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
+	cd "${srcdir}/${pkgbase}-${pkgver}"
 	export MOC_QT3=/usr/bin/moc-qt3
 	export MOC_QT4=/usr/bin/moc-qt4
 	export PYTHON=/usr/bin/python2
@@ -68,7 +64,7 @@ build() {
 }
 
 package() {
-	cd "${srcdir}/${pkgname}-${pkgver}"
+	cd "${srcdir}/${pkgbase}-${pkgver}"
 	make DESTDIR="${pkgdir}" install
 	rm -fr "${pkgdir}"/etc/rc.d
 
