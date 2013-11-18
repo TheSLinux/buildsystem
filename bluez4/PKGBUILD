@@ -1,7 +1,7 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Tom Gundersen <teg@jklm.no>
-# Origin Contributor: Andrea Scarpino <andrea@archlinux.org>
-# Origin Contributor: Geoffroy Carrier <geoffroy@archlinux.org>
+# Original Maitainer: Tom Gundersen <teg@jklm.no>
+# Original Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Original Contributor: Geoffroy Carrier <geoffroy@archlinux.org>
 
 pkgdesc="Deprecated daemon and tools for the Bluetooth protocol stack"
 url="http://www.bluez.org/"
