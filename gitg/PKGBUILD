@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 88109 2013-04-11 22:26:12Z eric $
-# Maintainer: Eric Bélanger <eric@archlinux.org>
+# Maintainer: Severus <severus@theslinux.org>
+# Original Maitainer: Eric Bélanger <eric@archlinux.org>
 
-pkgname=gitg
-pkgver=0.2.7
-pkgrel=1
 pkgdesc='A GIT repository viewer based on GTK+'
 arch=('i686' 'x86_64')
 url='https://git.gnome.org/browse/gitg/'
@@ -13,16 +10,15 @@ depends=('gtksourceview3' 'git' 'desktop-file-utils' 'gsettings-desktop-schemas'
 makedepends=('intltool')
 options=('!libtool')
 install=gitg.install
-source=(ftp://ftp.gnome.org/pub/GNOME/sources/gitg/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz)
-sha1sums=('7b1428819666e4797d64dc94bb1624d5e7b75e6a')
+source=(ftp://ftp.gnome.org/pub/GNOME/sources/gitg/${pkgver%.*}/${pkgbase}-${pkgver}.tar.xz)
 
 build() {
-  cd ${pkgname}-${pkgver}
+  cd ${pkgbase}-${pkgver}
   ./configure --prefix=/usr
   make
 }
 
 package() {
-  cd ${pkgname}-${pkgver}
+  cd ${pkgbase}-${pkgver}
   make DESTDIR="${pkgdir}" install
 }
