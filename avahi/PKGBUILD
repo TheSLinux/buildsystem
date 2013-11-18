@@ -1,6 +1,6 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Contributor: Douglas Soares de Andrade <douglas@archlinux.org>
-# Origin Maitainer: Gaetan Bisson <bisson@archlinux.org>
+# Original Contributor: Douglas Soares de Andrade <douglas@archlinux.org>
+# Original Maitainer: Gaetan Bisson <bisson@archlinux.org>
 
 pkgdesc='Multicast/unicast DNS-SD framework'
 url='http://www.avahi.org/'
