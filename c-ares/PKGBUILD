@@ -1,8 +1,8 @@
 # Maintainer: Severus <severus@theslinux.org>
-# Origin Maitainer: Dave Reisner <dreisner@archlinux.org>
-# Origin Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
-# Origin Contributor: Jeff Mickey <jeff@archlinux.org>
-# Origin Contributor: Alexander Fehr <pizzapunk gmail com>
+# Original Maitainer: Dave Reisner <dreisner@archlinux.org>
+# Original Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+# Original Contributor: Jeff Mickey <jeff@archlinux.org>
+# Original Contributor: Alexander Fehr <pizzapunk gmail com>
 
 pkgdesc='C library that performs DNS requests and name resolves asynchronously'
 arch=('i686' 'x86_64')
