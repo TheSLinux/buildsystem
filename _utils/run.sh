@@ -514,14 +514,13 @@ _get_git_tag_on_package_branch() {
     _tag="$( \
       git tag --points-at $_commit \
       | while read _tag; do
-          ruby \
-            -e "_tag=\"$_tag\"" \
-            -e "_br=\"$_br\"" \
-            -e 'exit \
-                  _tag.match(/^#{_br}-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/) \
-                  ? 0 : 1
-              ' \
-          && echo "$_tag"
+          awk \
+            -vtag="$_tag" \
+            -vbr="$_br" \
+            'BEGIN {
+              reg = sprintf("^%s-([0-9]+(\\.[0-9]+){1,3})(-([0-9]+))?$", br);
+              if (tag ~ reg) print tag;
+            }'
         done \
       | sort \
       | tail -1 \
