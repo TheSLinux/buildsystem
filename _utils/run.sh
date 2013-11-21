@@ -371,23 +371,28 @@ _get_package_name() {
   _br="$(_get_git_branch "$_br")" || return 1
 
   # We only need to check for the last case (br = <current branch>)
-  ruby \
-    -e "_br=\"$_br\"" \
-    -e "_wd=\"$_wd\"" \
-    -e "_feature=$_feature" \
-    -e 'gs = _br.match(%r{^(p_)?#{_wd}([@+#=%](.+))?$})
-        unless gs
-          STDERR.puts ":: Error: Branch \"#{_br}\" and directory \"#{_wd}\" do not match"
-          exit 1
-        end
-        puts \
-        case _feature
-          when :name then _wd
-          when :feature then
-            gs[2] ? gs[2] : (gs[1] ? "@patch" : "=")
-        end
-      ' \
-  || return 1
+  awk \
+    -vbr="$_br" \
+    -vwd="$_wd" \
+    -vfeature="$_feature" \
+    'BEGIN {
+      reg = sprintf("^(p_)?%s([@+#=%](.+))?$", wd);
+      if (match(br, reg, m)) {
+        switch(feature) {
+        case ":name":
+          printf("%s\n", wd);
+          break;
+        case ":feature":
+          printf("%s\n", m[2] ? m[2] : (m[1] ? "@patch" : "="));
+          break;
+        }
+        exit(0);
+      }
+      else {
+        printf(":: Error: Branch \"%s\" and directory \"%s\" do not match.\n", br, wd) > "/dev/stderr";
+        exit(1);
+      }
+    }'
 }
 
 # Return the feature of the current feature branch
