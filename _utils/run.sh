@@ -648,15 +648,33 @@ _get_next_tag_from_tag() {
 #   $1 => STDIN (contents of an ArchLinux PKGBUILD)
 #
 _get_version_from_old_PKGBUILD() {
-  ruby -e "STDIN.readlines.each do |line|
-    if gs = line.match(%r{^pkgver=(['\"])([0-9]+(\.[0-9]+){1,3})\1[[:space:]]*$})
-      puts gs[2]; exit 0
-    elsif gs = line.match(%r{^pkgver=([0-9]+(\.[0-9]+){1,3})[[:space:]]*$})
-      puts gs[1]; exit 0
-    end
-  end
-  STDERR.puts ':: Error:: Unable to read \"pkgver\" from PKGBUILD'
-  exit 1"
+  awk '
+    BEGIN {
+      tmp = sprintf("%c", 39);
+      reg1 = sprintf("^pkgver%s([0-9]+(\\.[0-9]+){1,3})%s[[:space:]]*$", tmp, tmp);
+      tmp = "";
+    }
+    {
+      if (match($0, reg1, m)) {
+        tmp = m[1];
+      }
+      else if (match($0, /^pkgver="([0-9]+(\.[0-9]+){1,3})"[[:space:]]*$/, m)) {
+        tmp = m[1];
+      }
+      else if (match($0, /^pkgver=([0-9]+(\.[0-9]+){1,3})[[:space:]]*$/, m)) {
+        tmp = m[1];
+      }
+    }
+    END {
+      if (tmp == "") {
+        printf(":: Error:: Unable to read \"pkgver\" from PKGBUILD\n") > "/dev/stderr";
+        exit(1);
+      }
+      else {
+        printf("%s\n", tmp);
+      }
+    }
+    '
 }
 
 # Check if there is a tag that indicates time when package is imported
