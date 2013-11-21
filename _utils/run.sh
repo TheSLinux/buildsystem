@@ -627,20 +627,25 @@ _get_next_tag_from_tag() {
   _rel="$(_get_number_of_git_commits_between_two_points $_tag $_ref)" \
   || return 1
 
-  ruby \
-    -e "_tag=\"$_tag\"" \
-    -e "_rel=$_rel" \
-    -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
-          if _rel == 0
-            puts _tag
-          else
-            _rel += gs[4] ? gs[5].to_i : 1
-            puts "#{gs[1]}-#{gs[2]}-#{_rel}"
-          end
-        else
-          STDERR.puts ":: Error: Failed to the next of tag \"#{_tag}\""
-          exit 1
-        end'
+  awk \
+    -vtag="$_tag" \
+    -vrel="$_rel" \
+    'BEGIN {
+      if (match(tag, /^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/, m)) {
+        switch(rel) {
+        case 0:
+          printf("%s\n", tag);
+          break;
+        default:
+          rel += (m[4] ? m[5] : 1);
+          printf("%s-%s-%s\n", m[1], m[2], rel);
+        }
+      }
+      else {
+        printf(":: Error: Failed to the next of tag \"%s\"\n", tag) > "/dev/stderr";
+        exit(1);
+      }
+    }'
 }
 
 # Return version number from the old PKGBUILD. This is useful when
