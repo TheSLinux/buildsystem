@@ -553,19 +553,22 @@ _get_package_name_from_tag() {
   _feature="${_feature:-:name}"
   _tag="$1"
 
-  ruby \
-    -e "_tag=\"$_tag\"" \
-    -e "_feature=$_feature" \
-    -e 'if gs=_tag.match(/^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/)
-          case _feature
-            when :name    then puts gs[1]
-            when :version then puts gs[2]
-            when :release then puts gs[4] ? gs[5] : 1
-          end
-        else
-          STDERR.puts ":: Error: Failed to get package name from tag \"#{_tag}\""
-          exit 1
-        end'
+  awk \
+    -vtag="$_tag" \
+    -vfeature="$_feature" \
+    'BEGIN {
+      if (match(tag, /^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/, m)) {
+        switch (feature) {
+        case "name"   : printf("%s\n", m[1]); break;
+        case "version": printf("%s\n", m[2]); break;
+        case "release": printf("%s\n", (m[4] == "") ? 1 : m[5]); break;
+        }
+      }
+      else {
+        printf(":: Error: Failed to get package name from tag \"%s\"\n", tag) > "/dev/stderr";
+        exit(1);
+      }
+    }'
 }
 
 # Return the version number from a tag
