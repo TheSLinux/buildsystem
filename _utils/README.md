@@ -1,7 +1,7 @@
 ## Purpose
 
 This branch `_utils` provides some utils for `TheSLinux` developers.
-The source of this utils is found in [2].
+The source of this util is found in [2].
 
 ## License. Author
 
@@ -18,7 +18,7 @@ make install
 # or make uninstall
 ````
 
-This will install the three utils `s-run`, `s-makepkg` and `s-import-package`.
+This will install `s-run`, `s-makepkg` and `s-import-package`.
 
 ## s-run
 
