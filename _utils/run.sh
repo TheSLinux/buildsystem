@@ -22,6 +22,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# NOTE: The following line is a special pattern, that is used to insert
+# NOTE: libraries files to this main script. Please do not change this
+# NOTE: this pattern. And if you want to extend this script, write your
+# NOTE: own functions in some external files, and instruct build script
+# NOTE: to add your file to this script at the final state.
+# NOTE: Please note your functions may be overwritten.
+#
+# FIXME: Give more instructions
+#
+# libraries ############################################################
+
+
 _msg() {
   echo ":: $@"
 }
