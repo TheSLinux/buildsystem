@@ -576,9 +576,9 @@ _get_package_name_from_tag() {
     'BEGIN {
       if (match(tag, /^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/, m)) {
         switch (feature) {
-        case "name"   : printf("%s\n", m[1]); break;
-        case "version": printf("%s\n", m[2]); break;
-        case "release": printf("%s\n", (m[4] == "") ? 1 : m[5]); break;
+        case ":name"   : printf("%s\n", m[1]); break;
+        case ":version": printf("%s\n", m[2]); break;
+        case ":release": printf("%s\n", m[4] ? m[5] : 1); break;
         }
       }
       else {
