@@ -972,6 +972,11 @@ _pkgbuild_sources() {
 
 # Return the list of sources on #theslinux mirror.
 # This function will load `PKGBUILD if `PACKAGE_BASE is not defined.
+# NOTES: If the URI is of the form "foobar::URI", the "foobar" is used
+# NOTES: on our source. For this reason, you should use a variant
+# NOTES: filename for "foobar". For example,
+# NOTES:    Bad:  foobar.tgz::http://example.net/foo-bar-1.2.3.tgz
+# NOTES:    Good: foobar-1.2.3.tgz::http://example.net/foo-bar-1.2.3.tgz
 _pkgbuild_s_sources() {
   local _sources=()
   local _basename=
