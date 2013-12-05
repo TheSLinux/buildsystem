@@ -38,6 +38,12 @@ install=install
 build() {
   cd "${srcdir}/uim-${pkgver}"
 
+  # NOTES: By using an old .awk script, we generate some empty source
+  # NOTES: files that will help the build process to work. At the final
+  # NOTES: step when the package is created, these files will be removed.
+  # NOTES: This is because they are official supported on `uim-vi-xtelex`
+  # NOTES: package.
+
   msg "Generating faked 'xtelex.scm'..."
   echo 'A A' | awk -f "${srcdir}/scim2uim.awk" -vim=telex \
     > "./scm/xtelex.scm"
@@ -94,8 +100,11 @@ package() {
   make DESTDIR="${pkgdir}" install
   rm "${pkgdir}"/usr/lib/libgcroots.a
   install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
+
+  # Remove temporary files. See the NOTES above.
   rm -f "${pkgdir}/usr/share/uim/"{xtelex,xvni}{,-ipa}.scm
   rm -f "${pkgdir}/usr/share/uim/pixmaps/"{xtelex,xvni}{,-ipa}.{svg,png}
+
   ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
   ln -s uim-toolbar-gtk-systray "${pkgdir}/usr/bin/uim-systray"
 }
