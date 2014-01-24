@@ -11,7 +11,7 @@ depends=('glibc')
 source=("http://zlib.net/current/zlib-${pkgver}.tar.gz")
 
 build() {
-	cd ${srcdir}/zlib-$pkgver
+	cd ${srcdir}/zlib-${pkgver}
 	./configure --prefix=/usr
 	make
 
@@ -19,12 +19,12 @@ build() {
 }
 
 check() {
-	cd ${srcdir}/zlib-$pkgver
+	cd ${srcdir}/zlib-${pkgver}
 	make test
 }
 
 package() {
-	cd ${srcdir}/zlib-$pkgver
+	cd ${srcdir}/zlib-${pkgver}
 	make install DESTDIR=${pkgdir}
 	install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/zlib/LICENSE
 }
