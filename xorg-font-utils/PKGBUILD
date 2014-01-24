@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 150982 2012-02-24 12:37:28Z allan $
+# Maintainer: Duc M. Tran <901stt@gmail.com>
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=xorg-font-utils
-pkgver=7.6
-pkgrel=3
 pkgdesc="Transitional package depending on xorg font utilities"
 arch=(any)
 url="http://xorg.freedesktop.org/"
