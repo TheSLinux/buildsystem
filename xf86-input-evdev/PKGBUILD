@@ -2,9 +2,6 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Original Contributor: Alexander Baldeck <Alexander@archlinux.org
 
-pkgname=xf86-input-evdev
-pkgver=2.8.1
-pkgrel=1
 pkgdesc="X.org evdev input driver"
 arch=(i686 x86_64)
 url="http://xorg.freedesktop.org/"
