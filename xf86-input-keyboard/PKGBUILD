@@ -1,9 +1,6 @@
 # Maintainer: Duc M. Tran <901stt@gmail.com>
 # Orignal Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=xf86-input-keyboard
-pkgver=1.7.0
-pkgrel=1
 pkgdesc="X.Org keyboard input driver"
 arch=(i686 x86_64)
 license=('custom')
