@@ -14,7 +14,6 @@ optdepends=('kdebase-runtime: for KDE support in xdg-open'
             'pcmanfm: for LXDE support in xdg-open'
             'perl-file-mimeinfo: for generic support in xdg-open')
 source=(git://anongit.freedesktop.org/xdg/xdg-utils#commit=2373d9b2b7)
-md5sums=('SKIP')
 
 pkgver() {
 	cd xdg-utils
