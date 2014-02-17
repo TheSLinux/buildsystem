@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 154153 2012-03-23 19:22:54Z andyrtr $
-# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Maintainer: Duc M. Tran <901stt@gmail.com>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=xorg-xhost
-pkgver=1.0.5
-pkgrel=1
 pkgdesc="Server access control program for X"
 arch=('i686' 'x86_64')
 url="http://xorg.freedesktop.org/"
@@ -12,7 +9,6 @@ depends=('libx11' 'libxmu')
 makedepends=('xorg-util-macros')
 groups=('xorg-apps' 'xorg')
 source=(http://xorg.freedesktop.org/archive/individual/app/xhost-${pkgver}.tar.bz2)
-sha1sums=('c9ad0447c709fc7a9a2afbbca712cf47fbb29757')
 
 build() {
   cd "${srcdir}/xhost-${pkgver}"
@@ -23,5 +19,5 @@ build() {
 package() {
   cd "${srcdir}/xhost-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgbase}/COPYING"
 }
