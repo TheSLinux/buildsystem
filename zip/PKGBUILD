@@ -1,4 +1,4 @@
-# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Maintainer: Duc M. Tran <901stt@gmail.com>
 # Original Contributor: dorphell <dorphell@archlinux.org>
 
 _pkgver="${PACKAGE_VERSION/./}"
@@ -8,16 +8,16 @@ url="http://www.info-zip.org/Zip.html"
 license=('BSD')
 depends=('bzip2')
 options=('!makeflags')
-source=("ftp://ftp.info-zip.org/pub/infozip/src/${PACKAGE_BASE}${_pkgver}.zip")
+source=("ftp://ftp.info-zip.org/pub/infozip/src/${pkgbase}${_pkgver}.zip")
 
 build() {
-   cd "${srcdir}/${pkgname}${_pkgver}"
+   cd "${srcdir}/${pkgbase}${_pkgver}"
    make -f unix/Makefile LOCAL_ZIP="$CFLAGS" prefix=/usr generic_gcc
 }
 
 package() {
-   cd "${srcdir}/${pkgname}${_pkgver}"
+   cd "${srcdir}/${pkgbase}${_pkgver}"
    make -f unix/Makefile INSTALL=/bin/install prefix=${pkgdir}/usr \
      MANDIR=${pkgdir}/usr/share/man/man1 install
-   install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/$pkgname/LICENSE
+   install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/${pkgbase}/LICENSE
 }
