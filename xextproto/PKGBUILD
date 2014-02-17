@@ -1,9 +1,6 @@
 # Maintainer: Duc M. Tran <901stt@gmail.com>
 # Orignal Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=xextproto
-pkgver=7.2.1
-pkgrel=1
 pkgdesc="X11 various extension wire protocol"
 arch=('any')
 license=('custom')
