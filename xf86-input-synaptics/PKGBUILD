@@ -19,8 +19,6 @@ options=(!libtool)
 backup=('etc/X11/xorg.conf.d/50-synaptics.conf')
 source=(http://xorg.freedesktop.org/releases/individual/driver/${pkgbase}-${pkgver}.tar.bz2
         add_tapbuttons.diff)
-sha256sums=('db5825660e1fb23190697f609bf75d4450fe707344a14298e1c9b47039bbb58e'
-            '5298d3e871db3768b34cf8516d3f53f9291202e2ea5de3300256e1cd9119a1ec')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
