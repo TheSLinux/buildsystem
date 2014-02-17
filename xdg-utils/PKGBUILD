@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 191636 2013-07-28 18:26:32Z bpiotrowski $
-# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Maintainer: Duc M. Tran <901stt@gmail.com>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=xdg-utils
-pkgver=1.1.0.git20130520
-pkgrel=1
 pkgdesc="Command line tools that assist applications with a variety of desktop integration tasks"
 arch=('any')
 url="http://portland.freedesktop.org/"
@@ -17,7 +14,6 @@ optdepends=('kdebase-runtime: for KDE support in xdg-open'
             'pcmanfm: for LXDE support in xdg-open'
             'perl-file-mimeinfo: for generic support in xdg-open')
 source=(git://anongit.freedesktop.org/xdg/xdg-utils#commit=2373d9b2b7)
-md5sums=('SKIP')
 
 pkgver() {
 	cd xdg-utils
@@ -35,7 +31,7 @@ build() {
 package() {
 	cd xdg-utils
 	make DESTDIR="${pkgdir}" install
-	install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgbase}/LICENSE"
 	
 	# install empty directory to prevent xdg-desktop-menu install *.desktop to fail, see FS#33316
 	install -dm755 $pkgdir/usr/share/desktop-directories
