@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 152265 2012-03-06 08:22:19Z allan $
-#Maintainer: Jan de Groot <jgc@archlinux.org>
+# Maintainer: Duc M. Tran <901stt@gmail.com>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=xorg-fonts-encodings
-pkgver=1.0.4
-pkgrel=3
 pkgdesc="X.org font encoding files"
 arch=(any)
 url="http://xorg.freedesktop.org/"
@@ -12,7 +9,6 @@ makedepends=('xorg-mkfontscale' 'xorg-util-macros' 'xorg-font-util')
 groups=('xorg-fonts' 'xorg')
 options=(!makeflags)
 source=(${url}/releases/individual/font/encodings-${pkgver}.tar.bz2)
-sha1sums=('24ace2470403f85a0d393769204029bd8247992a')
 
 build() {
   cd "${srcdir}/encodings-${pkgver}"
@@ -23,7 +19,7 @@ build() {
 package() {
   cd "${srcdir}/encodings-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgbase}/COPYING"
 
   # regenerate encodngs file not to include non-compressed versions
   cd $pkgdir/usr/share/fonts/encodings/large
