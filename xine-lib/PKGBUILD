@@ -1,9 +1,6 @@
-# $Id: PKGBUILD 193087 2013-08-15 22:09:42Z eric $
-# Maintainer: Eric Bélanger <eric@archlinux.org>
+# Maintainer: Duc M. Tran <901stt@gmail.com>
+# Original Maintainer: Eric Bélanger <eric@archlinux.org>
 
-pkgname=xine-lib
-pkgver=1.2.3
-pkgrel=4
 pkgdesc="A multimedia playback engine"
 arch=('i686' 'x86_64')
 url="http://www.xine-project.org"
@@ -30,21 +27,19 @@ optdepends=('imagemagick: for using the imagemagick plugin' \
             'gnome-vfs: for using the gnome-vfs plugin' \
             'libvdpau: for using the VDPAU plugin')
 options=('!libtool')
-source=(http://downloads.sourceforge.net/sourceforge/xine/${pkgname}-${pkgver}.tar.xz accel_vaapi.h)
-sha1sums=('6f9ef4ba75688659052d21448d46527db2b77e57'
-          '08ed9947ef919c71c87151baa8fc0ce7d8f72050')
+source=(http://downloads.sourceforge.net/sourceforge/xine/${pkgbase}-${pkgver}.tar.xz accel_vaapi.h)
 
 prepare() {
-  cp accel_vaapi.h ${pkgname}-${pkgver}/src/xine-engine/
+  cp accel_vaapi.h ${pkgbase}-${pkgver}/src/xine-engine/
 }
 
 build() {
-  cd ${pkgname}-${pkgver}
+  cd ${pkgbase}-${pkgver}
   ./configure --prefix=/usr --with-wavpack --enable-vdpau --disable-optimizations
   make
 }
 
 package() {
-  cd ${pkgname}-${pkgver}
+  cd ${pkgbase}-${pkgver}
   make DESTDIR="${pkgdir}" install
 }
