@@ -4,9 +4,6 @@
 # Original Contributor: Thomas Bächler <thomas@archlinux.org>
 # Original Contributor: Alexander Baldeck <alexander@archlinux.org>
 
-pkgname=xf86-input-synaptics
-pkgver=1.7.1
-pkgrel=1
 pkgdesc="Synaptics driver for notebook touchpads"
 arch=('i686' 'x86_64')
 license=('custom')
