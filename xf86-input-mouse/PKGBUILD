@@ -1,5 +1,5 @@
-# $Id: PKGBUILD 180911 2013-03-27 23:12:01Z andyrtr $
-# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Maintainer: Duc M. Tran <901stt@gmail.com>
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=xf86-input-mouse
 pkgver=1.9.0
@@ -13,18 +13,18 @@ makedepends=('xorg-server-devel' 'X-ABI-XINPUT_VERSION=19' 'resourceproto' 'scrn
 conflicts=('xorg-server<1.14.0' 'X-ABI-XINPUT_VERSION<19' 'X-ABI-XINPUT_VERSION>=20')
 options=('!libtool')
 groups=('xorg-drivers' 'xorg')
-source=(${url}/releases/individual/driver/${pkgname}-${pkgver}.tar.bz2)
+source=(${url}/releases/individual/driver/${pkgbase}-${pkgver}.tar.bz2)
 sha256sums=('5d601e4bae53d5e9ead4ecd700f1beb5aeaf78b79e634c4aa381a9ce00276488')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver}"
   ./configure --prefix=/usr
   make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  install -d -m755 "${pkgdir}/usr/share/licenses/${pkgname}"
-  install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/"
+  install -d -m755 "${pkgdir}/usr/share/licenses/${pkgbase}"
+  install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgbase}/"
 }
