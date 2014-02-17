@@ -2,13 +2,10 @@
 # Original Maintainer: AndyRTR <andyrtr@archlinux.org>
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=xf86-video-intel
-pkgver=2.21.15
-pkgrel=1
 arch=(i686 x86_64)
 url="http://xorg.freedesktop.org/"
 license=('custom')
-install=$pkgname.install
+install=$pkgbase.install
 pkgdesc="X.org Intel i810/i830/i915/945G/G965+ video drivers"
 depends=('intel-dri' 'libxvmc' 'pixman' 'xcb-util>=0.3.9')
 makedepends=('xorg-server-devel' 'X-ABI-VIDEODRV_VERSION=14' 'resourceproto' 'scrnsaverproto' 'libx11' 'libxrender')
