@@ -2,9 +2,6 @@
 # Original Maintainer: Jan de Groot <jgc@archlinux.org>
 # Original Contributor: Alexander Baldeck <alexander@archlinux.org>
 
-pkgbase=xf86dgaproto
-pkgver=2.1
-pkgrel=2
 pkgdesc="X11 Direct Graphics Access extension wire protocol"
 arch=('any')
 url="http://xorg.freedesktop.org/"
