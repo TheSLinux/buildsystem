@@ -7,7 +7,6 @@ arch=('any')
 url="http://xorg.freedesktop.org/"
 license=('custom')
 source=("${url}/releases/individual/proto/${pkgbase}-${pkgver}.tar.bz2")
-md5sums=('a036dc2fcbf052ec10621fd48b68dbb1')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
