@@ -11,7 +11,6 @@ license=('GPL')
 depends=('glibc')
 makedepends=('yasm' 'git')
 source=(git://git.videolan.org/x264.git#commit=585324fee3)
-md5sums=('SKIP')
 
 pkgver() {
   cd $pkgbase
