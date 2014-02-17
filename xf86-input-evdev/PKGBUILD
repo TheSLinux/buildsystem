@@ -12,7 +12,6 @@ conflicts=('xorg-server<1.14.0' 'X-ABI-XINPUT_VERSION<19' 'X-ABI-XINPUT_VERSION>
 options=('!libtool' '!makeflags')
 groups=('xorg-drivers' 'xorg')
 source=(${url}/releases/individual/driver/${pkgbase}-${pkgver}.tar.bz2)
-sha256sums=('09f887e1ce6cdb92154035db9044e0795a5c80f1ffb9efc599aed9a9dc1ff539')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
