@@ -1,11 +1,9 @@
-# $Id: PKGBUILD 191967 2013-08-02 08:00:42Z bpiotrowski $
-# Maintainer : Ionut Biru <ibiru@archlinux.org>
-# Contributor: damir <damir@archlinux.org>
-# Contributor: Paul Mattal <paul@archlinux.org>
+# Maintainer: Duc M. Tran <901stt@gmail.com>
+# Original Maintainer : Ionut Biru <ibiru@archlinux.org>
+# Original Contributor: damir <damir@archlinux.org>
+# Original Contributor: Paul Mattal <paul@archlinux.org>
 
-pkgname=x264
-pkgver=20130702
-pkgrel=2
+
 pkgdesc="free library for encoding H264/AVC video streams"
 arch=('i686' 'x86_64')
 url="http://www.videolan.org/developers/x264.html"
@@ -13,15 +11,14 @@ license=('GPL')
 depends=('glibc')
 makedepends=('yasm' 'git')
 source=(git://git.videolan.org/x264.git#commit=585324fee3)
-md5sums=('SKIP')
 
 pkgver() {
-  cd $pkgname
+  cd $pkgbase
   git log -1 --format="%cd" --date=short | sed 's|-||g'
 }
 
 build() {
-  cd $pkgname
+  cd $pkgbase
 
   ./configure --enable-shared \
     --enable-pic
@@ -29,7 +26,7 @@ build() {
 }
 
 package() {
-  cd $pkgname
+  cd $pkgbase
 
   make DESTDIR="$pkgdir" \
     bindir=/usr/bin \
