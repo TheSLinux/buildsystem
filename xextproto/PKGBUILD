@@ -1,25 +1,21 @@
-# $Id: PKGBUILD 154143 2012-03-23 17:23:43Z andyrtr $
-#Maintainer: Jan de Groot <jgc@archlinux.org>
+# Maintainer: Duc M. Tran <901stt@gmail.com>
+# Orignal Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=xextproto
-pkgver=7.2.1
-pkgrel=1
 pkgdesc="X11 various extension wire protocol"
 arch=('any')
 license=('custom')
 makedepends=('xmlto' 'xorg-util-macros' 'docbook-xsl')
 url="http://xorg.freedesktop.org/"
-source=(${url}/releases/individual/proto/${pkgname}-${pkgver}.tar.bz2)
-sha1sums=('f969e02009adf2d51fd1ba4583a859984728a461')
+source=(${url}/releases/individual/proto/${pkgbase}-${pkgver}.tar.bz2)
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver}"
   ./configure --prefix=/usr
   make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgbase}/COPYING"
 }
