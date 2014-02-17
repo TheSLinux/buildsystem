@@ -11,8 +11,6 @@ makedepends=('xorg-util-macros')
 options=('!libtool')
 source=("http://xcb.freedesktop.org/dist/${pkgbase}-${pkgver}.tar.bz2"
         'LICENSE')
-sha256sums=('d35a3c0eaae171f5081ec127fb9cec174b716ce5d78196a87f2785376da021df'
-            'ded299aa179dcf0d885bf89274a4db77a530e03f9f5e7cf1c3c4ef1d60e914b9')
 
 build() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
