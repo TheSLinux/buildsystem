@@ -8,7 +8,6 @@ url="http://xcb.freedesktop.org/"
 license=('custom')
 makedepends=('python' 'libxml2')
 source=($url/dist/$pkgbase-$pkgver.tar.bz2)
-sha1sums=('a8e71b9a09066870ff12049f45e8bccaaf83fc31')
 
 build() {
   cd "$srcdir/$pkgbase-$pkgver"
