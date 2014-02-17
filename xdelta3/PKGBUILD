@@ -10,8 +10,6 @@ license=('GPL')
 depends=('xz')
 source=(http://xdelta.googlecode.com/files/$pkgbase-$pkgver.tar.gz
         xdelta-3.0.7-regtest_size_t.patch)
-md5sums=('ef6631e4f9219a80bcb9e3020962b6ec'
-         '450492f0065160c2287b7e89223726e0')
 
 prepare() {
   cd $pkgbase-$pkgver
