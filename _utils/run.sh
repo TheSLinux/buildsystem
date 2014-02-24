@@ -1,11 +1,11 @@
-#!/bin/bash
+#
+# libraries ############################################################
 #
 # Purpose: Various tools (See function docs.)
 # Author : Anh K. Huynh
 # License: GPL v2 (http://www.gnu.org/licenses/gpl-2.0.html)
 # Date   : 2013 March 30th
 # Home   : https://github.com/TheSLinux/buildsystem/tree/_utils
-# FIXME  : Split this huge Bash script into parts (libraries)
 #
 # Copyright (c) 2013 Anh K. Huynh <kyanh@theslinux.org>
 #
@@ -21,18 +21,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-# NOTE: The following line is a special pattern, that is used to insert
-# NOTE: libraries files to this main script. Please do not change this
-# NOTE: this pattern. And if you want to extend this script, write your
-# NOTE: own functions in some external files, and instruct build script
-# NOTE: to add your file to this script at the final state.
-# NOTE: Please note your functions may be overwritten.
-#
-# FIXME: Give more instructions
-#
-# libraries ############################################################
-
 
 _msg() {
   echo ":: $@"
