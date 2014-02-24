@@ -15,6 +15,7 @@ install: run.sh.out
 
 run.sh.out: run.sh ./lib/*.sh
 	@cp run.sh $(@)
+	@grep -qE '^# libraries #' $(@)
 	@for __ in ./lib/*.sh; do \
 		echo >&2 ":: Adding '$${__}'..."; \
 		sed -i -e "/^# libraries #/r $${__}" $(@) ; \
