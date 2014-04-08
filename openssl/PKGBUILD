@@ -41,7 +41,11 @@ build() {
   # Fixes install with perl-5.18. The patch provides update for
   # documentation system, for example,
   #   openssl-1.0.1e.orig/doc/ssl/SSL_clear.pod
-  patch -p1 -i $srcdir/openssl-1.0.1e-fix_pod_syntax-1.patch
+  #patch -p1 -i $srcdir/openssl-1.0.1e-fix_pod_syntax-1.patch
+  find "./doc/" -type f -iname "*.pod" \
+  | while read _fpod; do
+      sed -i -e 's#^=item \([0-9]\+\)[\t ]*$#=item C<\1>#g' "$_fpod"
+    done
 
   # mark stack as non-executable: http://bugs.archlinux.org/task/12434
   ./Configure --prefix=/usr --openssldir=/etc/ssl --libdir=lib \
