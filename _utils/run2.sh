@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2013 Anh K. Huynh <kyanh@theslinux.org>
+# Copyright (c) 2013 - 2014 Anh K. Huynh <kyanh@theslinux.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
