@@ -22,6 +22,17 @@ _die() {
   exit 1
 }
 
+:require() {
+  while (( $# )); do
+    which "$1" >/dev/null 2>&1 \
+    || {
+      echo >&2 ":: Error: unable to locate '$1' program"
+      return 127
+    }
+    shift
+  done
+}
+
 # Check if a pipe is good: That one contains only zero (0) return codes.
 # NOTE: You must use this *immediately* after any pipe. Any command
 # NOTE: in Bash can be considered as a simple pipe.
