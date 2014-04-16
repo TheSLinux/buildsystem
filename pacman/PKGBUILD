@@ -36,8 +36,8 @@ source=("ftp://ftp.archlinux.org/other/pacman/$pkgbase-$pkgver.tar.gz"{,.sig}
         0004-makepkg-accepts-PACKAGE_FEATURE.patch
         0005-Add-PACKAGE_FEATURE-to-some-output-message.patch
         0006-Feature-string-will-start-with.patch
-        0007-Use-the-original-PACKAGE_CONFLICT_TYPE-in-_FEATURE_S.patch
-        0008-PACKAGE_FEATURE-will-only-alter-conflicts.patch
+        0007-PACKAGE_FEATURE-will-only-alter-conflicts.patch
+        0008-Use-the-original-PACKAGE_CONFLICT_TYPE-in-_FEATURE_S.patch
         0009-Not-as-said-in-cff343f-we-need-to-keep-provides-vari.patch
         0010-Do-not-use-PACKAGE_CONFLICT_TYPE-to-get-conflict-typ.patch
         0011-Load-feature-PKGBUILD-if-any.patch
