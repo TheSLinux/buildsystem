@@ -43,8 +43,8 @@
 # where our script looks up for the Arch packages information.
 #
 _import_package() {
-  local _pkg="$1:"                    # package name + :
-  local _apkg=":$1"                   # : + (arch) package name
+  local _pkg="${1-}:"                 # package name + :
+  local _apkg=":${1-}"                # : + (arch) package name
   local _ds=""                        # path to Arch package/trunk
   local _dd=""                        # destination on our buildsystem
   local _rev=                         # package revision (SVN)
@@ -161,14 +161,14 @@ _import_package() {
 # Usage  : This function accepts only one parameter (a package name)
 #
 _import_package_add_missing_readme() {
-  local _pkg="$1"
+  local _pkg="${1-}"
   local _ds=""
   local _D_ABS="${ABS:-$PWD/a/ $PWD/b/}"
   local _f_readme=""
   local _svn_uri=""
   local _svn_rev=""
 
-  [[ -n "$1" ]] || return 0
+  [[ -n "${1-}" ]] || return 0
 
   git checkout "$_pkg" >/dev/null 2>&1 || return 1
   git show "$_pkg/README.md" >/dev/null 2>&1 && return 0

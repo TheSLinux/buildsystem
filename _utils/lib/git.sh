@@ -14,7 +14,7 @@
 #
 _get_git_branch() {
   local _br=
-  if [[ -n "$1" && "$1" != "HEAD" ]]; then
+  if [[ "${1:-HEAD}" != "HEAD" ]]; then
     git show-branch "$1" >/dev/null \
     && echo "$1" \
     || return 1
@@ -65,16 +65,13 @@ _get_package_name() {
   local _tag=
   local _feature=
 
-  case "$1" in
+  case "${1-}" in
     ":feature") shift; _feature=":feature" ;;
     ":name")    shift; _feature=":name" ;;
   esac
 
   _feature="${_feature:-:name}"
-
-  # Check if tag is provided
-  _tag="${PACKAGE_TAG:-}"
-  _tag="${_tag:-$PACKAGE_REF_TAG}"
+  _tag="${PACKAGE_TAG:-${PACKAGE_REF_TAG-}}"
 
   if [[ "$_feature" == ":feature" && -n "$PACKAGE_FEATURE" ]]; then
     case "${PACKAGE_FEATURE:0:1}" in
@@ -89,7 +86,7 @@ _get_package_name() {
   || _br="$(_get_package_name_from_tag $_tag)" \
   || return 1
 
-  _br="${_br:-$PACKAGE_BASE}"
+  _br="${_br:-${PACKAGE_BASE-}}"
 
   # Make sure there is local branch
   _br="$(_get_git_branch "$_br")" || return 1
@@ -148,7 +145,7 @@ _get_package_feature() {
 #   $@ => Optional arguments for `git log`
 #
 _get_git_commits_between_two_points() {
-  local _from="$1"; shift
+  local _from="${1-}"; shift
   local _to="${1:-HEAD}"; shift
 
   git rev-list "$_from".."$_to" "$@" \
@@ -162,7 +159,7 @@ _get_git_commits_between_two_points() {
 #   $@ => Optional arguments for `_get_git_commits_between_two_points`
 #
 _get_number_of_git_commits_between_two_points() {
-  local _from="$1"; shift
+  local _from="${1-}"; shift
   local _to="${1:-HEAD}"; shift
   local _num=0
 
@@ -273,14 +270,14 @@ _get_package_name_from_tag() {
   local _tag=
   local _feature=
 
-  case "$1" in
+  case "${1-}" in
     ":version") shift; _feature=":version" ;;
     ":release") shift; _feature=":release" ;;
     ":name")    shift; _feature=":name" ;;
   esac
 
   _feature="${_feature:-:name}"
-  _tag="$1"
+  _tag="${1-}"
 
   awk \
     -vtag="$_tag" \
@@ -344,7 +341,7 @@ _get_current_tag() {
 #   $2 => The working branch (as reference)
 #
 _get_next_tag_from_tag() {
-  local _tag="$1"
+  local _tag="${1-}"
   local _ref="${2:-HEAD}"
   local _rel=
 
@@ -429,6 +426,11 @@ _s_env() {
   local _pkg_feature=
   local _type="--reference"
 
+  : ${PACKAGE_BASE=}
+  : ${PACKAGE_FEATURE=}
+  : ${PACKAGE_TAG=}
+  : ${PACKAGE_REF_TAG=}
+
   _git_bang_bang || return 1
   _pkg="$(_get_package_name)" || return 1
   _pkg_feature="$(_get_package_feature)" || return 1
@@ -443,7 +445,7 @@ _s_env() {
     return 1
   fi
 
-  if [[ "$1" == "--current-tag" ]]; then
+  if [[ "${1-}" == "--current-tag" ]]; then
     echo "$_tag"
     return 0
   fi
@@ -453,7 +455,7 @@ _s_env() {
     _tag="$(_get_next_tag_from_tag ${_tag})" || return 1
   fi
 
-  if [[ "$1" == "--next-tag" ]]; then
+  if [[ "${1-}" == "--next-tag" ]]; then
     if [[ "$_type" == "--reference" ]]; then
       echo "$_tag"
     else
@@ -465,7 +467,7 @@ _s_env() {
   _ver="$(_get_version_from_tag $_tag)" || return 1
   _rel="$(_get_release_from_tag $_tag)" || return 1
 
-  if [[ "$1" == "--dump" ]]; then
+  if [[ "${1-}" == "--dump" ]]; then
   cat >&2 <<EOF
 PACKAGE_BASE="$_pkg"
 PACKAGE_RELEASE="$_rel"
