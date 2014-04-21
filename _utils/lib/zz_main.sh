@@ -6,6 +6,7 @@
 
 set -u
 
+unset GREP_OPTIONS || _die "Unable to unset 'GREP_OPTIONS'"
 unset _func || _die "Unable to update '_func' variable"
 
 case "${0##*/}" in
