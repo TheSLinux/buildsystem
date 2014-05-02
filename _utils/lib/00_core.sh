@@ -22,6 +22,10 @@ _die() {
   exit 1
 }
 
+:export() {
+  :
+}
+
 :require() {
   while (( $# )); do
     which "$1" >/dev/null 2>&1 \
