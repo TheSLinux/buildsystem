@@ -7,3 +7,4 @@
 :export status systemctl status
 :export stop   systemctl stop
 :export start  systemctl start
+:export restart systemctl restart
