@@ -4,13 +4,6 @@
 # Date   : 2014 May 2nd
 # Home   : https://github.com/TheSLinux/buildsystem/tree/_utils
 
-:export status _systemd_ctl status
-:export stop   _systemd_ctl stop
-:export start  _systemd_ctl start
-
-# This is a shortcut of `systemctl`. Instead of typing a long command
-# (who wants `sudo systemctl status MyDnsDaemon` ?), user only needs
-# to type a short string (`sudo status MyDnsDaemon`).
-_systemd_ctl() {
-  systemctl "$@"
-}
+:export status systemctl status
+:export stop   systemctl stop
+:export start  systemctl start
