@@ -31,6 +31,9 @@ uninstall:
 	@rm -fv /usr/bin/s-run
 	@rm -fv /usr/bin/s-makepkg
 	@rm -fv /usr/bin/s-import-package
+	@rm -fv /usr/bin/stop
+	@rm -fv /usr/bin/start
+	@rm -fv /usr/bin/status
 
 clean:
 	@rm -f run.sh.out
