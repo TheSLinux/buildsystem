@@ -4,6 +4,8 @@
 # Date   : 2014 Apr 15th (moved from the original `run.sh`)
 # Home   : https://github.com/TheSLinux/buildsystem/tree/_utils
 
+:export s-import-package _import_packages
+
 # Date   : 2013 March 30th
 # Purpose: Import a package from ABS to current repository
 # Usage  : $0 <package> <package> <package:arch-package-name>
