@@ -47,5 +47,7 @@ for f in ./lib/*.sh; do
   echo ""
   echo "# Source file = $f"
   echo ""
-  cat $f
+  cat $f \
+  | grep -v '^#' \
+  | grep -v '^:export '
 done
