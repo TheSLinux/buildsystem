@@ -4,6 +4,8 @@
 # Date   : 2014 Apr 15th (moved from the original `run.sh`)
 # Home   : https://github.com/TheSLinux/buildsystem/tree/_utils
 
+:export s-makepkg _makepkg
+
 # Reset some environments' variables and load the PKGBUILD file in
 # the current working directory, or return error (127).
 #
