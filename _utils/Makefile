@@ -12,6 +12,9 @@ install: run.sh.out
 	@install -v -m755 run.sh.out /usr/bin/s-run
 	@ln -sv /usr/bin/s-run /usr/bin/s-makepkg
 	@ln -sv /usr/bin/s-run /usr/bin/s-import-package
+	@ln -sv /usr/bin/s-run /usr/bin/start
+	@ln -sv /usr/bin/s-run /usr/bin/stop
+	@ln -sv /usr/bin/s-run /usr/bin/status
 
 run.sh.out: run2.sh ./lib/*.sh
 	@echo >&2 ":: Generating $(@)..."
