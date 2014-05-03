@@ -17,7 +17,7 @@ install: run.sh.out
 		ln -sv /usr/bin/s-run /usr/bin/$$P ; \
 	done
 
-run.sh.out: run2.sh ./lib/*.sh
+run.sh.out: run2.sh ./bin/compile.sh ./lib/*.sh
 	@echo >&2 ":: Generating $(@)..."
 	@./bin/compile.sh > $(@)
 
