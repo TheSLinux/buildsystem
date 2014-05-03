@@ -8,3 +8,4 @@
 :export stop   systemctl stop
 :export start  systemctl start
 :export restart systemctl restart
+:export reload  systemctl reload
