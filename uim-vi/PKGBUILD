@@ -16,18 +16,8 @@ optdepends=('qt4: immodule and helper applications'
 options=('!libtool')
 
 source=(
-        "0001-Clean-up-some-non-vi-modules-language-supports.patch"
-        "0002-Add-new-module-xtelex.patch"
-        "0003-Add-new-module-xvni.patch"
-        "0004-Should-use-.png-instead-of-.svg-for-vni.patch"
-        "0005-IPA-support-xtelex-ipa-xvni-ipa.patch"
-        "1001-config.-to-set-default-mode-for-generic-IM.patch"
-        "2001-Hide-show-candidate-window-via-generic-option.patch"
-        "2002-m17nlib-now-requires-generic-custom.patch"
-        "3001-Remove-some-Japanese-supports-from-toolbar.menu.patch"
-        "3002-Remove-state-icon-on-systray.patch"
-        "http://uim.googlecode.com/files/uim-${pkgver}.tar.gz"
-        "https://raw.github.com/TheSLinux-forks/myquartz-scim2uim/v1.1.0/bin/scim2uim.awk")
+  "http://uim.googlecode.com/files/uim-${PACKAGE_VERSION}.tar.gz"
+  "uim-vi-${PACKAGE_VERSION}.patch"::"https://github.com/TheSLinux-forks/uim/compare/uim-${PACKAGE_VERSION}...uim-vi-${PACKAGE_VERSION}.patch")
 
 provides=('uim')
 conflicts=('uim')
@@ -38,41 +28,7 @@ install=install
 build() {
   cd "${srcdir}/uim-${pkgver}"
 
-  # NOTES: By using an old .awk script, we generate some empty source
-  # NOTES: files that will help the build process to work. At the final
-  # NOTES: step when the package is created, these files will be removed.
-  # NOTES: This is because they are official supported on `uim-vi-xtelex`
-  # NOTES: package.
-
-  msg "Generating faked 'xtelex.scm'..."
-  echo 'A A' | awk -f "${srcdir}/scim2uim.awk" -vim=telex \
-    > "./scm/xtelex.scm"
-
-  msg "Generating faked 'xvni.scm'..."
-  echo 'A A' | awk -f "${srcdir}/scim2uim.awk" -vim=vni \
-    > "./scm/xvni.scm"
-
-  msg "Generating faked 'xtelex-ipa.scm'..."
-  cat "./scm/xtelex.scm" \
-    | sed -e 's/xtelex/xtelex-ipa/g' -e 's/Telex/Telex-IPA/g' \
-    > "./scm/xtelex-ipa.scm"
-
-  msg "Generating faked 'xvni-ipa.scm'..."
-  cat "./scm/xvni.scm" \
-    | sed -e 's/xvni/xvni-ipa/g' -e 's/VNI/VNI-IPA/g' \
-    > "./scm/xvni-ipa.scm"
-
-  for _file in x{telex,vni}{,-ipa}.{svg,png}; do
-    touch "./pixmaps/${_file}"
-  done
-
-  for _f_patch in ${srcdir}/000[1-5]*.patch \
-                  ${srcdir}/1001-*.patch \
-                  ${srcdir}/200[1-2]-*.patch \
-                  ${srcdir}/300[1-2]-*.patch \
-  ; do
-    patch -l -Np4 < "$_f_patch"
-  done
+  patch -l -Np1 < "${srcdir}/uim-vi-${PACKAGE_VERSION}.patch"
 
   ./autogen.sh
   ./configure \
