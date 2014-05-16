@@ -30,6 +30,8 @@ build() {
 
   patch -l -Np1 < "${srcdir}/uim-vi-${PACKAGE_VERSION}.patch"
 
+  echo > po/LINGUAS
+
   ./autogen.sh
   ./configure \
     --prefix=/usr \
