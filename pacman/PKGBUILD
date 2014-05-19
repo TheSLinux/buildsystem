@@ -26,30 +26,16 @@ replaces=('pacman-contrib')
 backup=(etc/pacman.conf etc/makepkg.conf)
 install=pacman.install
 options=(!libtool)
-source=("ftp://ftp.archlinux.org/other/pacman/$pkgbase-$pkgver.tar.gz"{,.sig}
+source=("ftp://ftp.archlinux.org/other/pacman/pacman-4.1.0.tar.gz"{,.sig}
+        "theslinux-${PACKAGE_VERSION}.patch"::"https://github.com/TheSLinux-forks/pacman/compare/v4.1.0...theslinux-${PACKAGE_VERSION}.patch"
         pacman.conf.i686
         pacman.conf.x86_64
         makepkg.conf
-        0001-Allow-some-package-information-to-be-fetched-externa.patch
-        0002-Accept-checksum-512-from-environment.patch
-        0003-pkgbase-will-define-the-behavior.patch
-        0004-makepkg-accepts-PACKAGE_FEATURE.patch
-        0005-Add-PACKAGE_FEATURE-to-some-output-message.patch
-        0006-Feature-string-will-start-with.patch
-        0007-PACKAGE_FEATURE-will-only-alter-conflicts.patch
-        0008-Use-the-original-PACKAGE_CONFLICT_TYPE-in-_FEATURE_S.patch
-        0009-Not-as-said-in-cff343f-we-need-to-keep-provides-vari.patch
-        0010-Do-not-use-PACKAGE_CONFLICT_TYPE-to-get-conflict-typ.patch
-        0011-Load-feature-PKGBUILD-if-any.patch
-        0012-Use-TheSLinux-source-mirror-by-default.patch
-        0013-Skip-checksums-by-default.patch
         )
 
 _patch_and_config() {
   cd $srcdir/$pkgname-$pkgver/
-  for _f_patch in ${srcdir}/000[1-9]*.patch ${srcdir}/001[0-3]*.patch; do
-    patch -Np4 < "$_f_patch"
-  done
+  patch -Np1 < "${srcdir}/theslinux-${PACKAGE_VERSION}.patch"
 
   ./configure --prefix=/usr --sysconfdir=/etc \
     --localstatedir=/var --enable-doc \
