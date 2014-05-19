@@ -17,7 +17,7 @@ options=('!libtool')
 
 source=(
   "http://uim.googlecode.com/files/uim-${PACKAGE_VERSION}.tar.gz"
-  "uim-vi-${PACKAGE_VERSION}.patch"::"https://github.com/TheSLinux-forks/uim/compare/uim-${PACKAGE_VERSION}...uim-vi-${PACKAGE_VERSION}.patch")
+  "uim-vi-${PACKAGE_VERSION}.patch"::"https://github.com/TheSLinux-forks/uim/compare/uim-1.8.5...uim-vi-${PACKAGE_VERSION}.patch")
 
 provides=('uim')
 conflicts=('uim')
