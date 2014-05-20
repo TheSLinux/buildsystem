@@ -15,9 +15,12 @@ optdepends=('qt4: immodule and helper applications'
             'gtk3: immodules and helper applications')
 options=('!libtool')
 
+UIM_BASE_VERSION='uim-1.8.6'
+
 source=(
-  "http://uim.googlecode.com/files/uim-${PACKAGE_VERSION}.tar.gz"
-  "uim-vi-${PACKAGE_VERSION}.patch"::"https://github.com/TheSLinux-forks/uim/compare/uim-1.8.5...uim-vi-${PACKAGE_VERSION}.patch")
+  "https://uim.googlecode.com/files/${UIM_BASE_VERSION}.tar.gz"
+  "https://github.com/TheSLinux-forks/uim/archive/uim-vi-${PACKAGE_VERSION}.tar.gz"
+)
 
 provides=('uim')
 conflicts=('uim')
@@ -26,9 +29,18 @@ replaces=('uim')
 install=install
 
 build() {
-  cd "${srcdir}/uim-${pkgver}"
+  cd "${srcdir}/uim-uim-vi-${PACKAGE_VERSION}"
 
-  patch -l -Np1 < "${srcdir}/uim-vi-${PACKAGE_VERSION}.patch"
+  if [[ ! -L './sigscheme' ]]; then
+    rm -rf './sigscheme/'
+    ln -s "${srcdir}/${UIM_BASE_VERSION}/sigscheme/" './sigscheme'
+  fi
+
+  rsync -r \
+    --include="*.svg" \
+    --include="*.png" \
+    --exclude="*" \
+    "${srcdir}/${UIM_BASE_VERSION}/pixmaps/" ./pixmaps/
 
   echo > po/LINGUAS
 
@@ -54,7 +66,8 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/uim-${pkgver}"
+  cd "${srcdir}/uim-uim-vi-${PACKAGE_VERSION}"
+
   make DESTDIR="${pkgdir}" install
   rm "${pkgdir}"/usr/lib/libgcroots.a
   install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
