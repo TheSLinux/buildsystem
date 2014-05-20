@@ -476,10 +476,10 @@ PACKAGE_FEATURE="$_pkg_feature"
 EOF
   fi
 
-  PACKAGE_BASE="$_pkg"
-  PACKAGE_RELEASE="$_rel"
-  PACKAGE_VERSION="$_ver"
-  PACKAGE_FEATURE="$_pkg_feature"
+  readonly PACKAGE_BASE="$_pkg"
+  readonly PACKAGE_RELEASE="$_rel"
+  readonly PACKAGE_VERSION="$_ver"
+  readonly PACKAGE_FEATURE="$_pkg_feature"
 }
 
 # Return the SVN revision number at the time the package is imported.
