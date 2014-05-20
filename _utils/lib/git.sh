@@ -426,6 +426,8 @@ _s_env() {
   local _pkg_feature=
   local _type="--reference"
 
+  unset S_ENV_LOADED 2>/dev/null || return 0
+
   : ${PACKAGE_BASE=}
   : ${PACKAGE_FEATURE=}
   : ${PACKAGE_TAG=}
@@ -471,6 +473,7 @@ _s_env() {
   readonly PACKAGE_RELEASE="$_rel"
   readonly PACKAGE_VERSION="$_ver"
   readonly PACKAGE_FEATURE="$_pkg_feature"
+  readonly S_ENV_LOADED='1'
 }
 
 _s_env_dump() {

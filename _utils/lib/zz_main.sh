@@ -7,6 +7,7 @@
 set -u
 
 unset GREP_OPTIONS || _die "Unable to unset 'GREP_OPTIONS'"
+unset S_ENV_LOADED || _die "Unable to unset 'S_ENV_LOADED'"
 
 [[ -n "$_func" ]] || (( $# )) || _die "Missing arguments"
 
