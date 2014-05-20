@@ -36,8 +36,6 @@ _pkgbuild_load() {
   pkgrel="${PACKAGE_RELEASE:-}"
   pkgbase="${PACKAGE_BASE:-}"
 
-  pkgname="${pkgname:-$pkgbase}"
-
   # Set some shell options as same as ArchLinux (makepkg#source_safe)
   shopt -u extglob # FIXME: why?
   source "PKGBUILD" || return
@@ -45,6 +43,17 @@ _pkgbuild_load() {
     source "PKGBUILD${_FEATURE_STRING}" || return
   fi
   shopt -s extglob # FIXME: why?
+
+  if [[ -z "${pkgname-}" ]]; then
+    pkgname=("$PACKAGE_BASE")
+  fi
+
+  # Convert $pkgname to an array if it is a string!
+  { declare -p 'pkgname' \
+    | grep -qE '^declare \-a ' ; } \
+  || pkgname=($pkgname)
+
+  pkgbase=${pkgbase:-${PACKAGE_BASE}}
 
   if [[ "${PACKAGE_FEATURE:0:1}" == "@" ]]; then
     conflicts=("${conflicts[@]}" "$pkgname")
