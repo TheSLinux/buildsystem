@@ -20,6 +20,7 @@ install: run.sh.out
 run.sh.out: run2.sh ./bin/compile.sh ./lib/*.sh
 	@echo >&2 ":: Generating $(@)..."
 	@./bin/compile.sh > $(@)
+	@bash -n $(@)
 
 uninstall:
 	@for P in $(exports); do \
