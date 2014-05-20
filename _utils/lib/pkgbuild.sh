@@ -49,6 +49,8 @@ _pkgbuild_load() {
     conflicts=("${conflicts[@]}" "$pkgname")
     provides=("${provides[@]}" "$pkgname")
   fi
+
+  _pkgbuild_s_sources >/dev/null
 }
 
 # Return the list of sources on #theslinux mirror.
