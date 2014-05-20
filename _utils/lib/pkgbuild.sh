@@ -69,8 +69,6 @@ _pkgbuild_s_sources() {
   local _uri=
   local _first_c=
 
-  _pkgbuild_load || return
-
   if [[ -n "${WITHOUT_THESLINUX_SOURCES}" ]]; then
     echo "${source[@]}"
     return
