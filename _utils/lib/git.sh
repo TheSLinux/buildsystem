@@ -467,19 +467,21 @@ _s_env() {
   _ver="$(_get_version_from_tag $_tag)" || return 1
   _rel="$(_get_release_from_tag $_tag)" || return 1
 
-  if [[ "${1-}" == "--dump" ]]; then
-  cat >&2 <<EOF
-PACKAGE_BASE="$_pkg"
-PACKAGE_RELEASE="$_rel"
-PACKAGE_VERSION="$_ver"
-PACKAGE_FEATURE="$_pkg_feature"
-EOF
-  fi
-
   readonly PACKAGE_BASE="$_pkg"
   readonly PACKAGE_RELEASE="$_rel"
   readonly PACKAGE_VERSION="$_ver"
   readonly PACKAGE_FEATURE="$_pkg_feature"
+}
+
+_s_env_dump() {
+  _s_env || return 1
+
+  cat >&2 <<EOF
+PACKAGE_BASE="$PACKAGE_BASE"
+PACKAGE_RELEASE="$PACKAGE_RELEASE"
+PACKAGE_VERSION="$PACKAGE_VERSION"
+PACKAGE_FEATURE="$PACKAGE_FEATURE"
+EOF
 }
 
 # Return the SVN revision number at the time the package is imported.
