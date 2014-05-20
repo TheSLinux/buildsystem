@@ -38,6 +38,7 @@ _pkgbuild_load() {
 
   pkgname="${pkgname:-$pkgbase}"
 
+  # Set some shell options as same as ArchLinux (makepkg#source_safe)
   shopt -u extglob # FIXME: why?
   source "PKGBUILD" || return
   if [[ -n "${_FEATURE_STRING}" && -f "PKGBUILD${_FEATURE_STRING}" ]]; then
