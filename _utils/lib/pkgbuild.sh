@@ -51,14 +51,6 @@ _pkgbuild_load() {
   fi
 }
 
-# Print list of source files required by PKGBUILD
-_pkgbuild_sources() {
-  _pkgbuild_load || return
-  for __ in "${source[@]}"; do
-    echo "${__}"
-  done
-}
-
 # Return the list of sources on #theslinux mirror.
 # This function will load `PKGBUILD if `PACKAGE_BASE is not defined.
 # The variable `source` will be updated. The output will be printed.
