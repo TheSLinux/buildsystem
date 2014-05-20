@@ -223,11 +223,12 @@ _pkgbuild_to_yaml_with_check() {
 #
 _makepkg() {
   _s_env || return 1
-  PACKAGE_BASE="$PACKAGE_BASE" \
-  PACKAGE_RELEASE="$PACKAGE_RELEASE" \
-  PACKAGE_VERSION="$PACKAGE_VERSION" \
-  PACKAGE_FEATURE="$PACKAGE_FEATURE" \
-  makepkg "$@"
+  readonly PACKAGE_BASE="$PACKAGE_BASE"
+  readonly PACKAGE_RELEASE="$PACKAGE_RELEASE"
+  readonly PACKAGE_VERSION="$PACKAGE_VERSION"
+  readonly PACKAGE_FEATURE="$PACKAGE_FEATURE"
+  which makepkg >/dev/null || return
+  source $(which makepkg) "$@"
 }
 
 # Execute the `get_update` function from PKGBUILD. If the function
