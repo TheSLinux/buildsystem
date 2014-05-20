@@ -226,10 +226,6 @@ _pkgbuild_to_yaml_with_check() {
 #
 _makepkg() {
   _s_env || return 1
-  readonly PACKAGE_BASE="$PACKAGE_BASE"
-  readonly PACKAGE_RELEASE="$PACKAGE_RELEASE"
-  readonly PACKAGE_VERSION="$PACKAGE_VERSION"
-  readonly PACKAGE_FEATURE="$PACKAGE_FEATURE"
   which makepkg >/dev/null || return
   source $(which makepkg) "$@"
 }
