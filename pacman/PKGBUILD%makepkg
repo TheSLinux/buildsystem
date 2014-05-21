@@ -21,7 +21,7 @@ build() {
 }
 
 package() {
-  cd $srcdir/$pkgname-$pkgver
+  cd $srcdir/$pkgname-theslinux-$pkgver
   install -dm755 $pkgdir/usr/bin/
   install -m755 "scripts/makepkg" $pkgdir/usr/bin
 }
