@@ -34,6 +34,10 @@ source=("https://github.com/TheSLinux-forks/pacman/archive/theslinux-${PACKAGE_V
 
 _patch_and_config() {
   cd $srcdir/$pkgname-theslinux-$pkgver/
+  grep -q -- 'add-missing' ./autogen.sh \
+  || {
+    sed -i -e "s#autoconf#automake --add-missing\nautoconf#" ./autogen.sh
+  }
   ./autogen.sh
   # FIXME: It's quite tricky here. A second execution is to create
   # FIXME: lib/libalpm/Makefile.in
