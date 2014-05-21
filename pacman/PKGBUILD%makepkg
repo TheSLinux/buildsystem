@@ -16,7 +16,7 @@ depends=('pacman')
 
 build() {
   _patch_and_config
-  cd "$srcdir/$pkgname-$pkgver/scripts"
+  cd "$srcdir/$pkgname-theslinux-$pkgver/scripts"
   make
 }
 
