@@ -405,9 +405,6 @@ _git_bang_bang() {
 #      => PACKAGE_REF_TAG  => the reference tag (where the package starts)
 #      => PACKAGE_BASE     => the original package branch
 #      => PACKAGE_FEATURE  => special feature of the package
-#   $1 => --current-tag    => print current tag and exit
-#      => --next-tag       => print next tag and exit
-#      => --dump           => print results to STDERR
 #
 # Output
 #   error || PACKAGE_{BASE, VERSION, RELEASE, FEATURE}
@@ -447,23 +444,9 @@ _s_env() {
     return 1
   fi
 
-  if [[ "${1-}" == "--current-tag" ]]; then
-    echo "$_tag"
-    return 0
-  fi
-
   # If reference is provided, and or
   if [[ "$_type" == "--reference" ]]; then
     _tag="$(_get_next_tag_from_tag ${_tag})" || return 1
-  fi
-
-  if [[ "${1-}" == "--next-tag" ]]; then
-    if [[ "$_type" == "--reference" ]]; then
-      echo "$_tag"
-    else
-      _err "No reference tag as PACKAGE_TAG is provided"
-    fi
-    return $?
   fi
 
   _ver="$(_get_version_from_tag $_tag)" || return 1
