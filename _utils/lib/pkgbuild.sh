@@ -65,7 +65,7 @@ _pkgbuild_load() {
 
 # Return the list of sources on #theslinux mirror.
 # This function will load `PKGBUILD if `PACKAGE_BASE is not defined.
-# The variable `source` will be updated. The output will be printed.
+# The variable `source` will be updated.
 #
 # NOTES: If the URI is of the form "foobar::URI", the "foobar" is used
 # NOTES: on our source. For this reason, you should use a variant
@@ -78,10 +78,7 @@ _pkgbuild_s_sources() {
   local _uri=
   local _first_c=
 
-  if [[ -n "${WITHOUT_THESLINUX_SOURCES}" ]]; then
-    echo "${source[@]}"
-    return
-  fi
+  [[ -z "${WITHOUT_THESLINUX_SOURCES}" ]] || return
 
   _first_c="${PACKAGE_BASE:0:1}"
   _first_c="${_first_c,}"
@@ -105,8 +102,6 @@ _pkgbuild_s_sources() {
     _uri="http://f.theslinux.org/s/${_first_c}/${PACKAGE_BASE}/${_basename}"
     source+=("${_uri}" "${_uri}.asc")
   done
-
-  echo "${source[@]}"
 }
 
 # This script will read the PKGBUILD from the current build environment
