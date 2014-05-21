@@ -238,7 +238,7 @@ _makepkg() {
 _get_update() {
   _s_env || return 1
   unset "get_update" || return 1
-  source "PKGBUILD" || return 127
+  _pkgbuild_load
   get_update
 }
 
