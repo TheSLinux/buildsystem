@@ -78,7 +78,7 @@ _pkgbuild_s_sources() {
   local _uri=
   local _first_c=
 
-  [[ -z "${WITHOUT_THESLINUX_SOURCES}" ]] || return
+  [[ -z "${WITHOUT_THESLINUX_SOURCES:-}" ]] || return 0
 
   _first_c="${PACKAGE_BASE:0:1}"
   _first_c="${_first_c,}"
