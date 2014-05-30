@@ -23,9 +23,9 @@ run.sh.out: run2.sh ./bin/compile.sh ./lib/*.sh
 	@bash -n $(@)
 
 uninstall:
-	@for P in $(exports); do \
-		rm -fv /usr/bin/$$P ; \
-	done
+	@find /usr/bin/ -type l -ilname "*s-run" \
+		-exec rm -fv {} \;
+	@rm -fv /usr/bin/s-run
 
 clean:
 	@rm -f run.sh.out
