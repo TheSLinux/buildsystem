@@ -6,7 +6,6 @@
 exports = $(shell grep '^:export ' lib/*.sh -h | awk '{print $$2}')
 
 default:
-	@echo $(exports)
 	@echo >&2 "Available sections:"
 	@echo >&2 "  install   : To install script 'run.sh' to your system path '/usr/bin/'"
 	@echo >&2 "  uninstall : Remove this scripts from your system"
