@@ -7,8 +7,16 @@ pkgdesc='Common CA certificates'
 arch=('any')
 url='http://packages.qa.debian.org/c/ca-certificates.html'
 license=('MPL' 'GPL')
-source=("remove-run-parts.patch"
-        "http://ftp.debian.org/debian/pool/main/c/${pkgbase}/${pkgbase}_${pkgver//.}.tar.gz")
+
+source=("remove-run-parts.patch")
+
+vercmp "${PACKAGE_VERSION}" "2014.03.25" >/dev/null
+if [[ $? -ge 0 ]]; then
+  source+=("http://ftp.debian.org/debian/pool/main/c/${pkgbase}/${pkgbase}_${pkgver//.}.tar.xz")
+else
+  source+=("http://ftp.debian.org/debian/pool/main/c/${pkgbase}/${pkgbase}_${pkgver//.}.tar.gz")
+fi
+
 depends=('bash' 'openssl' 'findutils' 'coreutils' 'sed')
 makedepends=('python2')
 install='ca-certificates.install'
