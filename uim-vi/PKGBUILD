@@ -4,8 +4,8 @@
 # Original Maintainer: Gaetan Bisson <bisson@archlinux.org>
 # Original Contributor: damir <damir@archlinux.org>
 
-pkgdesc='Vietnamese input method library'
-url='http://code.google.com/p/uim/'
+pkgdesc='Vietnamese input method library (based on uim)'
+url='https://github.com/TheSLinux-forks/uim'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
 depends=('libxft' 'libedit' 'm17n-lib' 'm17n-db-vi' 'uim-vi-xtelex')
