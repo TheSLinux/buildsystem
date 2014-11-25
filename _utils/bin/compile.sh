@@ -26,7 +26,7 @@ set -u
 unset GREP_OPTIONS \
 || { echo >&2 "Unable to unset 'GREP_OPTIONS'"; exit 1; }
 
-cat run2.sh
+cat lib/preamble.txt
 for f in ./lib/*.sh; do
   if [[ "${f##*/}" == "zz_main.sh" ]]; then
     echo ""
