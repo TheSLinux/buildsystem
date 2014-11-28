@@ -17,9 +17,23 @@ options=('!libtool')
 
 UIM_BASE_VERSION='uim-1.8.6'
 
+_CONFIGURE_FLAGS=""
+echo "${PACKAGE_FEATURE:-}" | grep -q "qt5" \
+&& {
+  _CONFIGURE_FLAGS="--with-qt5-immodule --with-qt5"
+  pkgdesc="$pkgdesc [with Qt5]"
+  optdepends=("${optdepends[@]}" 'qt5: immodule and helper applications')
+}
+
+echo "${PACKAGE_FEATURE:-}" | grep -q "git" \
+&& {
+  _GIT_HASH="$(echo ${PACKAGE_FEATURE} | sed -e 's#.*git-\?\([0-9a-f]\+\).*#\1#g')"
+  msg "Git commit detected: $_GIT_HASH"
+}
+
 source=(
   "https://uim.googlecode.com/files/${UIM_BASE_VERSION}.tar.gz"
-  "https://github.com/TheSLinux-forks/uim/archive/uim-vi-${PACKAGE_VERSION}.tar.gz"
+  "uim-vi-${PACKAGE_VERSION}${_GIT_HASH:+-$_GIT_HASH}.tar.gz"::"https://github.com/TheSLinux-forks/uim/archive/uim-vi-${PACKAGE_VERSION}.tar.gz"
 )
 
 provides=('uim')
@@ -43,6 +57,12 @@ build() {
     "${srcdir}/${UIM_BASE_VERSION}/pixmaps/" ./pixmaps/
 
   echo > po/LINGUAS
+  echo "${PACKAGE_FEATURE:-}" | grep -q "debug" \
+  || {
+    if [[ -f "./qt5/immodule/quimplatforminputcontext.cpp" ]]; then
+      sed -i -e '/#define ENABLE_DEBUG/d' qt5/immodule/quimplatforminputcontext.cpp
+    fi
+  }
 
   ./autogen.sh
   ./configure \
@@ -60,7 +80,8 @@ build() {
     --without-scim \
     --without-eb \
     --without-osx-dcs \
-    --without-sqlite3
+    --without-sqlite3 \
+    $_CONFIGURE_FLAGS
 
   make
 }
