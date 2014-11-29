@@ -28,7 +28,7 @@ echo "${PACKAGE_FEATURE:-}" | grep -q "nocandwin" \
 
 echo "${PACKAGE_FEATURE:-}" | grep -q "qt5" \
 && {
-  _CONFIGURE_FLAGS="${_WITH_CAND_WIN:+--with-qt5-immodule }--with-qt5"
+  _CONFIGURE_FLAGS="${_WITH_CAND_WIN:+--with-qt5 }--with-qt5-immodule"
   pkgdesc="$pkgdesc [with Qt5]"
   optdepends=("${optdepends[@]}" 'qt5: immodule and helper applications')
 }
@@ -77,7 +77,7 @@ build() {
     --prefix=/usr \
     --libexecdir=/usr/lib/uim \
     --without-anthy \
-    --with-qt4${_WITH_CAND_WIN:+ --with-qt4-immodule} \
+    --with-qt4-immodule${_WITH_CAND_WIN:+ --with-qt4} \
     --disable-gnome-applet \
     --disable-dict \
     --without-skk \
