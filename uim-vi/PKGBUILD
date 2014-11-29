@@ -18,9 +18,17 @@ options=('!libtool')
 UIM_BASE_VERSION='uim-1.8.6'
 
 _CONFIGURE_FLAGS=""
+_WITH_CAND_WIN="1"
+
+echo "${PACKAGE_FEATURE:-}" | grep -q "nocandwin" \
+&& {
+  pkgdesc="$pkgdesc [no candidate window]"
+  _WITH_CAND_WIN=""
+}
+
 echo "${PACKAGE_FEATURE:-}" | grep -q "qt5" \
 && {
-  _CONFIGURE_FLAGS="--with-qt5-immodule --with-qt5"
+  _CONFIGURE_FLAGS="${_WITH_CAND_WIN:+--with-qt5-immodule }--with-qt5"
   pkgdesc="$pkgdesc [with Qt5]"
   optdepends=("${optdepends[@]}" 'qt5: immodule and helper applications')
 }
@@ -69,8 +77,7 @@ build() {
     --prefix=/usr \
     --libexecdir=/usr/lib/uim \
     --without-anthy \
-    --with-qt4-immodule \
-    --with-qt4 \
+    --with-qt4${_WITH_CAND_WIN:+ --with-qt4-immodule} \
     --disable-gnome-applet \
     --disable-dict \
     --without-skk \
