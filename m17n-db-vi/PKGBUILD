@@ -26,7 +26,7 @@ build() {
   patch -Np4 < "${srcdir}/en-vi-add-ipa-files.patch"
   aclocal
   autoconf
-  automake
+  automake --add-missing
   ./configure --prefix=/usr
   make
 }
