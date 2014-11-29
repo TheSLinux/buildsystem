@@ -9,6 +9,6 @@ source=(https://github.com/TheSLinux/security-keyring/archive/${PACKAGE_VERSION}
 
 package() {
   cd "${srcdir}/security-keyring-${pkgver}"
-  mkdir -pv ./usr/share/pacman/keyrings/
-  PREFIX=./usr/ ./install.sh
+  mkdir -pv ${pkgdir}/usr/share/pacman/keyrings/
+  PREFIX=${pkgdir}/usr/ ./install.sh
 }
