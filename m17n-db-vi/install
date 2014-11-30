@@ -3,7 +3,8 @@ post_install() {
   && {
     usr/bin/uim-module-manager --unregister m17nlib
     usr/bin/uim-module-manager --register m17nlib
-  }}
+  }
+  true
 }
 
 post_upgrade() {
