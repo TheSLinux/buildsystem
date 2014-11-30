@@ -1,6 +1,13 @@
 post_install() {
 	[[ -x usr/bin/gtk-query-immodules-2.0 ]] && usr/bin/gtk-query-immodules-2.0 > etc/gtk-2.0/gtk.immodules
 	[[ -x usr/bin/gtk-query-immodules-3.0 ]] && usr/bin/gtk-query-immodules-3.0 > usr/lib/gtk-3.0/3.0.0/immodules.cache
+	#
+	# FIXME: this will override the system files `/usr/share/uim/loader.scm`
+	# FIXME: and `/usr/share/uim/installed`. We should find a way to do this
+	# FIXME: in a variant directory (/var/lib/uim/)
+	#
+	usr/bin/uim-module-manager --unregister m17nlib
+	usr/bin/uim-module-manager --register m17nlib
 	true
 }
 
