@@ -6,8 +6,10 @@ post_install() {
 	# FIXME: and `/usr/share/uim/installed`. We should find a way to do this
 	# FIXME: in a variant directory (/var/lib/uim/)
 	#
-	usr/bin/uim-module-manager --unregister m17nlib
-	usr/bin/uim-module-manager --register m17nlib
+	if [[ -x usr/bin/uim-module-manager ]]; then
+		usr/bin/uim-module-manager --unregister m17nlib
+		usr/bin/uim-module-manager --register m17nlib
+	fi
 	true
 }
 
