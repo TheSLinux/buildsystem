@@ -8,8 +8,8 @@ pkgdesc='Vietnamese input method library (based on uim)'
 url='https://github.com/TheSLinux-forks/uim'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
-depends=('libxft' 'libedit' 'm17n-lib' 'm17n-db-vi' 'uim-vi-xtelex')
-makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3' 'm17n-db-vi')
+depends=('libxft' 'libedit' 'm17n-lib' 'm17n-db' 'uim-vi-xtelex')
+makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3' 'm17n-db')
 optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
             'gtk3: immodules and helper applications')
