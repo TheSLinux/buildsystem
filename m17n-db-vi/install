@@ -1,0 +1,15 @@
+post_install() {
+  [[ -x usr/bin/uim-module-manager ]] \
+  && {
+    usr/bin/uim-module-manager --unregister m17nlib
+    usr/bin/uim-module-manager --register m17nlib
+  }}
+}
+
+post_upgrade() {
+  post_install
+}
+
+post_remove() {
+  post_install
+}

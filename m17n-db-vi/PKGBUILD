@@ -18,6 +18,7 @@ sha1sums=()
 replaces=('m17n-db')
 provides=('m17n-db')
 conflicts=('m17n-db')
+install=install
 
 build() {
   cd "${srcdir}/m17n-db-${pkgver}"
