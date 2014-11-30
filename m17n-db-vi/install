@@ -12,5 +12,6 @@ post_upgrade() {
 }
 
 post_remove() {
-  post_install
+  [[ -x usr/bin/uim-module-manager ]] \
+  && usr/bin/uim-module-manager --unregister m17nlib
 }
