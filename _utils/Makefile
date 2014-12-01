@@ -3,17 +3,19 @@
 # License: GPL v2
 # Note   : This is a work-around while waiting for a dedicated package
 
-exports = $(shell grep '^:export ' lib/*.sh -h | awk '{print $$2}')
+SYMBOLS = $(shell grep '^:export ' lib/*.sh -h | awk '{print $$2}')
+PREFIX ?= /usr/
 
 default:
 	@echo >&2 "Available sections:"
-	@echo >&2 "  install   : To install script 'run.sh' to your system path '/usr/bin/'"
+	@echo >&2 "  install   : To install script 'run.sh' to your system path '$(PREFIX)/bin/'"
 	@echo >&2 "  uninstall : Remove this scripts from your system"
 
 install: run.sh.out
-	@install -v -m755 run.sh.out /usr/bin/s-run
-	@for P in $(exports); do \
-		ln -sv /usr/bin/s-run /usr/bin/$$P ; \
+	@install -v -m755 run.sh.out $(PREFIX)/bin/s-run
+	@cd $(PREFIX)/bin \
+	&& for P in $(SYMBOLS); do \
+		ln -sv s-run $$P ; \
 	done
 
 run.sh.out: ./bin/compile.sh ./lib/*.sh ./lib/*.txt
@@ -22,9 +24,9 @@ run.sh.out: ./bin/compile.sh ./lib/*.sh ./lib/*.txt
 	@bash -n $(@)
 
 uninstall:
-	@find /usr/bin/ -type l -ilname "*s-run" \
+	@find $(PREFIX)/bin/ -type l -ilname "*s-run" \
 		-exec rm -fv {} \;
-	@rm -fv /usr/bin/s-run
+	@rm -fv $(PREFIX)/bin/s-run
 
 clean:
 	@rm -f run.sh.out
