@@ -1,0 +1,18 @@
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+# Note: this PKGBUILD only works with _utils version >= 2.1.0
+
+pkgdesc="Core utils for TheSLinux developers"
+url="https://github.com/TheSLinux/buildsystem/tree/_utils"
+license=("GPL")
+arch=('any')
+depends=('binutils' 'git' 'make' 'subversion')
+
+source=(
+  "https://github.com/TheSLinux/buildsystem/archive/${PACKAGE_BASE}-${PACKAGE_VERSION}.tar.gz"
+)
+
+package() {
+  install -d -m755  "${pkgdir}/usr/bin/"
+  cd "${srcdir}/buildsystem-${PACKAGE_BASE}-${PACKAGE_VERSION}/${PACKAGE_BASE}"
+  PREFIX="${pkgdir}/usr/" make install
+}
