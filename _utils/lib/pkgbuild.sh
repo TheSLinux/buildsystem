@@ -28,7 +28,7 @@ _pkgbuild_load() {
 
   echo "${PACKAGE_FEATURE}" | grep -q "lib32"
   if [[ $? -eq 0 ]]; then
-    _FEATURE_LIB32="true"
+    _FEATURE_LIB32="32"
   else
     _FEATURE_LIB32=""
   fi
