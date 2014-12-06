@@ -1,0 +1,3 @@
+export CHOST="i686-pc-linux-gnu"
+export CFLAGS="-m32 -march=i686 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2"
+export CXXFLAGS="${CFLAGS}"
