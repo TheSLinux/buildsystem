@@ -36,6 +36,13 @@ _pkgbuild_load() {
   pkgrel="${PACKAGE_RELEASE:-}"
   pkgbase="${PACKAGE_BASE:-}"
 
+  # Before this happends, the `/etc/makepkg.conf` or `~/.makepkg.conf` is
+  # already loaded by `makepkg`. Because of this, some sanity check
+  # for `makepkg.conf` settings can't be done in feature `makepkg.conf`.
+  if [[ -n "${_FEATURE_STRING}" && -r "makepkg.conf${_FEATURE_STRING}" ]]; then
+    source "makepkg.conf${_FEATURE_STRING}" || return
+  fi
+
   # Set some shell options as same as ArchLinux (makepkg#source_safe)
   shopt -u extglob # FIXME: why?
   source "PKGBUILD" || return
