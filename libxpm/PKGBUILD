@@ -1,22 +1,21 @@
 # $Id: PKGBUILD 194291 2013-09-13 07:20:35Z andyrtr $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
-pkgname=libxpm
-pkgver=3.5.11
-pkgrel=1
 pkgdesc="X11 pixmap library"
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org/"
-depends=('libxt' 'libxext')
+depends=("${_FEATURE_LIB32:+lib32-}libxt" "${_FEATURE_LIB32:+lib32-}libxext")
 makedepends=('xorg-util-macros')
 options=('!libtool')
-source=("${url}/releases/individual/lib/libXpm-${pkgver}.tar.bz2")
-sha256sums=('c5bdafa51d1ae30086fac01ab83be8d47fe117b238d3437f8e965434090e041c')
+source=("${url}/releases/individual/lib/libXpm-${PACKAGE_VERSION}.tar.bz2")
 
 build() {
   cd "${srcdir}/libXpm-${pkgver}"
-  ./configure --prefix=/usr --sysconfdir=/etc --disable-static
+  ./configure \
+    --prefix=/usr \
+    --libdir=/usr/lib${_FEATURE_LIB32}/ \
+    --sysconfdir=/etc --disable-static
   make
 }
 
@@ -26,4 +25,10 @@ package() {
 
   install -m755 -d "${pkgdir}/usr/share/licenses/${pkgname}"
   install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/"
+
+  [[ -n "$_FEATURE_LIB32" ]] || return 0
+  rm -rf \
+    "${pkgdir}"/usr/bin \
+    "${pkgdir}"/usr/include \
+    "${pkgdir}"/usr/share
 }
