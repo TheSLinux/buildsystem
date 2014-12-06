@@ -76,8 +76,8 @@ _pkgbuild_load() {
 
   if [[ -n "${_FEATURE_LIB32}" ]]; then
     pkgdesc="${pkgdesc} [lib32]"
-    provides=("${PACKAGE_BASE}@lib32" "${provides[@]:-}")
-    conflicts=("${PACKAGE_BASE}@lib32" "${conflicts[@]:-}")
+    provides=("${PACKAGE_BASE}%lib32" "${provides[@]:-}")
+    conflicts=("${PACKAGE_BASE}%lib32" "${conflicts[@]:-}")
   fi
 
   _pkgbuild_s_sources >/dev/null
