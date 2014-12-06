@@ -26,6 +26,12 @@ _pkgbuild_load() {
     _FEATURE_STRING="${PACKAGE_FEATURE}"
   fi
 
+  # IMPORTANTE NOTE
+  #
+  # Don't change the value of $_FEATURE_LIB32, because it is widely used.
+  # There are only two case: 32, or <empty>
+  # You've been warned.
+  #
   echo "${PACKAGE_FEATURE}" | grep -q "lib32"
   if [[ $? -eq 0 ]]; then
     _FEATURE_LIB32="32"
