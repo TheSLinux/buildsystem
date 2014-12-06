@@ -8,8 +8,8 @@ pkgdesc='Vietnamese input method library (based on uim)'
 url='https://github.com/TheSLinux-forks/uim'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
-depends=('libxft' 'libedit' 'm17n-lib' 'm17n-db' 'uim-vi-xtelex')
-makedepends=('intltool' 'gettext' 'qt4' 'gtk2' 'gtk3' 'm17n-db')
+depends=('libxft' 'libedit' "${_FEATURE_LIB32:+lib32-}m17n-lib" 'm17n-db' 'uim-vi-xtelex')
+makedepends=('intltool' 'gettext' "${_FEATURE_LIB32:+lib32-}qt4" 'gtk2' 'gtk3' 'm17n-db' "${_FEATURE_LIB32:+lib32-}m17n-lib")
 optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
             'gtk3: immodules and helper applications')
@@ -44,11 +44,25 @@ source=(
   "uim-vi-${PACKAGE_VERSION}${_GIT_HASH:+-$_GIT_HASH}.tar.gz"::"https://github.com/TheSLinux-forks/uim/archive/uim-vi-${PACKAGE_VERSION}.tar.gz"
 )
 
-provides=('uim')
-conflicts=('uim')
-replaces=('uim')
-
-install=install
+if [[ -z "$_FEATURE_LIB32" ]]; then
+  provides=('uim')
+  conflicts=('uim')
+  replaces=('uim')
+  install=install
+else
+  # FIXME: no-candwin
+  # FIXME: no-qt5
+  _WITH_CAND_WIN=""
+  _CONFIGURE_FLAGS=" \
+      $_CONFIGURE_FLAGS \
+      --disable-kde-applet \
+      --disable-pref \
+      --disable-gnome-applet \
+      --disable-gnome3-applet \
+      --without-gtk2 \
+      --without-gtk3
+    "
+fi
 
 build() {
   cd "${srcdir}/uim-uim-vi-${PACKAGE_VERSION}"
@@ -72,10 +86,20 @@ build() {
     fi
   }
 
+  if [[ -n "$_FEATURE_LIB32" ]]; then
+    # FIXME: this won't work
+    # export QTDIR=/usr/lib32/qt/
+
+    # FIXME: Work-around while waiting for the official support
+    # FIXME: from the `_utils` package. See also
+    # FIXME: https://github.com/TheSLinux/buildsystem/commit/846b964978ad
+    export CXX="$CXX -m32"
+  fi
   ./autogen.sh
   ./configure \
     --prefix=/usr \
-    --libexecdir=/usr/lib/uim \
+    --libdir="/usr/lib${_FEATURE_LIB32}" \
+    --libexecdir=/usr/lib${_FEATURE_LIB32}/uim \
     --without-anthy \
     --with-qt4-immodule${_WITH_CAND_WIN:+ --with-qt4} \
     --disable-gnome-applet \
@@ -97,7 +121,7 @@ package() {
   cd "${srcdir}/uim-uim-vi-${PACKAGE_VERSION}"
 
   make DESTDIR="${pkgdir}" install
-  rm "${pkgdir}"/usr/lib/libgcroots.a
+  rm "${pkgdir}"/usr/lib/libgcroots.a || true
   install -D -m644 COPYING "${pkgdir}/usr/share/licenses/uim/COPYING"
 
   # Remove temporary files. See the NOTES above.
@@ -106,6 +130,20 @@ package() {
 
   ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
   ln -s uim-toolbar-gtk-systray "${pkgdir}/usr/bin/uim-systray"
+
+  [[ -n "$_FEATURE_LIB32" ]] || return 0
+
+  rm -rf \
+    "${pkgdir}"/usr/bin/ \
+    "${pkgdir}"/usr/share/ \
+    "${pkgdir}"/usr/include/ \
+    "${pkgdir}"/usr/lib32/gtk-2.0/ \
+    "${pkgdir}"/usr/lib32/gtk-3.0/ \
+    "${pkgdir}"/usr/lib32/qt/
+
+  # Weird, but this is how `lib32-qt4` is done
+  mv "${pkgdir}"/usr/lib/qt4 "${pkgdir}"/usr/lib32/qt
+  rm -r "${pkgdir}"/usr/lib/
 }
 
 get_update() {
