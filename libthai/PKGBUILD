@@ -1,27 +1,29 @@
-# $Id: PKGBUILD 191329 2013-07-23 16:52:59Z jgc $
-# Maintainer: Jan de Groot <jgc@archlinux.org>
-# Contributor: Chaiwat Suttipongsakul <cwt114@gmail.com>
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
 
-pkgname=libthai
-pkgver=0.1.19
-pkgrel=1
+# Original Maintainer: Jan de Groot <jgc@archlinux.org>
+# Original Contributor: Chaiwat Suttipongsakul <cwt114@gmail.com>
+
 pkgdesc="Thai language support routines"
 url="http://linux.thai.net/projects/libthai"
 arch=('i686' 'x86_64')
 license=('LGPL')
-depends=('libdatrie')
-makedepends=('pkgconfig')
+depends=("libdatrie${_FEATURE_LIB32:+%lib32}")
+makedepends=("pkgconfig" "libdatrie${_FEATURE_LIB32:+%lib32}")
 options=('!libtool' '!emptydirs')
-source=(http://linux.thai.net/pub/thailinux/software/${pkgname}/${pkgname}-${pkgver}.tar.xz)
-md5sums=('c4a6c3842257889f8f15ae192b66e797')
+source=(http://linux.thai.net/pub/thailinux/software/${PACKAGE_BASE}/${PACKAGE_BASE}-${PACKAGE_VERSION}.tar.xz)
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-  ./configure --prefix=/usr --disable-static
+  ./configure --prefix=/usr --libdir=/usr/lib"${_FEATURE_LIB32}" --disable-static
   make
 }
 
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
+
+  [[ -n "$_FEATURE_LIB32" ]] || return 0
+  rm -rf \
+    "${pkgdir}"/usr/include/ \
+    "${pkgdir}"/usr/share/
 }
