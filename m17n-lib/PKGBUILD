@@ -9,7 +9,7 @@ url='http://www.nongnu.org/m17n/'
 arch=('i686' 'x86_64')
 license=('GPL')
 depends=('libxft' 'm17n-db' 'fribidi' 'libxml2' 'gd' 'libotf')
-makedepends=("libthai${_FEATURE_LIB32:+%lib32}" "libxt${_FEATURE_LIB32:+%lib32}")
+makedepends=("libthai${_FEATURE_LIB32:+%lib32}" "${_FEATURE_LIB32:+lib32-}libxt")
 
 # optdepends=('anthy: to use the anthy input method')
 options=('!makeflags' '!libtool' '!emptydirs')
@@ -17,7 +17,9 @@ source=("http://download.savannah.gnu.org/releases/m17n/${pkgbase}-${pkgver}.tar
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-  ./configure --prefix=/usr --enable-static=no
+  ./configure --prefix=/usr \
+    --libdir=/usr/lib${_FEATURE_LIB32} \
+    --enable-static=no
   make
 }
 
@@ -27,5 +29,6 @@ package() {
   [[ -n "$_FEATURE_LIB32" ]] || return 0
   rm -rf \
     "${pkgdir}"/usr/bin \
-    "${pkgdir}"/usr/include
+    "${pkgdir}"/usr/include \
+    "${pkgdir}"/usr/share
 }
