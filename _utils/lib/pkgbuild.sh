@@ -53,11 +53,13 @@ _pkgbuild_load() {
   # already loaded by `makepkg`. Because of this, some sanity check
   # for `makepkg.conf` settings can't be done in feature `makepkg.conf`.
   if [[ -n "${_FEATURE_STRING}" ]]; then
-    # Some default flags
-    export CHOST="i686-pc-linux-gnu"
-    export CFLAGS="-m32 -march=i686 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2"
-    export CXXFLAGS="${CFLAGS}"
-    export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
+    if [[ -n "${_FEATURE_LIB32}" ]]; then
+      export CHOST="i686-pc-linux-gnu"
+      export CFLAGS="-m32 -march=i686 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2"
+      export CXXFLAGS="${CFLAGS}"
+      export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+    fi
 
     if [[ -r "makepkg.conf${_FEATURE_STRING}" ]]; then
       source "makepkg.conf${_FEATURE_STRING}" || return
