@@ -26,6 +26,13 @@ _pkgbuild_load() {
     _FEATURE_STRING="${PACKAGE_FEATURE}"
   fi
 
+  echo "${PACKAGE_FEATURE}" | grep -q "lib32"
+  if [[ $? -eq 0 ]]; then
+    _FEATURE_LIB32="true"
+  else
+    _FEATURE_LIB32=""
+  fi
+
   # FIXME: We should not mirror code like this. Need another way to
   # FIXME: patch `makepkg` and make code clean.
   unset pkgname pkgbase pkgver pkgrel epoch pkgdesc url license groups provides
@@ -63,8 +70,14 @@ _pkgbuild_load() {
   pkgbase=${pkgbase:-${PACKAGE_BASE}}
 
   if [[ "${PACKAGE_FEATURE:0:1}" == "@" ]]; then
-    conflicts=("${conflicts[@]}" "$pkgname")
-    provides=("${provides[@]}" "$pkgname")
+    conflicts=("${conflicts[@]:-}" "$pkgname")
+    provides=("${provides[@]:-}" "$pkgname")
+  fi
+
+  if [[ -n "${_FEATURE_LIB32}" ]]; then
+    pkgdesc="${pkgdesc} [lib32]"
+    provides=("${PACKAGE_BASE}@lib32" "${provides[@]:-}")
+    conflicts=("${PACKAGE_BASE}@lib32" "${conflicts[@]:-}")
   fi
 
   _pkgbuild_s_sources >/dev/null
