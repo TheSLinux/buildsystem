@@ -59,7 +59,6 @@ _pkgbuild_load() {
       export CFLAGS="-m32 -march=i686 -mtune=generic -O2 -pipe -fstack-protector-strong --param=ssp-buffer-size=4 -D_FORTIFY_SOURCE=2"
       export CXXFLAGS="${CFLAGS}"
       export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
-      export CXX="${CXX} -m32"
     fi
 
     if [[ -r "makepkg.conf${_FEATURE_STRING}" ]]; then
