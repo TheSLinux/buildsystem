@@ -9,7 +9,7 @@ url='https://github.com/TheSLinux-forks/uim'
 license=('custom:BSD')
 arch=('i686' 'x86_64')
 depends=('libxft' 'libedit' "${_FEATURE_LIB32:+lib32-}m17n-lib" 'm17n-db' 'uim-vi-xtelex')
-makedepends=('intltool' 'gettext' "${_FEATURE_LIB32:+lib32-}qt4" 'gtk2' 'gtk3' 'm17n-db' "${_FEATURE_LIB32:+lib32-}m17n-lib")
+makedepends=("rsync" 'intltool' 'gettext' "${_FEATURE_LIB32:+lib32-}qt4" 'gtk2' 'gtk3' 'm17n-db' "${_FEATURE_LIB32:+lib32-}m17n-lib")
 optdepends=('qt4: immodule and helper applications'
             'gtk2: immodule and helper applications'
             'gtk3: immodules and helper applications')
@@ -87,15 +87,68 @@ build() {
   }
 
   if [[ -n "$_FEATURE_LIB32" ]]; then
-    # FIXME: this won't work
+    # FIXME: this won't work. The Qt libdir is still `/usr/lib/qt4`
     # export QTDIR=/usr/lib32/qt/
 
     # FIXME: Work-around while waiting for the official support
     # FIXME: from the `_utils` package. See also
+    #
     # FIXME: https://github.com/TheSLinux/buildsystem/commit/846b964978ad
-    export CXX="$CXX -m32"
+    #
+    # FIXME: Please note that, this section is required for linking
+    # FIXME: process. I am not sure if the followed section, e.g.
+    # FIXME: `QMAKESPEC`, can replace the `-march=i686`
+    #
+    export CXX="$CXX -m32 -march=i686"
+
+    # <this section is not necessary>
+
+    export QMAKESPEC="$PWD/qtspecs/uim/"
+
+    rm -rf ./qtspecs/
+    mkdir qtspecs/
+    cp -r /usr/share/qt4/mkspecs/linux-g++-32/ qtspecs/uim/
+    cp -r /usr/share/qt4/mkspecs/common/       qtspecs/common/
+
+    grep -lR -- =x86-64 qtspecs/ \
+    | while read _FSPEC; do
+        msg "Fix -march in $_FSPEC..."
+        sed -i -e "s#-march=x86-64#-march=i686#g" $_FSPEC
+      done
+
+    # </this section is not necessary>
   fi
+
   ./autogen.sh
+
+  # FIXME: Yeah, the hardest thing is here.
+  #
+  # $ strings /usr/lib32/qt/plugins/inputmethods/libqimsw-multi.so | grep buildkey
+  #
+  # buildkey=i386 linux g++-4 full-config
+  #
+  # $ strings /usr/lib32/libQtCore.so | grep -i build.key
+  #
+  # Build key:           i386 linux g++-4 full-config
+  # Compat build key:    | x86_64 Linux g++-4 full-config |
+  #   expected build key "%s", got "%s"
+  # The plugin '%1' uses incompatible Qt library. Expected build key "%2", got "%3"
+  #
+  # The `QT_BUILD_KEY` is defined in `/usr/include/qt4/Qt/qconfig.h`
+  # and `/usr/include/qt4/QtCore/qconfig.h`, and `lib32-qt4` doesn't
+  # ship an alternative `include` files. We need to patch the stuff
+  # locally. This will generate a warning during compiling process, to
+  # notify that `QT_BUILD_KEY` is being redefined.
+  #
+  # At least, after 2 days of stupid and noisy debugging, I finally
+  # find a way to have `uim` to work with `skype` :)
+  #
+  [[ -z "$_FEATURE_LIB32" ]] \
+  || {
+    msg "Fixing the BUILD_KEY for #qt4 %lib32"
+    echo '#define QT_BUILD_KEY "i386 linux g++-4 full-config"' >> uim/uim.h
+  }
+
   ./configure \
     --prefix=/usr \
     --libdir="/usr/lib${_FEATURE_LIB32}" \
