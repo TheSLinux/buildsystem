@@ -265,36 +265,47 @@ _get_git_tag_on_package_branch() {
 #   $1 => :name    => get package number
 #   $1 => <empty>  => as :name
 #   $@ => the tag
+# Note
+#   If tag uses zero in his release number, like `x.y.z-0`,
+#   the release number would be number of commits since TheSmallBang.
+#   This will be useful when you are building on some manual tag.
 #
 _get_package_name_from_tag() {
   local _tag=
   local _feature=
+  local _ret=
 
   case "${1-}" in
-    ":version") shift; _feature=":version" ;;
-    ":release") shift; _feature=":release" ;;
-    ":name")    shift; _feature=":name" ;;
+    ":version") shift; _feature="version" ;;
+    ":release") shift; _feature="release" ;;
+    ":name")    shift; _feature="name" ;;
   esac
 
-  _feature="${_feature:-:name}"
+  _feature="${_feature:-name}"
   _tag="${1-}"
 
-  awk \
+  _ret="$(awk \
     -vtag="$_tag" \
     -vfeature="$_feature" \
     'BEGIN {
       if (match(tag, /^(.+)-([0-9]+(\.[0-9]+){1,3})(-([0-9]+))?$/, m)) {
         switch (feature) {
-        case ":name"   : printf("%s\n", m[1]); break;
-        case ":version": printf("%s\n", m[2]); break;
-        case ":release": printf("%s\n", m[4] ? m[5] : 1); break;
+        case "name"   : printf("%s\n", m[1]); break;
+        case "version": printf("%s\n", m[2]); break;
+        case "release": printf("%s\n", m[4] == "" ? 1 : m[5]); break;
         }
       }
       else {
         printf(":: Error: Failed to get package name from tag \"%s\"\n", tag) > "/dev/stderr";
         exit(1);
       }
-    }'
+    }')"
+
+  if [[ "$_feature" == "release" && "$_ret" == 0 ]]; then
+    _ret="$(_get_number_of_git_commits_between_two_points TheSmallBang)"
+  fi
+
+  echo "$_ret"
 }
 
 # Return the version number from a tag
