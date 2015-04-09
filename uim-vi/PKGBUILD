@@ -180,6 +180,7 @@ package() {
   # Remove temporary files. See the NOTES above.
   rm -f "${pkgdir}/usr/share/uim/"{xtelex,xvni}{,-ipa}.scm
   rm -f "${pkgdir}/usr/share/uim/pixmaps/"{xtelex,xvni}{,-ipa}.{svg,png}
+  rm -f "${pkgdir}/usr/lib/cmake/Qt5Gui/Qt5Gui_.cmake"
 
   ln -s uim-pref-gtk "${pkgdir}/usr/bin/uim-setup"
   ln -s uim-toolbar-gtk-systray "${pkgdir}/usr/bin/uim-systray"
