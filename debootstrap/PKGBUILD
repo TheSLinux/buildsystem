@@ -1,9 +1,8 @@
-# Maintainer: Jan Dolinar <dolik.rce@gmail.com>
-# Contributor: Abakus <java5 at arcor dot de>
-# Contributor: Michael Lass <bevan@bi-co.net>
-pkgname=debootstrap
-pkgver=1.0.70
-pkgrel=1
+# Maintainer: Anh K. Huynh <kyanh@theslinux.org>
+
+# Original Maintainer: Jan Dolinar <dolik.rce@gmail.com>
+# Original Contributor: Abakus <java5 at arcor dot de>
+# Original Contributor: Michael Lass <bevan@bi-co.net>
 pkgdesc="A tool used to create a Debian base system from scratch, without requiring the availability of dpkg or apt"
 arch=('any')
 license=('GPL')
@@ -13,8 +12,7 @@ optdepends=( 'debian-archive-keyring: checking Debian release signatures'
              'ubuntu-keyring: checking Ubuntu release signatures'
              'gnupg1:  checking Debian and Ubuntu release signatures' )
 backup=(usr/share/debootstrap/arch)
-source=("http://ftp.debian.org/debian/pool/main/d/${pkgname}/${pkgname}_${pkgver}_all.deb") 
-md5sums=('d5be4e10b6cbe080029d96b3982d9c2f')
+source=("http://ftp.debian.org/debian/pool/main/d/${PACKAGE_BASE}/${PACKAGE_BASE}_${PACKAGE_VERSION}_all.deb")
 
 package(){
   tar -xzf "${srcdir}/data.tar.gz" -C "${pkgdir}/"
@@ -22,7 +20,7 @@ package(){
   # move the executables to /usr/bin
   mv "${pkgdir}/usr/sbin" "${pkgdir}/usr/bin"
 
-  # patch the path to use Debian defaults (prevents error in chrooted environment) 
+  # patch the path to use Debian defaults (prevents error in chrooted environment)
   sed -i 's|export PATH|export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/java/jre/bin:/usr/bin/vendor_perl:/usr/bin/core_perl"|' ${pkgdir}/usr/bin/debootstrap
 
   # doesn't work with gpg 2.x, patch to point to gpg1v
